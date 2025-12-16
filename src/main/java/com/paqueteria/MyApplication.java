@@ -28,10 +28,10 @@ public class MyApplication {
 
         // RangoPeso data
         List<Map<String, Object>> rangoPeso = List.of(
-            Map.of("min", 0,  "max", 10,  "precio", 10.0f, "descripcion", "< 10kg"),
+            Map.of("min", 0,  "max", 10,  "precio", 10.0f, "descripcion", "menor de  10kg"),
             Map.of("min", 10, "max", 20,  "precio", 20.0f, "descripcion", "10kg - 20kg"),
             Map.of("min", 20, "max", 40,  "precio", 35.0f, "descripcion", "20kg - 40kg"),
-            Map.of("min", 40, "max", Integer.MAX_VALUE, "precio", 50.0f, "descripcion", "> 40kg")
+            Map.of("min", 40, "max", Integer.MAX_VALUE, "precio", 50.0f, "descripcion", "mayor de 40kg")
         );
 
         return Map.of(
