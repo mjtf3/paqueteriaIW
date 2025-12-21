@@ -30,6 +30,7 @@ jobs:
           project_id: ${{ secrets.RAILWAY_PROJECT_ID }}
           environment_name: 'desarrollo'
           preview_environment_name: 'pr-${{ github.event.pull_request.number }}'
+          api_service_name: 'paqueteria'
           # environment_variables: |
           #   {
           #     "DATABASE_URL": "postgres://username:password@hostname/db"
@@ -37,11 +38,12 @@ jobs:
           branch_name: ${{ github.head_ref }}
 
       - name: Post deployment info
-        run:
+        run: |
           echo "Preview deployed at ${{ steps.deploy.outputs.service_domain }}"
+          echo "SERVICE_DOMAIN=${{ steps.deploy.outputs.service_domain }}" >> $GITHUB_ENV
 
       - name: Post or update deployment comment
-        if: ${{ steps.deploy.outputs.service_domain != '' }}
+        if: always() && steps.deploy.outcome == 'success'
         uses: actions/github-script@v7
         with:
           script: |
@@ -63,11 +65,13 @@ jobs:
               repo: context.repo.repo
             });
 
-            const body = `
-              ${marker}  <!-- This marker helps identify the comment for future updates -->
+            const serviceDomain = '${{ steps.deploy.outputs.service_domain }}';
+            const deploymentLink = serviceDomain ? `[\`${serviceDomain}\`](https://${serviceDomain})` : '_Deployment in progress..._';
+
+            const body = `${marker}
               🚀 **Deployment success!**
 
-              - \`web\` deployed at [${{ steps.deploy.outputs.service_domain }}](https://${{ steps.deploy.outputs.service_domain }})
+              - \`web\` deployed at ${deploymentLink}
 
               ---
 
