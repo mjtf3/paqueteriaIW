@@ -49,6 +49,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: context.issue.number,
+              // Si hay más de 100 commits, no se puede obtener el último commit
               per_page: 100
             });
             const latestCommit = commits[commits.length - 1];
