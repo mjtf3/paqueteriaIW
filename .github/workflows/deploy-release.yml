@@ -1,0 +1,29 @@
+name: Despliegue en Producción por Release
+
+on:
+  release:
+    types: [published] # Se ejecuta solo cuando publicas la release
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Instalar Railway CLI
+        run: npm i -g @railway/cli
+
+      - name: Desplegar en Railway
+        run: railway up --service paqueteriaIW
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_PROD_TOKEN }}
+
+      - name: Reportar estado del despliegue
+        if: always()
+        run: |
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "Despliegue en Railway completado correctamente." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "El despliegue en Railway ha fallado. Revisa los logs de la ejecución para más detalles." >> "$GITHUB_STEP_SUMMARY"
+          fi
