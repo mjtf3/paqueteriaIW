@@ -1,6 +1,7 @@
 package com.paqueteria.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -65,13 +66,13 @@ public class Usuario {
     private Boolean activa = true;
     
     @OneToMany(mappedBy = "usuario")
-    private List<API> apis;
+    private final  List<API> apis = new ArrayList<>();
     
     @OneToMany(mappedBy = "usuario")
-    private List<Ruta> rutas;
+    private final List<Ruta> rutas = new ArrayList<>();
     
     @OneToMany(mappedBy = "usuario")
-    private List<Envio> enviosRealizados;
+    private final List<Envio> enviosRealizados = new ArrayList<>();
     
     // Constructors
     public Usuario() {}

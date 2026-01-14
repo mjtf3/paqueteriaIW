@@ -1,6 +1,7 @@
 package com.paqueteria.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -32,7 +33,7 @@ public class Ruta {
     private Usuario usuario;
     
     @OneToMany(mappedBy = "ruta")
-    private List<Envio> envios;
+    private List<Envio> envios = new ArrayList<>();
     
     // Constructors
     public Ruta() {}

@@ -1,5 +1,6 @@
 package com.paqueteria.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -35,7 +36,7 @@ public class TarifaDistancia {
     private Boolean activa = true;
     
     @OneToMany(mappedBy = "tarifaDistancia")
-    private List<Envio> envios;
+    private final List<Envio> envios = new ArrayList<>();
     
     // Constructors
     public TarifaDistancia() {}
