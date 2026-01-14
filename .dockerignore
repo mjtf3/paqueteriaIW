@@ -1,0 +1,12 @@
+target/
+.mvn/
+*.class
+*.log
+*.jar
+*.war
+*.ear
+.git/
+.gitignore
+.env
+.DS_Store
+README.md
