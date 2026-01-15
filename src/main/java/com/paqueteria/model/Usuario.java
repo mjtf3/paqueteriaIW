@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -66,7 +67,7 @@ public class Usuario {
     @Column(nullable = false)
     private Boolean activa = true;
     
-    @OneToMany(mappedBy = "usuario")
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<API> apis = new ArrayList<>();
     
     @OneToMany(mappedBy = "usuario")
