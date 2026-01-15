@@ -1,5 +1,6 @@
 package com.paqueteria.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -49,7 +50,7 @@ public class Envio {
     
     @NotNull(message = "El peso no puede ser nulo")
     @Column(nullable = false)
-    private Float peso;
+    private BigDecimal peso;
     
     @NotNull(message = "La distancia no puede ser nula")
     @Enumerated(EnumType.STRING)
@@ -65,7 +66,7 @@ public class Envio {
     
     @NotNull(message = "El coste total no puede ser nulo")
     @Column(name = "coste_total", nullable = false)
-    private Float costeTotal;
+    private BigDecimal costeTotal;
     
     @NotNull(message = "La fecha no puede ser nula")
     @Column(nullable = false)
@@ -94,8 +95,8 @@ public class Envio {
     public Envio() {}
     
     public Envio(String localizador, String direccionOrigen, String direccionDestino,
-                 String nombreComprador, Float peso, DistanciaEnum distancia,
-                 Integer numeroPaquetes, Float costeTotal, Usuario usuario,
+                 String nombreComprador, BigDecimal peso, DistanciaEnum distancia,
+                 Integer numeroPaquetes, BigDecimal costeTotal, Usuario usuario,
                  TarifaDistancia tarifaDistancia, TarifaRangoPeso tarifaRangoPeso) {
         this.localizador = localizador;
         this.direccionOrigen = direccionOrigen;
@@ -166,11 +167,11 @@ public class Envio {
         this.nota = nota;
     }
     
-    public Float getPeso() {
+    public BigDecimal getPeso() {
         return peso;
     }
     
-    public void setPeso(Float peso) {
+    public void setPeso(BigDecimal peso) {
         this.peso = peso;
     }
     
@@ -198,11 +199,11 @@ public class Envio {
         this.numeroPaquetes = numeroPaquetes;
     }
     
-    public Float getCosteTotal() {
+    public BigDecimal getCosteTotal() {
         return costeTotal;
     }
     
-    public void setCosteTotal(Float costeTotal) {
+    public void setCosteTotal(BigDecimal costeTotal) {
         this.costeTotal = costeTotal;
     }
     

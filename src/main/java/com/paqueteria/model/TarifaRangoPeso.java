@@ -1,5 +1,6 @@
 package com.paqueteria.model;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -31,7 +32,7 @@ public class TarifaRangoPeso {
     
     @NotNull(message = "El coste no puede ser nulo")
     @Column(nullable = false)
-    private Float coste;
+    private BigDecimal coste;
     
     @NotNull(message = "El estado 'activa' no puede ser nulo")
     @Column(nullable = false)
@@ -43,7 +44,7 @@ public class TarifaRangoPeso {
     // Constructors
     public TarifaRangoPeso() {}
     
-    public TarifaRangoPeso(Integer pesoMinimo, Integer pesoMaximo, Float coste) {
+    public TarifaRangoPeso(Integer pesoMinimo, Integer pesoMaximo, BigDecimal coste) {
         this.pesoMinimo = pesoMinimo;
         this.pesoMaximo = pesoMaximo;
         this.coste = coste;
@@ -71,11 +72,11 @@ public class TarifaRangoPeso {
         this.pesoMaximo = pesoMaximo;
     }
     
-    public Float getCoste() {
+    public BigDecimal getCoste() {
         return coste;
     }
     
-    public void setCoste(Float coste) {
+    public void setCoste(BigDecimal coste) {
         this.coste = coste;
     }
     

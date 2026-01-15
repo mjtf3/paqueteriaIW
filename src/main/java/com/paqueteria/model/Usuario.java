@@ -1,5 +1,6 @@
 package com.paqueteria.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +62,7 @@ public class Usuario {
     
     @NotNull(message = "El peso máximo no puede ser nulo")
     @Column(name = "peso_maximo", nullable = false)
-    private Float pesoMaximo;
+    private BigDecimal pesoMaximo;
     
     @NotNull(message = "El estado activa no puede ser nulo")
     @Column(nullable = false)
@@ -79,7 +80,7 @@ public class Usuario {
     // Constructors
     public Usuario() {}
     
-    public Usuario(String apodo, String nombre, String apellidos, TipoEnum tipo, String correo, String telefono, String contrasena, Float pesoMaximo) {
+    public Usuario(String apodo, String nombre, String apellidos, TipoEnum tipo, String correo, String telefono, String contrasena, BigDecimal pesoMaximo) {
         this.apodo = apodo;
         this.nombre = nombre;
         this.apellidos = apellidos;
@@ -170,11 +171,11 @@ public class Usuario {
         return enviosRealizados.size();
     }
     
-    public Float getPesoMaximo() {
+    public BigDecimal getPesoMaximo() {
         return pesoMaximo;
     }
     
-    public void setPesoMaximo(Float pesoMaximo) {
+    public void setPesoMaximo(BigDecimal pesoMaximo) {
         this.pesoMaximo = pesoMaximo;
     }
     
