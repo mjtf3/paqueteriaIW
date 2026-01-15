@@ -1,5 +1,7 @@
 package com.paqueteria.model;
 
+import java.util.Objects;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -66,5 +68,20 @@ public class API {
     
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        API api = (API) o;
+        if (id != null && api.id != null)
+            return id.equals(api.id);
+        return nombre.equals(api.nombre) && key.equals(api.key);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(nombre, key);
     }
 }

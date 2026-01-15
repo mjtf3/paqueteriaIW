@@ -3,6 +3,7 @@ package com.paqueteria.model;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -230,5 +231,20 @@ public class Usuario {
     public void removeEnvio(Envio envio) {
         this.enviosRealizados.remove(envio);
         envio.setUsuario(null);
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Usuario usuario = (Usuario) o;
+        if (id != null && usuario.id != null)
+            return id.equals(usuario.id);
+        return correo.equals(usuario.correo);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(correo);
     }
 }

@@ -2,6 +2,7 @@ package com.paqueteria.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -88,7 +89,23 @@ public class TarifaDistancia {
     }
     
     public void removeEnvio(Envio envio) {
+        if (envio == null || !this.envios.contains(envio)) return;
         this.envios.remove(envio);
         envio.setTarifaDistancia(null);
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TarifaDistancia that = (TarifaDistancia) o;
+        if (id != null && that.id != null)
+            return id.equals(that.id);
+        return distancia == that.distancia;
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(distancia);
     }
 }

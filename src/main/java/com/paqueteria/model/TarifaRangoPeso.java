@@ -2,6 +2,7 @@ package com.paqueteria.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -100,5 +101,20 @@ public class TarifaRangoPeso {
     public void removeEnvio(Envio envio) {
         this.envios.remove(envio);
         envio.setTarifaRangoPeso(null);
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TarifaRangoPeso that = (TarifaRangoPeso) o;
+        if (id != null && that.id != null)
+            return id.equals(that.id);
+        return pesoMinimo.equals(that.pesoMinimo) && pesoMaximo.equals(that.pesoMaximo);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(pesoMinimo, pesoMaximo);
     }
 }

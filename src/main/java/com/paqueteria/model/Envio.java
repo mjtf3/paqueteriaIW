@@ -1,6 +1,7 @@
 package com.paqueteria.model;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -239,5 +240,20 @@ public class Envio {
     
     public void setTarifaRangoPeso(TarifaRangoPeso tarifaRangoPeso) {
         this.tarifaRangoPeso = tarifaRangoPeso;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Envio envio = (Envio) o;
+        if (id != null && envio.id != null)
+            return id.equals(envio.id);
+        return localizador.equals(envio.localizador);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(localizador);
     }
 }
