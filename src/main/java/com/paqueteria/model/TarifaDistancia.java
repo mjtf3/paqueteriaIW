@@ -102,7 +102,7 @@ public class TarifaDistancia {
         TarifaDistancia that = (TarifaDistancia) o;
         if (id != null && that.id != null)
             return id.equals(that.id);
-        return distancia == that.distancia;
+        return Objects.equals(distancia, that.distancia);
     }
     
     @Override

@@ -235,6 +235,7 @@ public class Usuario {
     }
     
     public void removeEnvio(Envio envio) {
+        if (envio == null || !this.enviosRealizados.contains(envio)) return;
         this.enviosRealizados.remove(envio);
         envio.setUsuario(null);
     }
