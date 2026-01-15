@@ -36,9 +36,10 @@ public class API {
     // Constructors
     public API() {}
     
-    public API(String nombre, String key) {
+    public API(String nombre, String key, Usuario usuario) {
         this.nombre = nombre;
         this.key = key;
+        this.usuario = usuario;
     }
     
     // Getters and Setters
@@ -58,16 +59,8 @@ public class API {
         return key;
     }
     
-    public void setKey(String key) {
-        this.key = key;
-    }
-    
     public Usuario getUsuario() {
         return usuario;
-    }
-    
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
     }
     
     @Override

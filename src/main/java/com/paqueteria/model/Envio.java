@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -75,6 +77,7 @@ public class Envio {
     //la fecha no es modificable
     @NotNull(message = "La fecha no puede ser nula")
     @Column(nullable = false)
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate fecha;
     
     @NotNull(message = "El usuario no puede ser nulo")

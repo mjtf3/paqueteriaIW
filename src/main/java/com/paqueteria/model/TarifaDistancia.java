@@ -26,7 +26,7 @@ public class TarifaDistancia {
     
     @NotNull(message = "La distancia no puede ser nula")
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private DistanciaEnum distancia;
     
     @NotNull(message = "El coste no puede ser nulo")
