@@ -62,6 +62,11 @@ public class API {
     public Usuario getUsuario() {
         return usuario;
     }
+
+    // Método interno para sincronización bidireccional (usar Usuario.addApi() externamente)
+    void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
     
     @Override
     public boolean equals(Object o) {
