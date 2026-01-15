@@ -6,6 +6,5 @@ import org.springframework.stereotype.Repository;
 import com.paqueteria.model.TarifaDistancia;
 
 @Repository
-public interface TarifaDistanciaRepository extends JpaRepository<TarifaDistancia, Long> {
+public interface TarifaDistanciaRepository extends JpaRepository<TarifaDistancia, Integer> {
 }
-

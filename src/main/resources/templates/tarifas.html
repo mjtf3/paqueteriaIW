@@ -23,8 +23,8 @@
                 <div class="tarifa-section" th:if="${mostrarTodo or mostrarDistancia}">
                     <h2 class="tarifa-item" >Distancia €€</h2>
                     <div th:each="tarifa : ${tarifasDistancia}" class="tarifa-item">
-                        <span class="tarifa-nombre" th:text="${tarifa.tipo}">Ciudad</span>
-                        <span class="tarifa-precio" th:text="${tarifa.precio} + '€'">1€</span>
+                        <span class="tarifa-nombre" th:text="${tarifa.distancia}">Ciudad</span>
+                        <span class="tarifa-precio" th:text="${tarifa.coste} + '€'">1€</span>
                     </div>
                 </div>
 
@@ -32,8 +32,8 @@
                 <div class="tarifa-section" th:if="${mostrarTodo or mostrarPeso}">
                     <h2 class="tarifa-item" >Rango de peso €€</h2>
                     <div th:each="tarifa : ${tarifasRangoPeso}" class="tarifa-item">
-                        <span class="tarifa-nombre" th:text="${tarifa.descripcion}">< 10kg</span>
-                        <span class="tarifa-precio" th:text="${tarifa.precio} + '€'">1€</span>
+                        <span class="tarifa-nombre" th:text="${tarifa.pesoMinimo} + ' - ' + ${tarifa.pesoMaximo} + ' kg'">0 - 5 kg</span>
+                        <span class="tarifa-precio" th:text="${tarifa.coste} + '€'">1€</span>
                     </div>
                 </div>
             </div>

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.paqueteria.model.TarifaDistancia;
-import com.paqueteria.model.TarifaPeso;
+import com.paqueteria.model.TarifaRangoPeso;
 import com.paqueteria.service.TarifaService;
 
 @Controller
@@ -50,23 +50,24 @@ public class TarifasWebController {
 
     private List<Map<String, Object>> convertirTarifasDistancia(List<TarifaDistancia> tarifas) {
         return tarifas.stream()
+            .filter(TarifaDistancia::getActiva)
             .map(t -> {
                 Map<String, Object> map = new HashMap<>();
-                map.put("tipo", t.getTipo());
-                map.put("precio", t.getPrecio());
+                map.put("distancia", t.getDistancia().getNombre());
+                map.put("coste", t.getCoste());
                 return map;
             })
             .collect(Collectors.toList());
     }
 
-    private List<Map<String, Object>> convertirTarifasPeso(List<TarifaPeso> tarifas) {
+    private List<Map<String, Object>> convertirTarifasPeso(List<TarifaRangoPeso> tarifas) {
         return tarifas.stream()
+            .filter(TarifaRangoPeso::getActiva)
             .map(t -> {
                 Map<String, Object> map = new HashMap<>();
-                map.put("min", t.getPesoMin());
-                map.put("max", t.getPesoMax());
-                map.put("precio", t.getPrecio());
-                map.put("descripcion", t.getDescripcion());
+                map.put("pesoMinimo", t.getPesoMinimo());
+                map.put("pesoMaximo", t.getPesoMaximo());
+                map.put("coste", t.getCoste());
                 return map;
             })
             .collect(Collectors.toList());

@@ -1,10 +1,6 @@
 package com.paqueteria.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "tarifas_distancia")
@@ -12,41 +8,56 @@ public class TarifaDistancia {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
-    private String tipo;
-    private Float precio;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, unique = true)
+    private DistanciaEnum distancia;
+
+    @Column(nullable = false)
+    private Float coste;
+
+    @Column(nullable = false)
+    private Boolean activa;
 
     public TarifaDistancia() {
     }
 
-    public TarifaDistancia(String tipo, Float precio) {
-        this.tipo = tipo;
-        this.precio = precio;
+    public TarifaDistancia(DistanciaEnum distancia, Float coste, Boolean activa) {
+        this.distancia = distancia;
+        this.coste = coste;
+        this.activa = activa;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getTipo() {
-        return tipo;
+    public DistanciaEnum getDistancia() {
+        return distancia;
     }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
+    public void setDistancia(DistanciaEnum distancia) {
+        this.distancia = distancia;
     }
 
-    public Float getPrecio() {
-        return precio;
+    public Float getCoste() {
+        return coste;
     }
 
-    public void setPrecio(Float precio) {
-        this.precio = precio;
+    public void setCoste(Float coste) {
+        this.coste = coste;
     }
 
+    public Boolean getActiva() {
+        return activa;
+    }
+
+    public void setActiva(Boolean activa) {
+        this.activa = activa;
+    }
 }

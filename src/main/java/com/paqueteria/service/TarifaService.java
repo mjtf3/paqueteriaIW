@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.paqueteria.model.TarifaDistancia;
-import com.paqueteria.model.TarifaPeso;
+import com.paqueteria.model.TarifaRangoPeso;
 import com.paqueteria.repository.TarifaDistanciaRepository;
-import com.paqueteria.repository.TarifaPesoRepository;
+import com.paqueteria.repository.TarifaRangoPesoRepository;
 
 @Service
 public class TarifaService {
@@ -17,13 +17,13 @@ public class TarifaService {
     private TarifaDistanciaRepository tarifaDistanciaRepository;
 
     @Autowired
-    private TarifaPesoRepository tarifaPesoRepository;
+    private TarifaRangoPesoRepository tarifaRangoPesoRepository;
 
     public List<TarifaDistancia> obtenerTodasTarifasDistancia() {
         return tarifaDistanciaRepository.findAll();
     }
 
-    public List<TarifaPeso> obtenerTodasTarifasPeso() {
-        return tarifaPesoRepository.findAll();
+    public List<TarifaRangoPeso> obtenerTodasTarifasPeso() {
+        return tarifaRangoPesoRepository.findAll();
     }
 }
