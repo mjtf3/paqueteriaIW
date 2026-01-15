@@ -67,7 +67,7 @@ public class Usuario {
     private Boolean activa = true;
     
     @OneToMany(mappedBy = "usuario")
-    private final  List<API> apis = new ArrayList<>();
+    private final List<API> apis = new ArrayList<>();
     
     @OneToMany(mappedBy = "usuario")
     private final List<Ruta> rutas = new ArrayList<>();
@@ -166,7 +166,7 @@ public class Usuario {
     
     // Método calculado - no hay campo en BD
     public Integer getEnvios() {
-        return enviosRealizados != null ? enviosRealizados.size() : 0;
+        return enviosRealizados.size();
     }
     
     public Float getPesoMaximo() {

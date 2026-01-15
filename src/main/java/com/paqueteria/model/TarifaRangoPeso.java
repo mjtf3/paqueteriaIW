@@ -33,7 +33,7 @@ public class TarifaRangoPeso {
     @Column(nullable = false)
     private Float coste;
     
-    @NotNull(message = "El estado activa no puede ser nulo")
+    @NotNull(message = "El estado 'activa' no puede ser nulo")
     @Column(nullable = false)
     private Boolean activa = true;
     
@@ -99,6 +99,7 @@ public class TarifaRangoPeso {
     }
     
     public void removeEnvio(Envio envio) {
+        if (envio == null || !this.envios.contains(envio)) return;
         this.envios.remove(envio);
         envio.setTarifaRangoPeso(null);
     }

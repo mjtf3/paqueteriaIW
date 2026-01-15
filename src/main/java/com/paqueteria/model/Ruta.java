@@ -33,8 +33,9 @@ public class Ruta {
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
     
+    // Los envios se añaden uno a uno
     @OneToMany(mappedBy = "ruta")
-    private List<Envio> envios = new ArrayList<>();
+    private final List<Envio> envios = new ArrayList<>();
     
     // Constructors
     public Ruta() {}
@@ -64,22 +65,6 @@ public class Ruta {
     // revisar estos metodos 
     public List<Envio> getEnvios() {
         return envios;
-    }
-    
-    public void setEnvios(List<Envio> envios) {
-        // Limpiar relaciones anteriores
-        if (this.envios != null) {
-            for (Envio envio : this.envios) {
-                envio.setRuta(null);
-            }
-        }
-        // Asignar nueva lista y sincronizar
-        this.envios = envios;
-        if (envios != null) {
-            for (Envio envio : envios) {
-                envio.setRuta(this);
-            }
-        }
     }
     
     // Helper methods para manejar relación bidireccional
