@@ -11,13 +11,17 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "envio")
+@Table(name = "envio", indexes = {
+    // el indice se crea automaticamente al poner unique=true en la columna pero asi queda mas claro
+    @Index(name = "idx_envio_localizador", columnList = "localizador")
+})
 public class Envio {
     
     @Id
@@ -68,6 +72,7 @@ public class Envio {
     @Column(name = "coste_total", nullable = false)
     private BigDecimal costeTotal;
     
+    //la fecha no es modificable
     @NotNull(message = "La fecha no puede ser nula")
     @Column(nullable = false)
     private LocalDate fecha;

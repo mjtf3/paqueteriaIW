@@ -16,6 +16,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
@@ -47,6 +48,7 @@ public class Usuario {
     
     @NotNull(message = "El correo no puede ser nulo")
     @Column(nullable = false, unique = true)
+    @Email(message = "El correo debe tener un formato válido")
     private String correo;
     
     @Column()
@@ -199,6 +201,7 @@ public class Usuario {
     }
     
     public void removeApi(API api) {
+        if (api == null || !this.apis.contains(api)) return;
         this.apis.remove(api);
         api.setUsuario(null);
     }
@@ -215,6 +218,7 @@ public class Usuario {
     }
     
     public void removeRuta(Ruta ruta) {
+        if (ruta == null || !this.rutas.contains(ruta)) return;
         this.rutas.remove(ruta);
         ruta.setUsuario(null);
     }

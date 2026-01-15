@@ -62,7 +62,6 @@ public class Ruta {
         this.usuario = usuario;
     }
 
-    // revisar estos metodos 
     public List<Envio> getEnvios() {
         return envios;
     }
