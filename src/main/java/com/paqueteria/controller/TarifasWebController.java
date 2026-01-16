@@ -53,7 +53,7 @@ public class TarifasWebController {
             .filter(TarifaDistancia::getActiva)
             .map(t -> {
                 Map<String, Object> map = new HashMap<>();
-                map.put("distancia", t.getDistancia().getNombre());
+                map.put("distancia", t.getDistancia());
                 map.put("coste", t.getCoste());
                 return map;
             })
