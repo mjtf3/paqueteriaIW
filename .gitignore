@@ -44,3 +44,5 @@ buildNumber.properties
 .env
 !.env.example
 .idea
+
+docker-compose.yml
