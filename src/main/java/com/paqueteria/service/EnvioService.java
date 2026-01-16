@@ -1,8 +1,6 @@
 package com.paqueteria.service;
 
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +30,6 @@ public class EnvioService {
 
         String frontendStatus = mapEstadoToFrontendStatus(envio.getEstado());
         String label = mapEstadoToLabel(envio.getEstado());
-        List<String> historial = buildHistorial(envio);
 
         EnvioDTO envioDTO = new EnvioDTO(
             envio.getLocalizador(),
@@ -40,8 +37,7 @@ public class EnvioService {
             label,
             envio.getDireccionOrigen(),
             envio.getDireccionDestino(),
-            envio.getFecha().format(DATE_FORMATTER),
-            historial
+            envio.getFecha().format(DATE_FORMATTER)
         );
 
         return Optional.of(envioDTO);
@@ -78,34 +74,5 @@ public class EnvioService {
             default:
                 return "Pendiente";
         }
-    }
-
-    private List<String> buildHistorial(Envio envio) {
-        List<String> historial = new ArrayList<>();
-
-        String fechaBase = envio.getFecha().format(DATE_FORMATTER);
-        historial.add("📦 " + fechaBase + " - Paquete recibido en almacén");
-
-        if (envio.getEstado() != EstadoEnum.PENDIENTE) {
-            String fechaReparto = envio.getFecha().plusDays(1).format(DATE_FORMATTER);
-            historial.add("🚚 " + fechaReparto + " - Paquete en reparto");
-        }
-
-        if (envio.getEstado() == EstadoEnum.ENTREGADO) {
-            String fechaEntrega = envio.getFecha().plusDays(2).format(DATE_FORMATTER);
-            historial.add("✅ " + fechaEntrega + " - Paquete entregado con éxito");
-        }
-
-        if (envio.getEstado() == EstadoEnum.AUSENTE) {
-            String fechaIntento = envio.getFecha().plusDays(2).format(DATE_FORMATTER);
-            historial.add("❌ " + fechaIntento + " - Destinatario ausente, se intentará nueva entrega");
-        }
-
-        if (envio.getEstado() == EstadoEnum.RECHAZADO) {
-            String fechaRechazo = envio.getFecha().plusDays(2).format(DATE_FORMATTER);
-            historial.add("⛔ " + fechaRechazo + " - Paquete rechazado, se devolverá al remitente");
-        }
-
-        return historial;
     }
 }

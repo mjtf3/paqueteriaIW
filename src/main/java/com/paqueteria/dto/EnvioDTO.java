@@ -1,30 +1,26 @@
 package com.paqueteria.dto;
 
-import java.util.List;
-
 public class EnvioDTO {
-    private String code;
+    private String localizador;
     private String status;
     private String label;
     private String direccionOrigen;
     private String direccionDestino;
     private String fecha;
-    private List<String> historial;
 
-    public EnvioDTO(String code, String status, String label, String direccionOrigen,
-                    String direccionDestino, String fecha, List<String> historial) {
-        this.code = code;
+    public EnvioDTO(String localizador, String status, String label, String direccionOrigen,
+                    String direccionDestino, String fecha) {
+        this.localizador = localizador;
         this.status = status;
         this.label = label;
         this.direccionOrigen = direccionOrigen;
         this.direccionDestino = direccionDestino;
         this.fecha = fecha;
-        this.historial = historial;
     }
 
     // Getters
-    public String getCode() {
-        return code;
+    public String getLocalizador() {
+        return localizador;
     }
 
     public String getStatus() {
@@ -47,13 +43,9 @@ public class EnvioDTO {
         return fecha;
     }
 
-    public List<String> getHistorial() {
-        return historial;
-    }
-
     // Setters
-    public void setCode(String code) {
-        this.code = code;
+    public void setLocalizador(String localizador) {
+        this.localizador = localizador;
     }
 
     public void setStatus(String status) {
@@ -74,9 +66,5 @@ public class EnvioDTO {
 
     public void setFecha(String fecha) {
         this.fecha = fecha;
-    }
-
-    public void setHistorial(List<String> historial) {
-        this.historial = historial;
     }
 }

@@ -46,7 +46,7 @@ public class EnvioController {
 
         EnvioDTO envio = envioDTO.get();
         model.addAttribute("trackingInfo", envio);
-        model.addAttribute("message", "Código: " + envio.getCode() + " — Estado: " + envio.getLabel());
+        model.addAttribute("message", "Código: " + envio.getLocalizador() + " — Estado: " + envio.getLabel());
 
         return "seguimiento";
     }
@@ -56,13 +56,13 @@ public class EnvioController {
     @ResponseBody
     public ResponseEntity<Map<String, String>> getEstadoEnvio(@RequestParam String localizador) {
         if (localizador == null || localizador.trim().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "El parámetro 'localizador' es obligatorio"));
         }
 
         Optional<Envio> envioOpt = envioRepository.findByLocalizador(localizador.trim());
 
         if (envioOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Envio no encontrado"));
         }
 
         Envio envio = envioOpt.get();

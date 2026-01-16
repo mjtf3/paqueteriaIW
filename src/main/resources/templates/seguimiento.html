@@ -21,8 +21,8 @@
                 <button class="btn" type="submit">Enviar</button>
             </div>
         </form>
-        <p class="muted" style="margin-top:8px" th:if="${message}" th:text="${message}"></p>
-        <p class="error" style="margin-top:8px" th:if="${error}" th:text="${error}"></p>
+        <p class="message muted" th:if="${message}" th:text="${message}"></p>
+        <p class="message error" th:if="${error}" th:text="${error}"></p>
     </div>
 
     <!-- Details card -->
@@ -109,22 +109,11 @@
         </div>
 
         <!-- Información adicional del envío -->
-        <div th:if="${trackingInfo != null}" style="margin-top: 30px; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
-            <h4 style="margin-top: 0; color: #333;">Información del envío</h4>
+        <div th:if="${trackingInfo != null}" class="envio-info">
+            <h4>Información del envío</h4>
             <p><strong>Origen:</strong> <span th:text="${trackingInfo.direccionOrigen}">Dirección origen</span></p>
             <p><strong>Destino:</strong> <span th:text="${trackingInfo.direccionDestino}">Dirección destino</span></p>
             <p><strong>Fecha de envío:</strong> <span th:text="${trackingInfo.fecha}">Fecha</span></p>
-        </div>
-
-        <!-- Historial del envío -->
-        <div th:if="${trackingInfo != null}" style="margin-top: 30px;">
-            <h4 style="color: #333;">Historial de seguimiento</h4>
-            <div style="background-color: #fff; border-left: 4px solid #4CAF50; padding: 15px; border-radius: 4px;">
-                <div th:each="evento : ${trackingInfo.historial}"
-                     style="padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px;">
-                    <span th:text="${evento}">Evento del historial</span>
-                </div>
-            </div>
         </div>
     </div>
 </div>

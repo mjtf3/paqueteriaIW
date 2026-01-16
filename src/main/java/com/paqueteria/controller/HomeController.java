@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class HomeController {
 
     @GetMapping("/")
-    public String index() {
+    public String home() {
         return "index";
     }
 
