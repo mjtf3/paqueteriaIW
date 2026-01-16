@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.paqueteria.security.RequireApiKey;
 import com.paqueteria.service.TarifaDistanciaService;
 import com.paqueteria.service.TarifaRangoPesoService;
 
@@ -43,6 +44,7 @@ public class TarifasController {
         }
     }
 
+    @RequireApiKey
     @GetMapping("/tarifas/especifica")
     public Map<String, Object> getTarifaEspecifica(@RequestParam Integer distancia, @RequestParam BigDecimal peso) {
 
