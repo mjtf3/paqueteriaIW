@@ -46,8 +46,18 @@ public class TarifasController {
 
     @RequireApiKey
     @GetMapping("/tarifas/especifica")
-    public Map<String, Object> getTarifaEspecifica(@RequestParam Integer distancia, @RequestParam BigDecimal peso) {
-
-        return Map.of("precio", tarifaDistanciaService.obtenerTarifaPorNumero(distancia).getCoste().add(tarifaRangoPesoService.obtenerTarifaPorPeso(peso).getCoste()));
+    public Map<String, Object> getTarifaEspecifica(@RequestParam(required = false) Integer distancia, @RequestParam(required = false) BigDecimal peso) {
+        if (distancia == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "El parámetro 'distancia' es obligatorio.");
+        }
+        if (peso == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "El parámetro 'peso' es obligatorio.");
+        }
+        return Map.of("precio", tarifaDistanciaService.obtenerTarifaPorNumero(distancia).getCoste()
+                .add(tarifaRangoPesoService.obtenerTarifaPorPeso(peso).getCoste()));
     }
 }

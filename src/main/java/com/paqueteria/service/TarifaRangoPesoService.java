@@ -5,7 +5,9 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.paqueteria.dto.TarifaRangoPesoDTO;
 import com.paqueteria.model.TarifaRangoPeso;
@@ -29,11 +31,11 @@ public class TarifaRangoPesoService {
 
     public TarifaRangoPesoDTO obtenerTarifaPorPeso(BigDecimal peso) {
         if (peso.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("El peso no puede ser negativo");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El peso no puede ser negativo: " + peso);
         }
 
         TarifaRangoPeso tarifa = tarifaRangoPesoRepository.findByPesoAndActiva(peso.intValue())
-                .orElseThrow(() -> new RuntimeException("Tarifa no encontrada para el peso: " + peso));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontró una tarifa para el peso: " + peso));
 
         return modelMapper.map(tarifa, TarifaRangoPesoDTO.class);
     }
