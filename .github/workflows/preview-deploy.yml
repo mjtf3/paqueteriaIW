@@ -32,6 +32,8 @@ jobs:
           preview_environment_name: 'pr--${{ github.event.pull_request.number }}'
           branch_name: ${{ github.head_ref }}
           api_service_name: "paqueteriaIW"
+        env:
+          SPRING_PROFILES_ACTIVE: ""
 
       - name: Post deployment info
         run:
