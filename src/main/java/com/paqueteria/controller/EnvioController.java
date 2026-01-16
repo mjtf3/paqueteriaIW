@@ -31,7 +31,7 @@ public class EnvioController {
     @GetMapping("/envios/tracking")
     public String tracking(@RequestParam(required = false) String code, Model model) {
         if (code == null || code.trim().isEmpty()) {
-            return "index";
+            return "seguimiento";
         }
 
         code = code.trim();
@@ -41,14 +41,14 @@ public class EnvioController {
 
         if (envioDTO.isEmpty()) {
             model.addAttribute("error", "No se encontró ningún envío con el código: " + code);
-            return "index";
+            return "seguimiento";
         }
 
         EnvioDTO envio = envioDTO.get();
         model.addAttribute("trackingInfo", envio);
         model.addAttribute("message", "Código: " + envio.getCode() + " — Estado: " + envio.getLabel());
 
-        return "index";
+        return "seguimiento";
     }
 
     // Endpoint para la API REST (JSON)
