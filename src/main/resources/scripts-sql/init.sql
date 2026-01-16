@@ -1,20 +1,28 @@
 -- Inserts para TarifaDistancia
--- Las columnas deben ser: distancia (ENUM), coste, activa
-DELETE FROM tarifa_distancia; -- Limpia la tabla antes de insertar nuevos datos
-INSERT INTO tarifa_distancia (distancia, coste, activa) VALUES
-('CIUDAD', 50.0, true),
-('PROVINCIAL', 100.0, true),
-('NACIONAL', 200.0, true),
-('INTERNACIONAL', 500.0, true);
+-- Si ya existe (por id), actualiza los datos
+INSERT INTO tarifa_distancia (id, distancia, coste, activa) VALUES
+(1, 'CIUDAD', 50.0, true),
+(2, 'PROVINCIAL', 100.0, true),
+(3, 'NACIONAL', 200.0, true),
+(4, 'INTERNACIONAL', 500.0, true)
+ON CONFLICT (id) DO UPDATE SET
+    distancia = EXCLUDED.distancia,
+    coste = EXCLUDED.coste,
+    activa = EXCLUDED.activa;
 
 -- Inserts para TarifaRangoPeso
--- Ajusta según tu modelo TarifaRangoPeso
-DELETE FROM tarifa_rango_peso; -- Limpia la tabla antes de insertar nuevos datos
-INSERT INTO tarifa_rango_peso (peso_minimo, peso_maximo, coste, descripcion, activa) VALUES
-(0, 10, 10.0, 'menor de 10kg', true),
-(10, 20, 20.0, '10kg - 20kg', true),
-(20, 40, 35.0, '20kg - 40kg', true),
-(40, 2147483647, 50.0, 'mayor de 40kg', true);
+-- Si ya existe (por id), actualiza los datos
+INSERT INTO tarifa_rango_peso (id, peso_minimo, peso_maximo, coste, descripcion, activa) VALUES
+(1, 0, 10, 10.0, 'menor de 10kg', true),
+(2, 10, 20, 20.0, '10kg - 20kg', true),
+(3, 20, 40, 35.0, '20kg - 40kg', true),
+(4, 40, 2147483647, 50.0, 'mayor de 40kg', true)
+ON CONFLICT (id) DO UPDATE SET
+    peso_minimo = EXCLUDED.peso_minimo,
+    peso_maximo = EXCLUDED.peso_maximo,
+    coste = EXCLUDED.coste,
+    descripcion = EXCLUDED.descripcion,
+    activa = EXCLUDED.activa;
 
 -- Insert de usuario de ejemplo
 -- Si ya existe (id=1), actualiza los datos
