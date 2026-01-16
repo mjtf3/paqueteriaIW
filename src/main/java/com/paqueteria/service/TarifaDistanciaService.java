@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.paqueteria.dto.TarifaDistanciaDTO;
+import com.paqueteria.model.DistanciaEnum;
 import com.paqueteria.model.TarifaDistancia;
 import com.paqueteria.repository.TarifaDistanciaRepository;
 
@@ -20,10 +21,22 @@ public class TarifaDistanciaService {
     private ModelMapper modelMapper;
 
     public List<TarifaDistanciaDTO> obtenerTodasLasTarifas() {
-        return tarifaDistanciaRepository.findAll()
+        return tarifaDistanciaRepository.findByActiva(true)
                 .stream()
-                .filter(TarifaDistancia::getActiva)
                 .map(tarifa -> modelMapper.map(tarifa, TarifaDistanciaDTO.class))
                 .toList();
+    }
+
+    public TarifaDistanciaDTO obtenerTarifaPorNumero(Integer numero) {
+        if (numero < 1 || numero > 4) {
+            throw new IllegalArgumentException("El número debe estar entre 1 y 4");
+        }
+
+        DistanciaEnum distancia = DistanciaEnum.values()[numero - 1];
+
+        TarifaDistancia tarifa = tarifaDistanciaRepository.findByDistanciaAndActiva(distancia, true)
+                .orElseThrow(() -> new RuntimeException("Tarifa no encontrada para la distancia: " + distancia));
+
+        return modelMapper.map(tarifa, TarifaDistanciaDTO.class);
     }
 }
