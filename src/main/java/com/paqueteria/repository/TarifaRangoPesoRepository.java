@@ -7,5 +7,5 @@ import com.paqueteria.model.TarifaRangoPeso;
 
 @Repository
 public interface TarifaRangoPesoRepository extends JpaRepository<TarifaRangoPeso, Integer> {
+    
 }
-
