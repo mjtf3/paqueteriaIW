@@ -61,9 +61,8 @@ public class Usuario {
     @NotNull(message = "La fecha de creación no puede ser nula")
     @Column(name = "fecha_creacion", nullable = false)
     private LocalDate fechaCreacion;
-    
-    @NotNull(message = "El peso máximo no puede ser nulo")
-    @Column(name = "peso_maximo", nullable = false)
+
+    @Column(name = "peso_maximo")
     private BigDecimal pesoMaximo;
     
     @NotNull(message = "El estado activa no puede ser nulo")
@@ -167,7 +166,9 @@ public class Usuario {
     public LocalDate getFechaCreacion() {
         return fechaCreacion;
     }
-    
+
+    public void setFechaCreacion(LocalDate fechaCreacion) {this.fechaCreacion = fechaCreacion;}
+
     // Método calculado - no hay campo en BD
     public Integer getEnvios() {
         return enviosRealizados.size();
