@@ -32,7 +32,7 @@ public class TarifaRangoPesoService {
             throw new IllegalArgumentException("El peso no puede ser negativo");
         }
 
-        TarifaRangoPeso tarifa = tarifaRangoPesoRepository.findByPesoAndActiva(peso)
+        TarifaRangoPeso tarifa = tarifaRangoPesoRepository.findByPesoAndActiva(peso.intValue())
                 .orElseThrow(() -> new RuntimeException("Tarifa no encontrada para el peso: " + peso));
 
         return modelMapper.map(tarifa, TarifaRangoPesoDTO.class);
