@@ -24,6 +24,6 @@ public class EnviosController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public EnvioDTO crearEnvio(@Valid @RequestBody CrearEnvioDTO dto) {
-        return envioService.crearEnvio(dto, 1); // Usuario simulado con ID 1
+        return envioService.crearEnvio(dto, 1); // TODO: Usuario simulado con ID 1; obtener ID de usuario autenticado
     }
 }
