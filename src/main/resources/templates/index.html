@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,22 +11,29 @@
     <!-- Form card -->
     <div class="code-card">
         <h2>Introduce el código de seguimiento</h2>
-        <form id="trackingForm">
-            <input id="codeInput" class="code-input" type="text" placeholder="ABCD1234EFGH5678" aria-label="Código de seguimiento" required />
+        <form method="GET" action="/envios/tracking">
+            <input name="code" class="code-input" type="text"
+                   placeholder="ENV-2024-001"
+                   aria-label="Código de seguimiento"
+                   th:value="${code}"
+                   required />
             <div>
-                <button id="sendBtn" class="btn" type="submit">Enviar</button>
+                <button class="btn" type="submit">Enviar</button>
             </div>
         </form>
-        <p id="message" class="muted" style="margin-top:8px"></p>
+        <p class="muted" style="margin-top:8px" th:if="${message}" th:text="${message}"></p>
+        <p class="error" style="margin-top:8px" th:if="${error}" th:text="${error}"></p>
     </div>
 
     <!-- Details card -->
     <div class="details">
         <h3>Detalles del seguimiento</h3>
-        <div class="stages" id="stages">
-            <div class="stage" data-status="EN_ALMACEN">
+        <div class="stages">
+            <!-- En Almacén -->
+            <div class="stage"
+                 th:classappend="${trackingInfo != null && (trackingInfo.status == 'EN_ALMACEN' || trackingInfo.status == 'EN_REPARTO' || trackingInfo.status == 'ENTREGADO')} ? 'active' : 'inactive'">
                 <svg class="icon" width="140" height="110" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <g id="WarehouseRacksSmall" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <g stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="10" y="10" width="8" height="130" fill="#2E6AA7" />
                         <rect x="71" y="10" width="8" height="130" fill="#2E6AA7" />
                         <rect x="132" y="10" width="8" height="130" fill="#2E6AA7" />
@@ -53,11 +60,16 @@
                 <div class="stage-title">EN ALMACÉN</div>
             </div>
 
-            <div class="arrow"><div class="bar" id="bar1"></div></div>
+            <div class="arrow">
+                <div class="bar"
+                     th:classappend="${trackingInfo != null && (trackingInfo.status == 'EN_REPARTO' || trackingInfo.status == 'ENTREGADO')} ? 'active' : ''"></div>
+            </div>
 
-            <div class="stage" data-status="EN_REPARTO">
+            <!-- En Reparto -->
+            <div class="stage"
+                 th:classappend="${trackingInfo != null && (trackingInfo.status == 'EN_REPARTO' || trackingInfo.status == 'ENTREGADO')} ? 'active' : 'inactive'">
                 <svg class="icon" width="140" height="110" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <g id="DeliveryTruckSmall" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+                    <g stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20 40 H100 V100 H20 Z" fill="#AEE4F3" />
                         <path d="M100 50 H120 L130 75 L130 100 H100" fill="#FFE47E" />
                         <path d="M100 50 H115 L122.5 75 H100 Z" fill="#AEE4F3" />
@@ -68,24 +80,24 @@
                         <line x1="5" y1="40" x2="35" y2="40" />
                     </g>
                 </svg>
-
                 <div class="stage-title">EN REPARTO</div>
             </div>
 
-            <div class="arrow"><div class="bar" id="bar2"></div></div>
+            <div class="arrow">
+                <div class="bar"
+                     th:classappend="${trackingInfo != null && trackingInfo.status == 'ENTREGADO'} ? 'active' : ''"></div>
+            </div>
 
-            <div class="stage" data-status="ENTREGADO">
-                <!-- Caja entregada con tick SVG -->
-                <svg class="icon" width="140" height="110" viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <title>Entregado</title>
+            <!-- Entregado -->
+            <div class="stage"
+                 th:classappend="${trackingInfo != null && trackingInfo.status == 'ENTREGADO'} ? 'active' : 'inactive'">
+                <svg class="icon" width="140" height="110" viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
                     <rect width="140" height="110" fill="none"/>
-                    <!-- caja -->
                     <g>
                         <rect x="26" y="30" width="88" height="56" rx="6" fill="#d9c7a1" stroke="#b39a74"/>
                         <path d="M26 48 L114 48" stroke="#b39a74" stroke-width="4" stroke-linecap="square"/>
                         <rect x="60" y="32" width="20" height="12" fill="#caa76e"/>
                     </g>
-                    <!-- tick circle -->
                     <g>
                         <circle cx="110" cy="30" r="16" fill="#eaf8ee"/>
                         <circle cx="110" cy="30" r="14" fill="#34d058"/>
@@ -93,97 +105,28 @@
                     </g>
                 </svg>
                 <div class="stage-title">ENTREGADO</div>
-                <div class="muted">-</div>
             </div>
         </div>
 
-        <div class="events" id="events">
-            <p class="muted">Introduce un código y pulsa "Enviar" para ver el historial.</p>
+        <!-- Información adicional del envío -->
+        <div th:if="${trackingInfo != null}" style="margin-top: 30px; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
+            <h4 style="margin-top: 0; color: #333;">Información del envío</h4>
+            <p><strong>Origen:</strong> <span th:text="${trackingInfo.direccionOrigen}">Dirección origen</span></p>
+            <p><strong>Destino:</strong> <span th:text="${trackingInfo.direccionDestino}">Dirección destino</span></p>
+            <p><strong>Fecha de envío:</strong> <span th:text="${trackingInfo.fecha}">Fecha</span></p>
+        </div>
+
+        <!-- Historial del envío -->
+        <div th:if="${trackingInfo != null}" style="margin-top: 30px;">
+            <h4 style="color: #333;">Historial de seguimiento</h4>
+            <div style="background-color: #fff; border-left: 4px solid #4CAF50; padding: 15px; border-radius: 4px;">
+                <div th:each="evento : ${trackingInfo.historial}"
+                     style="padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px;">
+                    <span th:text="${evento}">Evento del historial</span>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-
-<script>
-    const form = document.getElementById('trackingForm');
-    const input = document.getElementById('codeInput');
-    const message = document.getElementById('message');
-    const eventsContainer = document.getElementById('events');
-    const stages = Array.from(document.querySelectorAll('.stage'));
-    const bar1 = document.getElementById('bar1');
-    const bar2 = document.getElementById('bar2');
-
-    function resetUI(){
-        stages.forEach(s => { s.classList.remove('active'); s.classList.add('inactive'); });
-        bar1.classList.remove('active','partial');
-        bar2.classList.remove('active','partial');
-        eventsContainer.innerHTML = '<p class="muted">Introduce un código y pulsa "Enviar" para ver el historial.</p>';
-        message.textContent = '';
-    }
-
-    function setState(status){
-        // possible statuses: EN_ALMACEN, EN_REPARTO, ENTREGADO
-        resetUI();
-        if(status === 'EN_ALMACEN'){
-            const s = document.querySelector('.stage[data-status="EN_ALMACEN"]');
-            s.classList.remove('inactive'); s.classList.add('active');
-        } else if(status === 'EN_REPARTO'){
-            document.querySelector('.stage[data-status="EN_ALMACEN"]').classList.replace('inactive','active');
-            bar1.classList.add('active');
-            document.querySelector('.stage[data-status="EN_REPARTO"]').classList.replace('inactive','active');
-        } else if(status === 'ENTREGADO'){
-            document.querySelector('.stage[data-status="EN_ALMACEN"]').classList.replace('inactive','active');
-            bar1.classList.add('active');
-            document.querySelector('.stage[data-status="EN_REPARTO"]').classList.replace('inactive','active');
-            bar2.classList.add('active');
-            document.querySelector('.stage[data-status="ENTREGADO"]').classList.replace('inactive','active');
-        }
-    }
-
-    function renderEvents(events){
-        if(!events || events.length === 0){
-            eventsContainer.innerHTML = '<p class="muted">No hay eventos.</p>'; return;
-        }
-        eventsContainer.innerHTML = '';
-        events.forEach(e => {
-            const div = document.createElement('div');
-            div.className = 'event';
-            const left = document.createElement('div');
-            left.innerHTML = `<strong>${e.label || e.status}</strong><div class="muted">${e.status}</div>`;
-            const right = document.createElement('div');
-            right.className = 'muted';
-            right.textContent = e.time || '';
-            div.appendChild(left);
-            div.appendChild(right);
-            eventsContainer.appendChild(div);
-        });
-    }
-
-    form.addEventListener('submit', async (ev) => {
-        ev.preventDefault();
-        const code = input.value.trim();
-        if(!code){ message.textContent = 'Introduce un código válido.'; return; }
-        message.textContent = 'Buscando...';
-        document.getElementById('sendBtn').disabled = true;
-        try{
-            const res = await fetch(`/api/tracking?code=${encodeURIComponent(code)}`);
-            if(!res.ok){
-                const txt = await res.text();
-                throw new Error(txt || 'Error en la petición');
-            }
-            const data = await res.json();
-            setState(data.status);
-            renderEvents(data.events);
-            message.textContent = `Código: ${data.code} — Estado: ${data.label}`;
-        }catch(err){
-            message.textContent = '';
-            eventsContainer.innerHTML = `<p class="error">Error: ${err.message}</p>`;
-        }finally{
-            document.getElementById('sendBtn').disabled = false;
-        }
-    });
-
-    // inicial
-    resetUI();
-</script>
 </body>
 </html>
