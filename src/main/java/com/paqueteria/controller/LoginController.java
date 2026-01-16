@@ -6,26 +6,28 @@ import com.paqueteria.services.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.LocalDate;
 
-
+@RequestMapping("/auth")
 @Controller
 public class LoginController {
     @Autowired
     UsuarioService usuarioService;
 
-    @GetMapping("/auth/registro")
+    @GetMapping("/registro")
     public String registrarForm(){
         return "registroForm";
     }
 
-    @PostMapping("/auth/registro")
+    @PostMapping("/registro")
     public String registrarTienda(@Valid @ModelAttribute("usuario") UsuarioData usuarioData, BindingResult result, Model model){
         if (result.hasErrors()){
             model.addAttribute("errors", result.getAllErrors());
@@ -53,6 +55,12 @@ public class LoginController {
             model.addAttribute("usuario", usuarioData);
             return "registroForm";
         }
-        return "index";
+        return "redirect:/";
     }
+
+    @GetMapping("/login")
+    public String loginForm(){
+        return "loginForm";
+    }
+
 }

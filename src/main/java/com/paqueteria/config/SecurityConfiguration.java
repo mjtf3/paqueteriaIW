@@ -19,7 +19,7 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated()  // El resto requiere autenticación
                 )
                 .formLogin(login -> login
-                        .loginPage("/login")
+                        .loginPage("/auth/login")
                         .permitAll()
                 )
                 .logout(logout -> logout.permitAll());
