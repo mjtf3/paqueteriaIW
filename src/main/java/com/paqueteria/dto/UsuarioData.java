@@ -4,6 +4,8 @@ import com.paqueteria.model.TipoEnum;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
+import java.util.Objects;
+
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -48,5 +50,18 @@ public class UsuarioData {
     public void setPesoMaximo(BigDecimal pesoMaximo) {this.pesoMaximo = pesoMaximo;}
     public Boolean getActiva() {return activa;}
     public void setActiva(Boolean activa) {this.activa = activa;}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UsuarioData)) return false;
+        UsuarioData that = (UsuarioData) o;
+        return Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
 
 }
