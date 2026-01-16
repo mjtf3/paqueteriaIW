@@ -20,12 +20,10 @@ public class TarifaDistanciaService {
     private ModelMapper modelMapper;
 
     public List<TarifaDistanciaDTO> obtenerTodasLasTarifas() {
-        List<TarifaDistancia> tarifas = tarifaDistanciaRepository.findAll();
-
-        List<TarifaDistanciaDTO> tarifasDTO = tarifas.stream()
+        return tarifaDistanciaRepository.findAll()
+                .stream()
+                .filter(TarifaDistancia::getActiva)
                 .map(tarifa -> modelMapper.map(tarifa, TarifaDistanciaDTO.class))
                 .toList();
-
-        return tarifasDTO;
     }
 }
