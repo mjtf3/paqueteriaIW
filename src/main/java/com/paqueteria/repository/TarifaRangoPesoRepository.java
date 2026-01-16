@@ -1,5 +1,6 @@
 package com.paqueteria.repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,5 +17,5 @@ public interface TarifaRangoPesoRepository extends JpaRepository<TarifaRangoPeso
     List<TarifaRangoPeso> findByActiva(Boolean activa);
 
     @Query("SELECT t FROM TarifaRangoPeso t WHERE :peso >= t.pesoMinimo AND :peso < t.pesoMaximo AND t.activa = true")
-    Optional<TarifaRangoPeso> findByPesoAndActiva(@Param("peso") Integer peso);
+    Optional<TarifaRangoPeso> findByPesoAndActiva(@Param("peso") BigDecimal peso);
 }

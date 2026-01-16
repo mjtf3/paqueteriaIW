@@ -1,5 +1,6 @@
 package com.paqueteria.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -26,8 +27,8 @@ public class TarifaRangoPesoService {
                 .toList();
     }
 
-    public TarifaRangoPesoDTO obtenerTarifaPorPeso(Integer peso) {
-        if (peso < 0) {
+    public TarifaRangoPesoDTO obtenerTarifaPorPeso(BigDecimal peso) {
+        if (peso.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("El peso no puede ser negativo");
         }
 
