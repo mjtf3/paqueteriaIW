@@ -12,7 +12,7 @@ import com.paqueteria.model.TarifaDistancia;
 @Repository
 public interface TarifaDistanciaRepository extends JpaRepository<TarifaDistancia, Integer> {
 
-    Optional<TarifaDistancia> findByDistanciaAndActiva(DistanciaEnum distancia);
+    Optional<TarifaDistancia> findByDistanciaAndActiva(DistanciaEnum distancia, Boolean activa);
 
     List<TarifaDistancia> findByActiva(Boolean activa);
 }

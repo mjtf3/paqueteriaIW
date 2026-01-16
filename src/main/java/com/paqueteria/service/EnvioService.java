@@ -44,7 +44,7 @@ public class EnvioService {
 
         // Obtener tarifas
         DistanciaEnum distancia = DistanciaEnum.values()[dto.getDistancia() - 1];
-        TarifaDistancia tarifaDistancia = tarifaDistanciaRepository.findByDistanciaAndActiva(distancia)
+        TarifaDistancia tarifaDistancia = tarifaDistanciaRepository.findByDistanciaAndActiva(distancia, true)
                 .orElseThrow(() -> new RuntimeException("Tarifa de distancia no encontrada"));
 
         Integer pesoEntero = dto.getPeso().intValue();
