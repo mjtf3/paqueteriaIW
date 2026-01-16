@@ -29,7 +29,7 @@ public class TarifaDistanciaService {
 
     public TarifaDistanciaDTO obtenerTarifaPorNumero(Integer numero) {
         if (numero < 1 || numero > 4) {
-            throw new IllegalArgumentException("El número debe estar entre 1 y 4");
+            throw new IllegalArgumentException("El número de la distancia debe estar entre 1 y 4");
         }
 
         DistanciaEnum distancia = DistanciaEnum.values()[numero - 1];
