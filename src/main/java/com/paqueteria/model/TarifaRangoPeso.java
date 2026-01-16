@@ -37,6 +37,10 @@ public class TarifaRangoPeso {
     @NotNull(message = "El estado 'activa' no puede ser nulo")
     @Column(nullable = false)
     private Boolean activa = true;
+
+    @NotNull(message = "La descripción no puede ser nula")
+    @Column(nullable = false)
+    private String descripcion;
     
     @OneToMany(mappedBy = "tarifaRangoPeso")
     private final List<Envio> envios = new ArrayList<>();
@@ -44,10 +48,11 @@ public class TarifaRangoPeso {
     // Constructors
     public TarifaRangoPeso() {}
     
-    public TarifaRangoPeso(Integer pesoMinimo, Integer pesoMaximo, BigDecimal coste) {
+    public TarifaRangoPeso(Integer pesoMinimo, Integer pesoMaximo, BigDecimal coste, String descripcion) {
         this.pesoMinimo = pesoMinimo;
         this.pesoMaximo = pesoMaximo;
         this.coste = coste;
+        this.descripcion = descripcion;
         this.activa = true;
     }
     
@@ -118,5 +123,13 @@ public class TarifaRangoPeso {
     @Override
     public int hashCode() {
         return Objects.hash(pesoMinimo, pesoMaximo);
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 }

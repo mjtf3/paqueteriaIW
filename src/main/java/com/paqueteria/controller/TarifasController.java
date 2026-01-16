@@ -1,44 +1,63 @@
 package com.paqueteria.controller;
 
-import java.util.List;
+import java.math.BigDecimal;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+
+import com.paqueteria.security.RequireApiKey;
+import com.paqueteria.service.TarifaDistanciaService;
+import com.paqueteria.service.TarifaRangoPesoService;
 
 @RestController
 @RequestMapping("/api")
 public class TarifasController {
 
-    private static final List<Map<String, Object>> TARIFAS_DISTANCIA = List.of(
-            Map.of("tipo", "Ciudad", "precio", 50.0f),
-            Map.of("tipo", "Provincial", "precio", 100.0f),
-            Map.of("tipo", "Nacional", "precio", 200.0f),
-            Map.of("tipo", "Internacional", "precio", 500.0f));
+    @Autowired
+    private TarifaDistanciaService tarifaDistanciaService;
 
-    private static final List<Map<String, Object>> TARIFAS_RANGO_PESO = List.of(
-            Map.of("min", 0, "max", 10, "precio", 10.0f, "descripcion", "menor de 10kg"),
-            Map.of("min", 10, "max", 20, "precio", 20.0f, "descripcion", "10kg - 20kg"),
-            Map.of("min", 20, "max", 40, "precio", 35.0f, "descripcion", "20kg - 40kg"),
-            Map.of("min", 40, "max", Integer.MAX_VALUE, "precio", 50.0f, "descripcion", "mayor de 40kg"));
+    @Autowired
+    private TarifaRangoPesoService tarifaRangoPesoService;
 
     @GetMapping("/tarifas/general")
     public Map<String, Object> getTarifasGeneral(@RequestParam(required = false) String tipo) {
 
         if (tipo == null) {
-            return Map.of("distancia", TARIFAS_DISTANCIA, "rangoPeso", TARIFAS_RANGO_PESO);
+            return Map.of("distancia", tarifaDistanciaService.obtenerTodasLasTarifas(), "rangoPeso", tarifaRangoPesoService.obtenerTodasLasTarifas());
         }
 
         switch (tipo.toLowerCase()) {
             case "distancia":
-                return Map.of("distancia", TARIFAS_DISTANCIA);
+                return Map.of("distancia", tarifaDistanciaService.obtenerTodasLasTarifas());
             case "peso":
-                return Map.of("rangoPeso", TARIFAS_RANGO_PESO);
+                return Map.of("rangoPeso", tarifaRangoPesoService.obtenerTodasLasTarifas());
             default:
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST,
                         "Tipo de tarifa no válido: '" + tipo + "'. Tipos válidos: distancia, peso");
         }
+    }
+
+    @RequireApiKey
+    @GetMapping("/tarifas/especifica")
+    public Map<String, Object> getTarifaEspecifica(@RequestParam(required = false) Integer distancia, @RequestParam(required = false) BigDecimal peso) {
+        if (distancia == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "El parámetro 'distancia' es obligatorio.");
+        }
+        if (peso == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "El parámetro 'peso' es obligatorio.");
+        }
+        return Map.of("precio", tarifaDistanciaService.obtenerTarifaPorNumero(distancia).getCoste()
+                .add(tarifaRangoPesoService.obtenerTarifaPorPeso(peso).getCoste()));
     }
 }
