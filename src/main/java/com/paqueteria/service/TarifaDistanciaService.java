@@ -37,7 +37,7 @@ public class TarifaDistanciaService {
 
         DistanciaEnum distancia = DistanciaEnum.values()[numero - 1];
 
-        TarifaDistancia tarifa = tarifaDistanciaRepository.findByDistanciaAndActiva(distancia, true)
+        TarifaDistancia tarifa = tarifaDistanciaRepository.findByDistanciaAndActiva(distancia)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontró una tarifa para la distancia: " + distancia));
 
         return modelMapper.map(tarifa, TarifaDistanciaDTO.class);
