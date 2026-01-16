@@ -14,4 +14,4 @@ INSERT INTO tarifa_rango_peso (peso_minimo, peso_maximo, coste, descripcion, act
 (0, 10, 10.0, 'menor de 10kg', true),
 (10, 20, 20.0, '10kg - 20kg', true),
 (20, 40, 35.0, '20kg - 40kg', true),
-(40, 2147483647, 50.0, 'mayor de 40kg', true);
+(40, 500, 50.0, 'mayor de 40kg', true);
