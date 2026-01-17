@@ -7,7 +7,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>paqueteria</groupId>
-    <artifactId>paqueteriaIW</artifactId>
+    <artifactId>paqueteria-iw</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <parent>
@@ -67,6 +67,17 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <image>
+                        <env>
+                            <BP_JVM_VERSION>25</BP_JVM_VERSION>
+                        </env>
+                    </image>
+                </configuration>
+            </plugin>
+            <plugin>
+               	<groupId>org.graalvm.buildtools</groupId>
+                <artifactId>native-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
