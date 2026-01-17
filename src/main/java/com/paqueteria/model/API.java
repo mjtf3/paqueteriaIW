@@ -1,5 +1,6 @@
 package com.paqueteria.model;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 import jakarta.persistence.Column;
@@ -27,7 +28,11 @@ public class API {
     @NotNull(message = "La key no puede ser nula")
     @Column(nullable = false, name = "api_key")
     private String key;
-    
+
+    @NotNull
+    @Column(nullable = false)
+    private LocalDate fecha;
+
     @NotNull(message = "El usuario no puede ser nulo")
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
@@ -56,6 +61,17 @@ public class API {
     
     public String getKey() {
         return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public LocalDate getFecha() {
+        return fecha;
+    }
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
     }
     
     public Usuario getUsuario() {
