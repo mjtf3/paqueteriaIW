@@ -1,28 +1,14 @@
 package com.paqueteria.dto;
 
-public class EnvioDTO {
-    private String localizador;
-    private String status;
-    private String direccionOrigen;
-    private String direccionDestino;
-    private String fecha;
-
-    public EnvioDTO(String localizador, String status, String direccionOrigen,
-                    String direccionDestino, String fecha) {
-        this.localizador = localizador;
-        this.status = status;
-        this.direccionOrigen = direccionOrigen;
-        this.direccionDestino = direccionDestino;
-        this.fecha = fecha;
-    }
-
-    // Getters
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import com.paqueteria.model.DistanciaEnum;
 import com.paqueteria.model.Envio;
 import com.paqueteria.model.EstadoEnum;
+import org.springframework.cglib.core.Local;
+import org.springframework.format.annotation.DateTimeFormat;
 
 public class EnvioDTO {
 
@@ -31,6 +17,7 @@ public class EnvioDTO {
     private String direccionOrigen;
     private String direccionDestino;
     private EstadoEnum estado;
+    private String estadoString;
     private String nombreComprador;
     private String nota;
     private BigDecimal peso;
@@ -38,6 +25,7 @@ public class EnvioDTO {
     private Boolean fragil;
     private Integer numeroPaquetes;
     private BigDecimal costeTotal;
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate fecha;
     private String nombreUsuario;
     private Integer usuarioId;
@@ -65,6 +53,16 @@ public class EnvioDTO {
         this.nombreUsuario = envio.getUsuario().getNombre();
     }
 
+    public EnvioDTO(String localizador, String estadoString, String direccionOrigen,
+            String direccionDestino, String fecha) {
+        this.localizador = localizador;
+        this.direccionOrigen = direccionOrigen;
+        this.direccionDestino = direccionDestino;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        this.fecha = LocalDate.parse(fecha, formatter);
+        this.estadoString = estadoString;
+    }
+
     // Getters y Setters
     public Integer getId() {
         return id;
@@ -78,8 +76,6 @@ public class EnvioDTO {
         return localizador;
     }
 
-    public String getStatus() {
-        return status;
     public void setLocalizador(String localizador) {
         this.localizador = localizador;
     }
@@ -96,28 +92,11 @@ public class EnvioDTO {
         return direccionDestino;
     }
 
-    public String getFecha() {
+    public LocalDate getFecha() {
         return fecha;
     }
 
-    // Setters
-    public void setLocalizador(String localizador) {
-        this.localizador = localizador;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public void setDireccionOrigen(String direccionOrigen) {
-        this.direccionOrigen = direccionOrigen;
-    }
-
-    public void setDireccionDestino(String direccionDestino) {
-        this.direccionDestino = direccionDestino;
-    }
-
-    public void setFecha(String fecha) {
+    public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
     }
     public void setDireccionDestino(String direccionDestino) {
@@ -188,14 +167,6 @@ public class EnvioDTO {
         this.costeTotal = costeTotal;
     }
 
-    public LocalDate getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(LocalDate fecha) {
-        this.fecha = fecha;
-    }
-
     public String getNombreUsuario() {
         return nombreUsuario;
     }
@@ -210,5 +181,12 @@ public class EnvioDTO {
 
     public void setUsuarioId(Integer usuarioId) {
         this.usuarioId = usuarioId;
+    }
+
+    public String getEstadoString() {
+        return estadoString;
+    }
+    public void setEstadoString(String estadoString) {
+        this.estadoString = estadoString;
     }
 }

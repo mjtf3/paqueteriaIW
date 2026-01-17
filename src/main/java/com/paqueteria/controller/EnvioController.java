@@ -4,14 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import com.paqueteria.dto.CrearEnvioDTO;
+import com.paqueteria.security.RequireApiKey;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.paqueteria.dto.EnvioDTO;
 import com.paqueteria.model.Envio;
@@ -46,7 +47,7 @@ public class EnvioController {
 
         EnvioDTO envio = envioDTO.get();
         model.addAttribute("trackingInfo", envio);
-        model.addAttribute("message", "Código: " + envio.getLocalizador() + " — Estado: " + envio.getStatus());
+        model.addAttribute("message", "Código: " + envio.getLocalizador() + " — Estado: " + envio.getEstadoString());
 
         return "seguimiento";
     }
@@ -72,5 +73,13 @@ public class EnvioController {
         response.put("estado", estadoString);
 
         return ResponseEntity.ok(response);
+    }
+
+    @RequireApiKey
+    @PostMapping("/api/envios")
+    @ResponseStatus(HttpStatus.CREATED)
+    public EnvioDTO crearEnvio(@Valid @RequestBody CrearEnvioDTO dto) {
+        // Cuando tengamos usuarios re tiene que pillas la api key, un servicio get id by api key y pasarla aqui
+        return envioService.crearEnvio(dto, 1); // TODO: Usuario simulado con ID 1; obtener ID de usuario autenticado
     }
 }
