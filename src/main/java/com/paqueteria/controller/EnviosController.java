@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.paqueteria.dto.CrearEnvioDTO;
 import com.paqueteria.dto.EnvioDTO;
 import com.paqueteria.security.RequireApiKey;
-import com.paqueteria.service.EnvioService;
+import com.paqueteria.services.EnvioService;
 
 import jakarta.validation.Valid;
 
