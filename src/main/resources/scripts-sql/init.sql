@@ -16,7 +16,7 @@ INSERT INTO tarifa_rango_peso (id, peso_minimo, peso_maximo, coste, descripcion,
 (1, 0, 10, 10.0, 'menor de 10kg', true),
 (2, 10, 20, 20.0, '10kg - 20kg', true),
 (3, 20, 40, 35.0, '20kg - 40kg', true),
-(4, 40, 2147483647, 50.0, 'mayor de 40kg', true)
+(4, 40, 500, 50.0, 'mayor de 40kg', true)
 ON CONFLICT (id) DO UPDATE SET
     peso_minimo = EXCLUDED.peso_minimo,
     peso_maximo = EXCLUDED.peso_maximo,
