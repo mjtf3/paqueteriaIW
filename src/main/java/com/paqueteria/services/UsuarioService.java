@@ -63,13 +63,13 @@ public class UsuarioService {
         if (usuarioData.getApellidos() != null && !usuarioData.getApellidos().isEmpty()) {
             usuarioBD.setApellidos(usuarioData.getApellidos());
         }
-        if (usuarioData.getTelefono() != null) {
+        if (usuarioData.getTelefono() != null && !usuarioData.getTelefono().isEmpty()) {
             usuarioBD.setTelefono(usuarioData.getTelefono());
         }
-        if (usuarioData.getApodo() != null) {
+        if (usuarioData.getApodo() != null && !usuarioData.getApodo().isEmpty()) {
             usuarioBD.setApodo(usuarioData.getApodo());
         }
-        if (usuarioData.getNombreTienda() != null) {
+        if (usuarioData.getNombreTienda() != null && !usuarioData.getNombreTienda().isEmpty()) {
             usuarioBD.setNombreTienda(usuarioData.getNombreTienda());
         }
         
