@@ -80,10 +80,11 @@ public class UsuarioService {
             return new ArrayList<>();
         }
 
-        System.out.println("Llego al final");
-        return apis.stream()
-                .map(api -> modelMapper.map(api, ApiData.class))
-                .toList();
+        List<ApiData> resultado = new ArrayList<>();
+        for (API api : apis) {
+            resultado.add(modelMapper.map(api, ApiData.class));
+        }
+        return resultado;
     }
 
     @Transactional
