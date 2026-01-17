@@ -20,7 +20,6 @@ public class TarifasWebController {
     public String getTarifas(Model model) {
         model.addAttribute("tarifasDistancia", tarifaDistanciaService.obtenerTarifasDistanciaActivas());
         model.addAttribute("tarifasRangoPeso", tarifaRangoPesoService.obtenerTarifasPesoActivas());
-        model.addAttribute("mostrarTodo", true);
         return "tarifas";
     }
 }

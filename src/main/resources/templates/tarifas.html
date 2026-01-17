@@ -20,7 +20,7 @@
         <div class="tarifas-container">
             <div class="tarifas-grid">
                 <!-- Tarifas por Distancia -->
-                <div class="tarifa-section" th:if="${mostrarTodo or mostrarDistancia}">
+                <div class="tarifa-section">
                     <h2 class="tarifa-item" >Distancia €€</h2>
                     <div th:each="tarifa : ${tarifasDistancia}" class="tarifa-item">
                         <span class="tarifa-nombre" th:text="${tarifa.distancia}">Ciudad</span>
@@ -29,7 +29,7 @@
                 </div>
 
                 <!-- Tarifas por Peso -->
-                <div class="tarifa-section" th:if="${mostrarTodo or mostrarPeso}">
+                <div class="tarifa-section">
                     <h2 class="tarifa-item" >Rango de peso €€</h2>
                     <div th:each="tarifa : ${tarifasRangoPeso}" class="tarifa-item">
                         <span class="tarifa-nombre" th:text="${tarifa.pesoMinimo} + ' - ' + ${tarifa.pesoMaximo} + ' kg'">0 - 5 kg</span>
