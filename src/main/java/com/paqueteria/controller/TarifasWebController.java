@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import com.paqueteria.dto.TarifaDistanciaDTO;
 import com.paqueteria.dto.TarifaRangoPesoDTO;
-import com.paqueteria.service.TarifaDistanciaService;
-import com.paqueteria.service.TarifaRangoPesoService;
+import com.paqueteria.services.TarifaDistanciaService;
+import com.paqueteria.services.TarifaRangoPesoService;
 
 @Controller
 @RegisterReflectionForBinding({TarifaDistanciaDTO.class, TarifaRangoPesoDTO.class})

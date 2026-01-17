@@ -64,16 +64,12 @@ public class LoginController {
     public String redirectUser(Authentication authentication, Model model) {
         String correo = authentication.getName();
         UsuarioData usuario = usuarioService.findByCorreo(correo);
-        switch (usuario.getTipo()) {
-            case CLIENTE:
-                return "redirect:/";
-            case WEBMASTER:
-                return "redirect:/";
-            case REPARTIDOR:
-                return "redirect:/";
-            default:
-                return "redirect:/";
-        }
+        return switch (usuario.getTipo()) {
+            case CLIENTE -> "redirect:/tienda/" + usuario.getId() + "/apikey";
+            case WEBMASTER -> "redirect:/";
+            case REPARTIDOR -> "redirect:/";
+            default -> "redirect:/";
+        };
     }
 
 }
