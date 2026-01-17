@@ -1,10 +1,6 @@
 package com.paqueteria.controller;
 
-import com.paqueteria.dto.CrearEnvioDTO;
-import com.paqueteria.dto.EnvioDTO;
-import com.paqueteria.security.RequireApiKey;
-import com.paqueteria.service.EnvioService;
-import jakarta.validation.Valid;
+import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,8 +9,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.paqueteria.dto.CrearEnvioDTO;
+import com.paqueteria.dto.EnvioDTO;
+import com.paqueteria.security.RequireApiKey;
+import com.paqueteria.service.EnvioService;
+
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/envios")
+@RegisterReflectionForBinding({CrearEnvioDTO.class, EnvioDTO.class})
 public class EnviosController {
 
     @Autowired
