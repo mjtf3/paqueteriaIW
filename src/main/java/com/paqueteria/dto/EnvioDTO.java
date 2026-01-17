@@ -205,6 +205,22 @@ public class EnvioDTO {
         }
         return "";
     }
+
+    // Helpers para la vista (Thymeleaf Native Image friendly)
+    public boolean isAlmacenOPosterior() {
+        String s = getEstadoString();
+        return "EN ALMACEN".equals(s) || "EN REPARTO".equals(s) || "ENTREGADO".equals(s) || "AUSENTE".equals(s) || "RECHAZADO".equals(s);
+    }
+
+    public boolean isRepartoOPosterior() {
+        String s = getEstadoString();
+        return "EN REPARTO".equals(s) || "ENTREGADO".equals(s) || "AUSENTE".equals(s) || "RECHAZADO".equals(s);
+    }
+
+    public boolean isFinalizado() {
+        String s = getEstadoString();
+        return "ENTREGADO".equals(s) || "AUSENTE".equals(s) || "RECHAZADO".equals(s);
+    }
     public void setEstadoString(String estadoString) {
         this.estadoString = estadoString;
     }
