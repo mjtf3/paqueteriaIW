@@ -55,15 +55,14 @@ public class UsuarioService {
     }
 
     @Transactional
-    public String addApi(UsuarioData usuario, ApiData apiKey) {
+    public void addApi(UsuarioData usuario, ApiData apiKey) {
         Usuario usuarioBD = usuarioRepository.findByCorreo(usuario.getCorreo()).orElse(null);
         if (usuarioBD == null) {
-            return null;
+            return;
         }
         API api = modelMapper.map(apiKey,API.class);
         api.setKey(passwordEncoder.encode(apiKey.getKey()));
         usuarioBD.addApi(api);
-        return apiKey.getKey();
     }
 
     @Transactional

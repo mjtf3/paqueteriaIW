@@ -26,7 +26,7 @@ public class API {
     private String nombre;
     
     @NotNull(message = "La key no puede ser nula")
-    @Column(nullable = false, name = "api_key")
+    @Column(nullable = false, name = "api_key", unique = true)
     private String key;
 
     @NotNull
