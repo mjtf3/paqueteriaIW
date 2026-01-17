@@ -1,6 +1,7 @@
 package com.paqueteria.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,5 +42,12 @@ public class TarifaDistanciaService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontró una tarifa para la distancia: " + distancia));
 
         return modelMapper.map(tarifa, TarifaDistanciaDTO.class);
+    }
+
+    public List<TarifaDistanciaDTO> obtenerTarifasDistanciaActivas() {
+        return tarifaDistanciaRepository.findAll().stream()
+                .filter(TarifaDistancia::getActiva)
+                .map(TarifaDistanciaDTO::new)
+                .collect(Collectors.toList());
     }
 }
