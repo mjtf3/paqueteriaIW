@@ -41,6 +41,10 @@ buildNumber.properties
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
 
+.settings
+
 .env
 !.env.example
 .idea
+
+docker-compose.yml
