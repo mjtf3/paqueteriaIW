@@ -14,9 +14,12 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/api/**")
+                )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/","/auth/login", "/auth/registro", "/api/**", "/css/**", "/js/**").permitAll()  // Permite acceso sin login
-                        .anyRequest().authenticated()  // El resto requiere autenticación
+                        .requestMatchers("/", "/auth/login", "/auth/registro", "/css/**", "/js/**", "/api/**").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
                         .loginPage("/auth/login")
