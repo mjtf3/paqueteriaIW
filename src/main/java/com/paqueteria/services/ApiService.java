@@ -17,6 +17,9 @@ public class ApiService {
 
     public ApiData findById(Integer id){
         API apiBD = apiRepository.findById(id).orElse(null);
+        if(apiBD == null){
+            return null;
+        }
         return modelMapper.map(apiBD, ApiData.class);
     }
 }

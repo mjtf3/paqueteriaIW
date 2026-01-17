@@ -74,6 +74,15 @@ public class TiendaController {
             return "redirect:/tienda/" + usuarioData.getId() + "/apikey";
         }
         ApiData apiData = apiService.findById(idApi);
+        if (apiData != null) {
+            return "redirect:/tienda/" + usuarioData.getId() + "/apikey";
+        }
+        boolean ownsApi = usuarioService.getAPIs(usuarioData)
+                .stream()
+                .anyMatch(api -> api.getId().equals(idApi));
+        if (!ownsApi) {
+            return "redirect:/tienda/" + usuarioData.getId() + "/apikey";
+        }
         usuarioService.removeApi(usuarioData,apiData);
         return "redirect:/tienda/" + usuarioData.getId() + "/apikey";
 

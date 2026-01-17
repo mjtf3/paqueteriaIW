@@ -67,12 +67,12 @@ public class UsuarioService {
     }
 
     @Transactional
-    public List<API> getAPIs(UsuarioData usuario) {
+    public List<ApiData> getAPIs(UsuarioData usuario) {
         Usuario usuarioBD = usuarioRepository.findByCorreo(usuario.getCorreo()).orElse(null);
         if (usuarioBD == null) {
             return null;
         }
-        return usuarioBD.getApis();
+        return usuarioBD.getApis().stream().map(api -> modelMapper.map(api,ApiData.class)).toList();
     }
 
     @Transactional
