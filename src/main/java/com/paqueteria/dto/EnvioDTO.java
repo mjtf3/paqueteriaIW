@@ -3,7 +3,9 @@ package com.paqueteria.dto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.paqueteria.model.DistanciaEnum;
 import com.paqueteria.model.Envio;
+import com.paqueteria.model.EstadoEnum;
 
 public class EnvioDTO {
 
@@ -11,11 +13,11 @@ public class EnvioDTO {
     private String localizador;
     private String direccionOrigen;
     private String direccionDestino;
-    private String estado;
+    private EstadoEnum estado;
     private String nombreComprador;
     private String nota;
     private BigDecimal peso;
-    private String distancia;
+    private DistanciaEnum distancia;
     private Boolean fragil;
     private Integer numeroPaquetes;
     private BigDecimal costeTotal;
@@ -33,11 +35,11 @@ public class EnvioDTO {
         this.localizador = envio.getLocalizador();
         this.direccionOrigen = envio.getDireccionOrigen();
         this.direccionDestino = envio.getDireccionDestino();
-        this.estado = envio.getEstado().name();
+        this.estado = envio.getEstado();
         this.nombreComprador = envio.getNombreComprador();
         this.nota = envio.getNota();
         this.peso = envio.getPeso();
-        this.distancia = envio.getDistancia().name();
+        this.distancia = envio.getDistancia();
         this.fragil = envio.getFragil();
         this.numeroPaquetes = envio.getNumeroPaquetes();
         this.costeTotal = envio.getCosteTotal();
@@ -79,11 +81,11 @@ public class EnvioDTO {
         this.direccionDestino = direccionDestino;
     }
 
-    public String getEstado() {
+    public EstadoEnum getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(EstadoEnum estado) {
         this.estado = estado;
     }
 
@@ -111,11 +113,11 @@ public class EnvioDTO {
         this.peso = peso;
     }
 
-    public String getDistancia() {
+    public DistanciaEnum getDistancia() {
         return distancia;
     }
 
-    public void setDistancia(String distancia) {
+    public void setDistancia(DistanciaEnum distancia) {
         this.distancia = distancia;
     }
 

@@ -24,6 +24,7 @@ public class EnviosController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public EnvioDTO crearEnvio(@Valid @RequestBody CrearEnvioDTO dto) {
+        // Cuando tengamos usuarios re tiene que pillas la api key, un servicio get id by api key y pasarla aqui
         return envioService.crearEnvio(dto, 1); // TODO: Usuario simulado con ID 1; obtener ID de usuario autenticado
     }
 }

@@ -1,10 +1,10 @@
 package com.paqueteria.dto;
 
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import com.paqueteria.model.DistanciaEnum;
 
 public class CrearEnvioDTO {
 
@@ -24,9 +24,7 @@ public class CrearEnvioDTO {
     private BigDecimal peso;
 
     @NotNull(message = "La distancia no puede ser nula")
-    @Min(value = 1, message = "La distancia debe estar entre 1 y 4")
-    @Max(value = 4, message = "La distancia debe estar entre 1 y 4")
-    private Integer distancia; // 1=CIUDAD, 2=PROVINCIAL, 3=NACIONAL, 4=INTERNACIONAL
+    private DistanciaEnum distancia;
 
     private Boolean fragil = false;
 
@@ -75,11 +73,11 @@ public class CrearEnvioDTO {
         this.peso = peso;
     }
 
-    public Integer getDistancia() {
+    public DistanciaEnum getDistancia() {
         return distancia;
     }
 
-    public void setDistancia(Integer distancia) {
+    public void setDistancia(DistanciaEnum distancia) {
         this.distancia = distancia;
     }
 

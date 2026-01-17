@@ -14,6 +14,26 @@
         <li><a href="/api/tarifas/general">GET /api/tarifas/general</a> - Todas las tarifas</li>
         <li><a href="/api/tarifas/general?tipo=distancia">GET /api/tarifas/general?tipo=distancia</a> - Solo distancia</li>
         <li><a href="/api/tarifas/general?tipo=peso">GET /api/tarifas/general?tipo=peso</a> - Solo peso</li>
+        <li>GET /api/tarifas/especifica?distancia={1-4}&peso={decimal} - Calcular precio (Requiere API Key)</li>
     </ul>
+
+    <h2>API de Envíos</h2>
+    <ul>
+        <li>POST /api/envios - Crear envío (Requiere API Key)</li>
+    </ul>
+    <p>Ejemplo de cuerpo JSON:</p>
+    <pre>
+{
+  "direccionOrigen": "Calle Origen",
+  "direccionDestino": "Calle Destino",
+  "nombreComprador": "Juan Pérez",
+  "peso": 2.5,
+  "distancia": "NACIONAL", 
+  "numeroPaquetes": 1,
+  "fragil": false,
+  "nota": "Entregar por la tarde"
+}
+    </pre>
+    <p>Nota: El campo <strong>distancia</strong> acepta los nombres (CIUDAD, PROVINCIAL, NACIONAL, INTERNACIONAL) o sus números correspondientes (1, 2, 3, 4).</p>
 </body>
 </html>

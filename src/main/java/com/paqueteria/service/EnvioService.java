@@ -49,7 +49,7 @@ public class EnvioService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado con id: " + usuarioId));
 
         // Obtener tarifas
-        DistanciaEnum distancia = DistanciaEnum.values()[dto.getDistancia() - 1];
+        DistanciaEnum distancia = dto.getDistancia();
         TarifaDistancia tarifaDistancia = tarifaDistanciaRepository.findByDistanciaAndActiva(distancia, true)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tarifa de distancia no encontrada"));
 
