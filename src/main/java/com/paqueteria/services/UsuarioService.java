@@ -14,7 +14,6 @@ import java.util.Optional;
 
 @Service
 public class UsuarioService {
-    public enum LoginStatus {LOGIN_OK, USER_NOT_FOUND, ERROR_PASSWORD, ERROR_BLOQUEADO}
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
@@ -44,9 +43,6 @@ public class UsuarioService {
             return modelMapper.map(usuarioNuevo,UsuarioData.class);
         }
     }
-
-//    @Transactional
-//    public LoginStatus login(String correo, String contrasena) {}
 
     @Transactional
     public UsuarioData findByCorreo(String correo) {
