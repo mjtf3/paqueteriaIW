@@ -2,10 +2,13 @@ package com.paqueteria.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import com.paqueteria.model.DistanciaEnum;
 import com.paqueteria.model.Envio;
 import com.paqueteria.model.EstadoEnum;
+import org.springframework.cglib.core.Local;
+import org.springframework.format.annotation.DateTimeFormat;
 
 public class EnvioDTO {
 
@@ -14,6 +17,7 @@ public class EnvioDTO {
     private String direccionOrigen;
     private String direccionDestino;
     private EstadoEnum estado;
+    private String estadoString;
     private String nombreComprador;
     private String nota;
     private BigDecimal peso;
@@ -21,6 +25,7 @@ public class EnvioDTO {
     private Boolean fragil;
     private Integer numeroPaquetes;
     private BigDecimal costeTotal;
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate fecha;
     private String nombreUsuario;
     private Integer usuarioId;
@@ -46,6 +51,16 @@ public class EnvioDTO {
         this.fecha = envio.getFecha();
         this.usuarioId = envio.getUsuario().getId();
         this.nombreUsuario = envio.getUsuario().getNombre();
+    }
+
+    public EnvioDTO(String localizador, String estadoString, String direccionOrigen,
+            String direccionDestino, String fecha) {
+        this.localizador = localizador;
+        this.direccionOrigen = direccionOrigen;
+        this.direccionDestino = direccionDestino;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        this.fecha = LocalDate.parse(fecha, formatter);
+        this.estadoString = estadoString;
     }
 
     // Getters y Setters
@@ -77,6 +92,13 @@ public class EnvioDTO {
         return direccionDestino;
     }
 
+    public LocalDate getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
+    }
     public void setDireccionDestino(String direccionDestino) {
         this.direccionDestino = direccionDestino;
     }
@@ -145,14 +167,6 @@ public class EnvioDTO {
         this.costeTotal = costeTotal;
     }
 
-    public LocalDate getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(LocalDate fecha) {
-        this.fecha = fecha;
-    }
-
     public String getNombreUsuario() {
         return nombreUsuario;
     }
@@ -167,5 +181,59 @@ public class EnvioDTO {
 
     public void setUsuarioId(Integer usuarioId) {
         this.usuarioId = usuarioId;
+    }
+
+    public String getEstadoString() {
+        if (this.estadoString != null) {
+            return this.estadoString;
+        }
+        if (this.estado != null) {
+            switch (this.estado) {
+                case PENDIENTE:
+                    return "EN ALMACEN";
+                case RUTA:
+                    return "EN REPARTO";
+                case ENTREGADO:
+                    return "ENTREGADO";
+                case AUSENTE:
+                    return "AUSENTE";
+                case RECHAZADO:
+                    return "RECHAZADO";
+                default:
+                    return "EN ALMACEN";
+            }
+        }
+        return "";
+    }
+
+    // Helpers para la vista (Thymeleaf Native Image friendly)
+    public boolean isAlmacenOPosterior() {
+        String s = getEstadoString();
+        return "EN ALMACEN".equals(s) || "EN REPARTO".equals(s) || "ENTREGADO".equals(s) || "AUSENTE".equals(s) || "RECHAZADO".equals(s);
+    }
+
+    public boolean isRepartoOPosterior() {
+        String s = getEstadoString();
+        return "EN REPARTO".equals(s) || "ENTREGADO".equals(s) || "AUSENTE".equals(s) || "RECHAZADO".equals(s);
+    }
+
+    public boolean isFinalizado() {
+        String s = getEstadoString();
+        return "ENTREGADO".equals(s) || "AUSENTE".equals(s) || "RECHAZADO".equals(s);
+    }
+
+    public boolean isAusente() {
+        return "AUSENTE".equals(getEstadoString());
+    }
+
+    public boolean isRechazado() {
+        return "RECHAZADO".equals(getEstadoString());
+    }
+
+    public boolean isEntregadoExitoso() {
+        return !isAusente() && !isRechazado();
+    }
+    public void setEstadoString(String estadoString) {
+        this.estadoString = estadoString;
     }
 }

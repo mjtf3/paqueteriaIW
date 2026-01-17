@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seguimiento - Paquetería IW</title>
+    <link rel="stylesheet" href="/css/tracking.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: header('seguimiento')}"></div>
+
+<div class="center">
+    <div class="code-card">
+        <h2>Introduce el código de seguimiento</h2>
+        <form method="GET" action="/seguimiento/tracking">
+            <input name="code" class="code-input" type="text"
+                   placeholder="ENV-2024-001"
+                   aria-label="Código de seguimiento"
+                   th:value="${code}"
+                   required />
+            <div>
+                <button class="btn" type="submit">Enviar</button>
+            </div>
+        </form>
+        <p class="message muted" th:if="${message}" th:text="${message}"></p>
+        <p class="message error" th:if="${error}" th:text="${error}"></p>
+    </div>
+
+    <div class="details">
+        <h3>Detalles del seguimiento</h3>
+        <div class="stages">
+            <div class="stage"
+                 th:classappend="${stage1Active} ? 'active' : 'inactive'">
+                <svg class="icon" width="120" height="90" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="10" y="10" width="8" height="130" fill="#2E6AA7" />
+                        <rect x="71" y="10" width="8" height="130" fill="#2E6AA7" />
+                        <rect x="132" y="10" width="8" height="130" fill="#2E6AA7" />
+                        <rect x="18" y="15" width="53" height="8" fill="#E96A31" />
+                        <rect x="79" y="15" width="53" height="8" fill="#E96A31" />
+                        <rect x="18" y="60" width="53" height="8" fill="#E96A31" />
+                        <rect x="79" y="60" width="53" height="8" fill="#E96A31" />
+                        <rect x="18" y="105" width="53" height="8" fill="#E96A31" />
+                        <rect x="79" y="105" width="53" height="8" fill="#E96A31" />
+                        <rect x="23" y="45" width="45" height="8" fill="#D3A56F" />
+                        <rect x="25" y="25" width="41" height="20" fill="#C3B091" />
+                        <rect x="84" y="45" width="45" height="8" fill="#D3A56F" />
+                        <rect x="86" y="25" width="20" height="20" fill="#C3B091" />
+                        <rect x="23" y="90" width="45" height="8" fill="#D3A56F" />
+                        <rect x="25" y="70" width="41" height="20" fill="#C3B091" />
+                        <rect x="84" y="90" width="45" height="8" fill="#D3A56F" />
+                        <rect x="86" y="70" width="41" height="20" fill="#C3B091" />
+                        <rect x="23" y="135" width="45" height="8" fill="#D3A56F" />
+                        <rect x="25" y="115" width="41" height="20" fill="#B3945C" />
+                        <rect x="84" y="135" width="45" height="8" fill="#D3A56F" />
+                        <rect x="86" y="115" width="41" height="20" fill="#B3945C" />
+                    </g>
+                </svg>
+                <div class="stage-title">EN ALMACÉN</div>
+            </div>
+
+            <div class="arrow">
+                <div class="bar"
+                     th:classappend="${arrow1Active} ? 'active' : ''"></div>
+            </div>
+
+            <div class="stage"
+                 th:classappend="${stage2Active} ? 'active' : 'inactive'">
+                <svg class="icon" width="120" height="90" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 40 H100 V100 H20 Z" fill="#AEE4F3" />
+                        <path d="M100 50 H120 L130 75 L130 100 H100" fill="#FFE47E" />
+                        <path d="M100 50 H115 L122.5 75 H100 Z" fill="#AEE4F3" />
+                        <circle cx="40" cy="105" r="10" fill="#83D494" />
+                        <circle cx="110" cy="105" r="10" fill="#83D494" />
+                        <line x1="5" y1="20" x2="40" y2="20" />
+                        <line x1="10" y1="30" x2="45" y2="30" />
+                        <line x1="5" y1="40" x2="35" y2="40" />
+                    </g>
+                </svg>
+                <div class="stage-title">EN REPARTO</div>
+            </div>
+
+            <div class="arrow">
+                <div class="bar"
+                     th:classappend="${arrow2Active} ? 'active' : ''"></div>
+            </div>
+
+            <div class="stage"
+                 th:classappend="${stage3Active} ? 'active' : 'inactive'">
+
+                <div th:if="${showEntregadoIcon}">
+                    <svg class="icon" width="140" height="110" viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="140" height="110" fill="none"/>
+                        <g>
+                            <rect x="26" y="30" width="88" height="56" rx="6" fill="#d9c7a1" stroke="#b39a74"/>
+                            <path d="M26 48 L114 48" stroke="#b39a74" stroke-width="4" stroke-linecap="square"/>
+                            <rect x="60" y="32" width="20" height="12" fill="#caa76e"/>
+                        </g>
+                        <g>
+                            <circle cx="110" cy="30" r="16" fill="#eaf8ee"/>
+                            <circle cx="110" cy="30" r="14" fill="#34d058"/>
+                            <path d="M103 30 L108 35 L120 23" stroke="#ffffff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                        </g>
+                    </svg>
+                </div>
+
+                <div th:if="${showAusenteIcon}">
+                    <svg class="icon" width="140" height="110" viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="140" height="110" fill="none"/>
+                        <g>
+                            <rect x="26" y="30" width="88" height="56" rx="6" fill="#d9c7a1" stroke="#b39a74"/>
+                            <path d="M26 48 L114 48" stroke="#b39a74" stroke-width="4" stroke-linecap="square"/>
+                            <rect x="60" y="32" width="20" height="12" fill="#caa76e"/>
+                        </g>
+                        <g>
+                            <circle cx="110" cy="30" r="16" fill="#fff7d6"/>
+                            <circle cx="110" cy="30" r="14" fill="#ffca28"/>
+                            <path d="M104.5 25.5 c0-3 2.5-5.5 5.5-5.5 s5.5 2.5 5.5 5.5 c0 3-2 4.5-4 6.5 c-1.5 1.5-1.5 2.5-1.5 4"
+                                  stroke="#ffffff" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                            <circle cx="110" cy="40.5" r="2.5" fill="#ffffff"/>
+                        </g>
+                    </svg>
+                </div>
+
+                <div th:if="${showRechazadoIcon}">
+                    <svg class="icon" width="140" height="110" viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="140" height="110" fill="none"/>
+                        <g>
+                            <rect x="26" y="30" width="88" height="56" rx="6" fill="#d9c7a1" stroke="#b39a74"/>
+                            <path d="M26 48 L114 48" stroke="#b39a74" stroke-width="4" stroke-linecap="square"/>
+                            <rect x="60" y="32" width="20" height="12" fill="#caa76e"/>
+                        </g>
+                        <g>
+                            <circle cx="110" cy="30" r="16" fill="#fdecea"/>
+                            <circle cx="110" cy="30" r="14" fill="#ef4444"/>
+                            <line x1="103" y1="23" x2="117" y2="37" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+                            <line x1="117" y1="23" x2="103" y2="37" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+                        </g>
+                    </svg>
+                </div>
+
+                <div class="stage-title">
+                    <span th:if="${showEntregadoIcon}">ENTREGADO</span>
+                    <span th:if="${showAusenteIcon}">AUSENTE</span>
+                    <span th:if="${showRechazadoIcon}">RECHAZADO</span>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${showInfo}" class="envio-info">
+            <h4>Información del envío</h4>
+            <p><strong>Origen:</strong> <span th:text="${trackingInfo.direccionOrigen}">Dirección origen</span></p>
+            <p><strong>Destino:</strong> <span th:text="${trackingInfo.direccionDestino}">Dirección destino</span></p>
+            <p><strong>Fecha de envío:</strong> <span th:text="${trackingInfo.fecha}">Fecha</span></p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
