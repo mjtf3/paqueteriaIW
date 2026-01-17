@@ -3,16 +3,14 @@ package com.paqueteria.dto;
 public class EnvioDTO {
     private String localizador;
     private String status;
-    private String label;
     private String direccionOrigen;
     private String direccionDestino;
     private String fecha;
 
-    public EnvioDTO(String localizador, String status, String label, String direccionOrigen,
+    public EnvioDTO(String localizador, String status, String direccionOrigen,
                     String direccionDestino, String fecha) {
         this.localizador = localizador;
         this.status = status;
-        this.label = label;
         this.direccionOrigen = direccionOrigen;
         this.direccionDestino = direccionDestino;
         this.fecha = fecha;
@@ -25,10 +23,6 @@ public class EnvioDTO {
 
     public String getStatus() {
         return status;
-    }
-
-    public String getLabel() {
-        return label;
     }
 
     public String getDireccionOrigen() {
@@ -50,10 +44,6 @@ public class EnvioDTO {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
     }
 
     public void setDireccionOrigen(String direccionOrigen) {

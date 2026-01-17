@@ -29,12 +29,10 @@ public class EnvioService {
         Envio envio = envioOpt.get();
 
         String frontendStatus = mapEstadoToFrontendStatus(envio.getEstado());
-        String label = mapEstadoToLabel(envio.getEstado());
 
         EnvioDTO envioDTO = new EnvioDTO(
             envio.getLocalizador(),
             frontendStatus,
-            label,
             envio.getDireccionOrigen(),
             envio.getDireccionDestino(),
             envio.getFecha().format(DATE_FORMATTER)
@@ -43,36 +41,20 @@ public class EnvioService {
         return Optional.of(envioDTO);
     }
 
-    private String mapEstadoToFrontendStatus(EstadoEnum estado) {
+    public String mapEstadoToFrontendStatus(EstadoEnum estado) {
         switch (estado) {
             case PENDIENTE:
-                return "EN_ALMACEN";
+                return "EN ALMACEN";
             case RUTA:
-                return "EN_REPARTO";
+                return "EN REPARTO";
             case ENTREGADO:
                 return "ENTREGADO";
             case AUSENTE:
+                return "AUSENTE";
             case RECHAZADO:
-                return "EN_REPARTO";
+                return "RECHAZADO";
             default:
                 return "EN_ALMACEN";
-        }
-    }
-
-    public String mapEstadoToLabel(EstadoEnum estado) {
-        switch (estado) {
-            case PENDIENTE:
-                return "Pendiente";
-            case RUTA:
-                return "En ruta";
-            case ENTREGADO:
-                return "Entregado";
-            case AUSENTE:
-                return "Ausente";
-            case RECHAZADO:
-                return "Rechazado";
-            default:
-                return "Pendiente";
         }
     }
 }

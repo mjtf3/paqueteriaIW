@@ -8,10 +8,9 @@
 </head>
 <body>
 <div class="center">
-    <!-- Form card -->
     <div class="code-card">
         <h2>Introduce el código de seguimiento</h2>
-        <form method="GET" action="/envios/tracking">
+        <form method="GET" action="/seguimiento/tracking">
             <input name="code" class="code-input" type="text"
                    placeholder="ENV-2024-001"
                    aria-label="Código de seguimiento"
@@ -25,14 +24,12 @@
         <p class="message error" th:if="${error}" th:text="${error}"></p>
     </div>
 
-    <!-- Details card -->
     <div class="details">
         <h3>Detalles del seguimiento</h3>
         <div class="stages">
-            <!-- En Almacén -->
             <div class="stage"
-                 th:classappend="${trackingInfo != null && (trackingInfo.status == 'EN_ALMACEN' || trackingInfo.status == 'EN_REPARTO' || trackingInfo.status == 'ENTREGADO')} ? 'active' : 'inactive'">
-                <svg class="icon" width="140" height="110" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+                 th:classappend="${trackingInfo != null && (trackingInfo.status == 'EN ALMACEN' || trackingInfo.status == 'EN REPARTO' || trackingInfo.status == 'ENTREGADO' || trackingInfo.status == 'AUSENTE' || trackingInfo.status == 'RECHAZADO')} ? 'active' : 'inactive'">
+                <svg class="icon" width="120" height="90" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="10" y="10" width="8" height="130" fill="#2E6AA7" />
                         <rect x="71" y="10" width="8" height="130" fill="#2E6AA7" />
@@ -62,19 +59,18 @@
 
             <div class="arrow">
                 <div class="bar"
-                     th:classappend="${trackingInfo != null && (trackingInfo.status == 'EN_REPARTO' || trackingInfo.status == 'ENTREGADO')} ? 'active' : ''"></div>
+                     th:classappend="${trackingInfo != null && (trackingInfo.status == 'EN REPARTO' || trackingInfo.status == 'ENTREGADO' || trackingInfo.status == 'AUSENTE' || trackingInfo.status == 'RECHAZADO')} ? 'active' : ''"></div>
             </div>
 
-            <!-- En Reparto -->
             <div class="stage"
-                 th:classappend="${trackingInfo != null && (trackingInfo.status == 'EN_REPARTO' || trackingInfo.status == 'ENTREGADO')} ? 'active' : 'inactive'">
-                <svg class="icon" width="140" height="110" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <g stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+                 th:classappend="${trackingInfo != null && (trackingInfo.status == 'EN REPARTO' || trackingInfo.status == 'ENTREGADO' || trackingInfo.status == 'AUSENTE' || trackingInfo.status == 'RECHAZADO')} ? 'active' : 'inactive'">
+                <svg class="icon" width="120" height="90" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20 40 H100 V100 H20 Z" fill="#AEE4F3" />
                         <path d="M100 50 H120 L130 75 L130 100 H100" fill="#FFE47E" />
                         <path d="M100 50 H115 L122.5 75 H100 Z" fill="#AEE4F3" />
-                        <circle cx="40" cy="105" r="12.5" fill="#83D494" />
-                        <circle cx="110" cy="105" r="12.5" fill="#83D494" />
+                        <circle cx="40" cy="105" r="10" fill="#83D494" />
+                        <circle cx="110" cy="105" r="10" fill="#83D494" />
                         <line x1="5" y1="20" x2="40" y2="20" />
                         <line x1="10" y1="30" x2="45" y2="30" />
                         <line x1="5" y1="40" x2="35" y2="40" />
@@ -85,30 +81,76 @@
 
             <div class="arrow">
                 <div class="bar"
-                     th:classappend="${trackingInfo != null && trackingInfo.status == 'ENTREGADO'} ? 'active' : ''"></div>
+                     th:classappend="${trackingInfo != null && (trackingInfo.status == 'ENTREGADO' || trackingInfo.status == 'AUSENTE' || trackingInfo.status == 'RECHAZADO')} ? 'active' : ''"></div>
             </div>
 
-            <!-- Entregado -->
             <div class="stage"
-                 th:classappend="${trackingInfo != null && trackingInfo.status == 'ENTREGADO'} ? 'active' : 'inactive'">
-                <svg class="icon" width="140" height="110" viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="140" height="110" fill="none"/>
-                    <g>
-                        <rect x="26" y="30" width="88" height="56" rx="6" fill="#d9c7a1" stroke="#b39a74"/>
-                        <path d="M26 48 L114 48" stroke="#b39a74" stroke-width="4" stroke-linecap="square"/>
-                        <rect x="60" y="32" width="20" height="12" fill="#caa76e"/>
-                    </g>
-                    <g>
-                        <circle cx="110" cy="30" r="16" fill="#eaf8ee"/>
-                        <circle cx="110" cy="30" r="14" fill="#34d058"/>
-                        <path d="M103 30 L108 35 L120 23" stroke="#ffffff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                    </g>
-                </svg>
-                <div class="stage-title">ENTREGADO</div>
+                 th:classappend="${trackingInfo != null && (trackingInfo.status == 'ENTREGADO' || trackingInfo.status == 'AUSENTE' || trackingInfo.status == 'RECHAZADO')} ? 'active' : 'inactive'">
+
+                <div th:if="${trackingInfo == null or (trackingInfo.status != 'AUSENTE' and trackingInfo.status != 'RECHAZADO')}">
+                    <svg class="icon" width="140" height="110" viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="140" height="110" fill="none"/>
+                        <g>
+                            <rect x="26" y="30" width="88" height="56" rx="6" fill="#d9c7a1" stroke="#b39a74"/>
+                            <path d="M26 48 L114 48" stroke="#b39a74" stroke-width="4" stroke-linecap="square"/>
+                            <rect x="60" y="32" width="20" height="12" fill="#caa76e"/>
+                        </g>
+                        <g>
+                            <circle cx="110" cy="30" r="16" fill="#eaf8ee"/>
+                            <circle cx="110" cy="30" r="14" fill="#34d058"/>
+                            <path d="M103 30 L108 35 L120 23" stroke="#ffffff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                        </g>
+                    </svg>
+                </div>
+
+                <div th:if="${trackingInfo != null and trackingInfo.status == 'AUSENTE'}">
+                    <svg class="icon" width="140" height="110" viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="140" height="110" fill="none"/>
+                        <g>
+                            <rect x="26" y="30" width="88" height="56" rx="6" fill="#d9c7a1" stroke="#b39a74"/>
+                            <path d="M26 48 L114 48" stroke="#b39a74" stroke-width="4" stroke-linecap="square"/>
+                            <rect x="60" y="32" width="20" height="12" fill="#caa76e"/>
+                        </g>
+                        <g>
+                            <circle cx="110" cy="30" r="16" fill="#fff7d6"/>
+                            <circle cx="110" cy="30" r="14" fill="#ffca28"/>
+                            <path d="M104.5 25.5 c0-3 2.5-5.5 5.5-5.5 s5.5 2.5 5.5 5.5 c0 3-2 4.5-4 6.5 c-1.5 1.5-1.5 2.5-1.5 4"
+                                  stroke="#ffffff" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                            <circle cx="110" cy="40.5" r="2.5" fill="#ffffff"/>
+                        </g>
+                    </svg>
+                </div>
+
+                <div th:if="${trackingInfo != null and trackingInfo.status == 'RECHAZADO'}">
+                    <svg class="icon" width="140" height="110" viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="140" height="110" fill="none"/>
+                        <g>
+                            <rect x="26" y="30" width="88" height="56" rx="6" fill="#d9c7a1" stroke="#b39a74"/>
+                            <path d="M26 48 L114 48" stroke="#b39a74" stroke-width="4" stroke-linecap="square"/>
+                            <rect x="60" y="32" width="20" height="12" fill="#caa76e"/>
+                        </g>
+                        <g>
+                            <circle cx="110" cy="30" r="16" fill="#fdecea"/>
+                            <circle cx="110" cy="30" r="14" fill="#ef4444"/>
+                            <line x1="103" y1="23" x2="117" y2="37" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+                            <line x1="117" y1="23" x2="103" y2="37" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+                        </g>
+                    </svg>
+                </div>
+
+                <div class="stage-title">
+                    <span th:if="${trackingInfo == null}">ENTREGADO</span>
+                    <span th:if="${trackingInfo != null}">
+                        <span th:switch="${trackingInfo.status}">
+                            <span th:case="'AUSENTE'">AUSENTE</span>
+                            <span th:case="'RECHAZADO'">RECHAZADO</span>
+                            <span th:case="*">ENTREGADO</span>
+                        </span>
+                    </span>
+                </div>
             </div>
         </div>
 
-        <!-- Información adicional del envío -->
         <div th:if="${trackingInfo != null}" class="envio-info">
             <h4>Información del envío</h4>
             <p><strong>Origen:</strong> <span th:text="${trackingInfo.direccionOrigen}">Dirección origen</span></p>

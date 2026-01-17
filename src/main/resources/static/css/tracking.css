@@ -16,7 +16,6 @@ body{font-family: 'Segoe UI', Roboto, Arial, sans-serif;background:var(--bg);mar
 /* SVG inline icons */
 .stage .icon{width:140px;height:110px;display:block;margin:0 auto 8px}
 .stage .icon svg{width:100%;height:100%}
-.stage-title{font-weight:700;margin-top:6px}
 .arrow{width:120px;height:8px;margin:0 6px;display:flex;align-items:center;justify-content:center}
 .bar{height:8px;width:100%;border-radius:6px;background:#ddd}
 .bar.active{background:linear-gradient(90deg,var(--ok),#9de36a)}
@@ -46,5 +45,9 @@ body{font-family: 'Segoe UI', Roboto, Arial, sans-serif;background:var(--bg);mar
 .message{margin-top:8px}
 .message.error{color:#c0392b}
 .message.muted{color:var(--muted);font-size:14px}
+
+/* Títulos de etapa: negro cuando la etapa está activa, gris cuando está inactiva */
+.stage.active .stage-title{color:#000;font-weight:700}
+.stage.inactive .stage-title{color:var(--muted);font-weight:400}
 
 @media(max-width:800px){.stages{flex-direction:column}.arrow{transform:rotate(90deg);width:100%;height:12px;margin:10px 0}}

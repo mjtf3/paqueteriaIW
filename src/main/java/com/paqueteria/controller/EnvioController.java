@@ -28,7 +28,7 @@ public class EnvioController {
     private EnvioRepository envioRepository;
 
     // Endpoint para la vista web (HTML)
-    @GetMapping("/envios/tracking")
+    @GetMapping("/seguimiento/tracking")
     public String tracking(@RequestParam(required = false) String code, Model model) {
         if (code == null || code.trim().isEmpty()) {
             return "seguimiento";
@@ -46,7 +46,7 @@ public class EnvioController {
 
         EnvioDTO envio = envioDTO.get();
         model.addAttribute("trackingInfo", envio);
-        model.addAttribute("message", "Código: " + envio.getLocalizador() + " — Estado: " + envio.getLabel());
+        model.addAttribute("message", "Código: " + envio.getLocalizador() + " — Estado: " + envio.getStatus());
 
         return "seguimiento";
     }
@@ -66,7 +66,7 @@ public class EnvioController {
         }
 
         Envio envio = envioOpt.get();
-        String estadoString = envioService.mapEstadoToLabel(envio.getEstado());
+        String estadoString = envioService.mapEstadoToFrontendStatus(envio.getEstado());
 
         Map<String, String> response = new HashMap<>();
         response.put("estado", estadoString);
