@@ -79,35 +79,4 @@ public class LoginController {
         }
     }
 
-//    @PostMapping("/login")
-//    public String login(@Valid @ModelAttribute("loginData") LoginData loginData, BindingResult result, Model model){
-//        if (result.hasErrors()){
-//            // Obtén el primer error como string
-//            String errorMsg = result.getAllErrors().stream()
-//                    .map(e -> e.getDefaultMessage())
-//                    .findFirst()
-//                    .orElse("Error de validación");
-//            model.addAttribute("error", errorMsg);
-//            return "loginForm";
-//        }
-//    else{
-//        UsuarioService.LoginStatus loginStatus = usuarioService.login(loginData.getCorreo(),loginData.getContrasena());
-//        if (loginStatus == UsuarioService.LoginStatus.LOGIN_OK){
-//            UsuarioData usuario = usuarioService.findByCorreo(loginData.getCorreo());
-//            if (usuario.getTipo() == TipoEnum.CLIENTE){
-//                return "redirect:/";
-//            }
-//        }
-//        else if (loginStatus == UsuarioService.LoginStatus.USER_NOT_FOUND){
-//            model.addAttribute("error", "Usuario no encontrado");
-//            return "loginForm";
-//        }
-//        else if (loginStatus == UsuarioService.LoginStatus.ERROR_PASSWORD){
-//            model.addAttribute("error", "Contraseña incorrecta");
-//            return "loginForm";
-//        }
-//        return  "loginForm";
-//    }
-//    }
-
 }
