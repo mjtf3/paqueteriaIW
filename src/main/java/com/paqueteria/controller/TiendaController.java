@@ -6,11 +6,13 @@ import com.paqueteria.services.ApiService;
 import com.paqueteria.services.UsuarioService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.paqueteria.utils.generadorCadenas;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 
@@ -58,11 +60,13 @@ public class TiendaController {
     //Para que cuando cierre el pop up ya se borre los datos del new api
     @PostMapping("/borrarNewApi")
     @ResponseBody
-    public String borrarNewApi(@PathVariable(value = "id") Integer idTienda,Authentication authentication,HttpSession session){
+    public String borrarNewApi(@PathVariable(value = "id") Integer idTienda, Authentication authentication, HttpSession session){
         UsuarioData usuarioData = usuarioService.findByCorreo(authentication.getName());
+
         if (!idTienda.equals(usuarioData.getId())) {
-            return "error: no autorizado";
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No autorizado");
         }
+
         session.removeAttribute("newApi");
         return "ok";
     }
