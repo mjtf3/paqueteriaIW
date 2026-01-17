@@ -42,6 +42,9 @@ buildNumber.properties
 .classpath
 
 .env*
+.settings
+
+.env
 !.env.example
 .idea
 

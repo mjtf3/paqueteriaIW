@@ -1,31 +1,38 @@
-# Etapa 1: Build
-FROM maven:3.9-eclipse-temurin-21 AS build
+# Etapa 1: Build con GraalVM
+FROM ghcr.io/graalvm/native-image-community:25 AS builder
+
+# Instalar herramientas necesarias para mvnw
+RUN microdnf install findutils -y
+
 WORKDIR /app
 
 # Copiar archivos de configuración de Maven
-COPY pom.xml .
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
 
-# Descargar dependencias (esto se cachea si pom.xml no cambia)
-RUN mvn dependency:go-offline -B
+# Descargar dependencias (cacheable)
+RUN ./mvnw dependency:go-offline -B
 
-# Copiar el código fuente
+# Copiar el código fuente y recursos (incluyendo el nuevo resource-config.json)
 COPY src ./src
 
-# Compilar la aplicación
-RUN mvn clean package -DskipTests
+# Compilar la aplicación en modo nativo
+# Limitamos el paralelismo y la memoria para evitar fallos en el builder de Railway
+RUN ./mvnw -Pnative native:compile -DskipTests
 
-# Etapa 2: Runtime
-FROM eclipse-temurin:21-jre-alpine
+# Etapa 2: Runtime ligero
+# Usamos alpine para que la imagen final sea de apenas ~100MB
+FROM alpine:latest
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Copiar el JAR compilado desde la etapa de build
-COPY --from=build /app/target/*.jar app.jar
+# Copiar el binario desde la etapa de build
+# El nombre coincide con el artifactId definido en pom.xml
+COPY --from=builder /app/target/paqueteria-iw ./app
 
 # Exponer el puerto de la aplicación
 EXPOSE 8080
-
-# Variables de entorno por defecto (pueden ser sobrescritas en docker-compose)
 ENV PORT=8080
 
-# Ejecutar la aplicación
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Ejecutar el binario nativo directamente
+ENTRYPOINT ["./app"]
