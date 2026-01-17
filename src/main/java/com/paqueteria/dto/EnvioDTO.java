@@ -184,7 +184,26 @@ public class EnvioDTO {
     }
 
     public String getEstadoString() {
-        return estadoString;
+        if (this.estadoString != null) {
+            return this.estadoString;
+        }
+        if (this.estado != null) {
+            switch (this.estado) {
+                case PENDIENTE:
+                    return "EN ALMACEN";
+                case RUTA:
+                    return "EN REPARTO";
+                case ENTREGADO:
+                    return "ENTREGADO";
+                case AUSENTE:
+                    return "AUSENTE";
+                case RECHAZADO:
+                    return "RECHAZADO";
+                default:
+                    return "EN ALMACEN";
+            }
+        }
+        return "";
     }
     public void setEstadoString(String estadoString) {
         this.estadoString = estadoString;
