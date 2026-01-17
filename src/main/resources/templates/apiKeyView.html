@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API KEY - Paquetería</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #999;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #666;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header nav {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+            font-size: 32px;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .header-title {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .api-key-text {
+            color: #4a90e2;
+            font-weight: bold;
+        }
+
+        .profile-icon {
+            width: 50px;
+            height: 50px;
+            background-color: #ddd;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .profile-icon svg {
+            width: 30px;
+            height: 30px;
+            stroke: #666;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .container {
+            padding: 40px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .create-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            gap: 20px;
+            align-items: flex-end;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: none;
+            background-color: #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            background-color: #ccc;
+        }
+
+        .btn-crear {
+            background-color: #2ecc71;
+            color: black;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            height: 48px;
+            min-width: 150px;
+        }
+
+        .btn-crear:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-crear:active {
+            transform: translateY(0);
+        }
+
+        .table-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table thead {
+            background-color: #f5f5f5;
+            border-bottom: 2px solid #ddd;
+        }
+
+        table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+        }
+
+        table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 15px;
+            color: #555;
+        }
+
+        table tbody tr {
+            transition: background-color 0.2s;
+        }
+
+        table tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .btn-eliminar {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-eliminar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-eliminar:active {
+            transform: translateY(0);
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .create-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn-crear {
+                width: 100%;
+                min-width: auto;
+            }
+
+            table {
+                font-size: 14px;
+            }
+
+            table th, table td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav>
+        <div class="header-title">
+            <a href="/">Inicio</a>
+            <span class="api-key-text">API KEY</span>
+        </div>
+    </nav>
+    <div class="profile-icon">
+        <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M 4 20 Q 4 14 12 14 Q 20 14 20 20"/>
+        </svg>
+    </div>
+</header>
+
+<div class="container">
+    <!-- Sección de crear API Key -->
+    <div class="create-section">
+        <form th:action="@{/tienda/apikey}" method="post" style="display: flex; gap: 20px; width: 100%; align-items: flex-end;">
+            <div class="form-group" style="flex: 1;">
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" name="nombre" required>
+            </div>
+            <button type="submit" class="btn-crear">Crear</button>
+        </form>
+    </div>
+
+    <!-- Sección de tabla -->
+    <div class="table-section">
+        <div class="table-container">
+            <table>
+                <thead>
+                <tr>
+                    <th>Nombre de clave</th>
+                    <th>Fecha de creación</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="apiKey : ${apiKeys}">
+                    <td th:text="${apiKey.nombre}"></td>
+                    <td th:text="${#dates.format(apiKey.fechaCreacion, 'dd/MM/yyyy')}"></td>
+                    <td>
+                        <form th:action="@{/api-key/eliminar/{id}(id=${apiKey.id})}" method="post" style="display: inline;">
+                            <button type="submit" class="btn-eliminar" onclick="return confirm('¿Estás seguro?')">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(apiKeys)}">
+                    <td colspan="3" class="empty-message">No hay API Keys creadas</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
