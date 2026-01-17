@@ -375,7 +375,7 @@
                 <div>Acciones</div>
             </div>
 
-            <div th:if="${#lists.isEmpty(apiKeys)}" class="empty-message">
+            <div th:if="${apis}" class="empty-message">
                 No hay API Keys creadas
             </div>
 
@@ -418,11 +418,12 @@
 
 <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function () {
-        const newApi = /*[[${newApi}]]*/ null;
+        const nombre = /*[[${newApiNombre}]]*/ null;
+        const key = /*[[${newApiKey}]]*/ null;
 
-        if (newApi && newApi.nombre && newApi.key) {
-            document.getElementById('modalNombre').value = newApi.nombre;
-            document.getElementById('modalApiKey').value = newApi.key;
+        if (nombre && key) {
+            document.getElementById('modalNombre').value = nombre;
+            document.getElementById('modalApiKey').value = key;
             document.getElementById('apiKeyModal').classList.add('show');
         }
     });
