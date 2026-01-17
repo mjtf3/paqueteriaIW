@@ -71,13 +71,16 @@ public class UsuarioService {
     public List<ApiData> getAPIs(UsuarioData usuario) {
         Usuario usuarioBD = usuarioRepository.findByCorreo(usuario.getCorreo()).orElse(null);
         if (usuarioBD == null) {
+            System.out.println("Usuario no encontrado");
             return new ArrayList<>();
         }
         List<API> apis = usuarioBD.getApis();
         if (apis == null) {
+            System.out.println("No APIs");
             return new ArrayList<>();
         }
 
+        System.out.println("Llego al final");
         return apis.stream()
                 .map(api -> modelMapper.map(api, ApiData.class))
                 .toList();

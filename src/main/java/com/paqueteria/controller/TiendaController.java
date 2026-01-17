@@ -35,6 +35,9 @@ public class TiendaController {
         }
         model.addAttribute("tienda", usuarioData.getId());
         model.addAttribute("apiKeys",usuarioService.getAPIs(usuarioData));
+        System.out.println("APIS");
+        System.out.println(usuarioService.getAPIs(usuarioData));
+        System.out.println("APIS - END");
         ApiData newApi = (ApiData) session.getAttribute("newApi");
         if (newApi != null) {
             model.addAttribute("newApi", newApi);
