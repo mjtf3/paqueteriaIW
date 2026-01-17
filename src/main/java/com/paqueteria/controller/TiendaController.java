@@ -86,7 +86,7 @@ public class TiendaController {
             return "redirect:/tienda/" + usuarioData.getId() + "/apikey";
         }
         ApiData apiData = apiService.findById(idApi);
-        if (apiData != null) {
+        if (apiData == null) {
             return "redirect:/tienda/" + usuarioData.getId() + "/apikey";
         }
         boolean ownsApi = usuarioService.getAPIs(usuarioData)
