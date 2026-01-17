@@ -61,7 +61,7 @@ public class LoginController {
         UsuarioData usuario = usuarioService.findByCorreo(correo);
         switch(usuario.getTipo()){
             case CLIENTE:
-                return "redirect:/";
+                return "redirect:/tienda/perfil";
             case WEBMASTER:
                 return "redirect:/";
             case REPARTIDOR:

@@ -16,6 +16,7 @@ public class SecurityConfiguration {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/","/auth/login", "/auth/registro", "/css/**", "/js/**").permitAll()  // Permite acceso sin login
+                        .requestMatchers("/tienda/**").authenticated()  // Rutas de tienda requieren autenticación
                         .anyRequest().authenticated()  // El resto requiere autenticación
                 )
                 .formLogin(login -> login

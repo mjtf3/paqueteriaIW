@@ -50,4 +50,30 @@ public class UsuarioService {
         if (usuarioBD == null) {return null;}
         return modelMapper.map(usuarioBD,UsuarioData.class);
     }
+
+    @Transactional
+    public UsuarioData actualizarDatos(String correo, UsuarioData usuarioData) {
+        Usuario usuarioBD = usuarioRepository.findByCorreo(correo)
+            .orElseThrow(() -> new UsuarioServiceException("Usuario no encontrado"));
+        
+        // Update only editable fields
+        if (usuarioData.getNombre() != null && !usuarioData.getNombre().isEmpty()) {
+            usuarioBD.setNombre(usuarioData.getNombre());
+        }
+        if (usuarioData.getApellidos() != null && !usuarioData.getApellidos().isEmpty()) {
+            usuarioBD.setApellidos(usuarioData.getApellidos());
+        }
+        if (usuarioData.getTelefono() != null) {
+            usuarioBD.setTelefono(usuarioData.getTelefono());
+        }
+        if (usuarioData.getApodo() != null) {
+            usuarioBD.setApodo(usuarioData.getApodo());
+        }
+        if (usuarioData.getNombreTienda() != null) {
+            usuarioBD.setNombreTienda(usuarioData.getNombreTienda());
+        }
+        
+        usuarioRepository.save(usuarioBD);
+        return modelMapper.map(usuarioBD, UsuarioData.class);
+    }
 }

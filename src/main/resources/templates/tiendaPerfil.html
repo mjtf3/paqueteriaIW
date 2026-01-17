@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Tienda - Paquetería</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #999;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #666;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header nav {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+            font-size: 32px;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .profile-icon {
+            width: 50px;
+            height: 50px;
+            background-color: #1e3a8a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .profile-icon svg {
+            width: 30px;
+            height: 30px;
+            stroke: white;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 80px);
+            padding: 40px 20px;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 15px;
+            padding: 60px 80px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 300;
+            margin-bottom: 40px;
+            text-align: center;
+            color: #333;
+        }
+
+        .profile-content {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .info-label {
+            font-size: 20px;
+            font-weight: 500;
+            color: #666;
+            min-width: 200px;
+        }
+
+        .info-value {
+            font-size: 20px;
+            color: #333;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        button, .btn-link {
+            padding: 15px 60px;
+            font-size: 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        button:hover, .btn-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-editar {
+            background-color: #4a90e2;
+            color: white;
+        }
+
+        .btn-logout {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .profile-card {
+                padding: 40px 30px;
+            }
+
+            .info-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .info-label {
+                min-width: auto;
+                margin-bottom: 5px;
+            }
+
+            .button-group {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            button, .btn-link {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <nav>
+        <a href="/">Inicio</a>
+        <a href="/seguimiento">Seguimiento</a>
+    </nav>
+    <div class="profile-icon">
+        <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M 4 20 Q 4 14 12 14 Q 20 14 20 20"/>
+        </svg>
+    </div>
+</header>
+
+<div class="container">
+    <div class="profile-card">
+        <h1>Mi Tienda</h1>
+        
+        <div class="profile-content">
+            <div class="info-row">
+                <span class="info-label">Nombre de tienda:</span>
+                <span class="info-value" th:text="${usuario.nombreTienda}"></span>
+            </div>
+            
+            <div class="info-row">
+                <span class="info-label">Nombre:</span>
+                <span class="info-value" th:text="${usuario.nombre}"></span>
+            </div>
+            
+            <div class="info-row">
+                <span class="info-label">Apellidos:</span>
+                <span class="info-value" th:text="${usuario.apellidos}"></span>
+            </div>
+            
+            <div class="info-row">
+                <span class="info-label">Usuario:</span>
+                <span class="info-value" th:text="${usuario.apodo}"></span>
+            </div>
+            
+            <div class="info-row">
+                <span class="info-label">Correo electrónico:</span>
+                <span class="info-value" th:text="${usuario.correo}"></span>
+            </div>
+            
+            <div class="info-row">
+                <span class="info-label">Teléfono:</span>
+                <span class="info-value" th:text="${usuario.telefono}"></span>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <a th:href="@{/tienda/editar}" class="btn-link btn-editar">Editar Datos</a>
+            <form th:action="@{/logout}" method="post" style="display: inline;">
+                <button type="submit" class="btn-logout">Cerrar Sesión</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
