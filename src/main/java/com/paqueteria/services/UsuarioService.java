@@ -1,7 +1,9 @@
 package com.paqueteria.services;
 
+import com.paqueteria.dto.ApiData;
 import com.paqueteria.dto.UsuarioData;
 import com.paqueteria.model.Usuario;
+import com.paqueteria.model.API;
 import com.paqueteria.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -49,5 +52,26 @@ public class UsuarioService {
         Usuario usuarioBD = usuarioRepository.findByCorreo(correo).orElse(null);
         if (usuarioBD == null) {return null;}
         return modelMapper.map(usuarioBD,UsuarioData.class);
+    }
+
+    @Transactional
+    public String addApi(UsuarioData usuario, ApiData apiKey) {
+        Usuario usuarioBD = usuarioRepository.findByCorreo(usuario.getCorreo()).orElse(null);
+        if (usuarioBD == null) {
+            return null;
+        }
+        API api = modelMapper.map(apiKey,API.class);
+        api.setKey(passwordEncoder.encode(apiKey.getKey()));
+        usuarioBD.addApi(api);
+        return apiKey.getKey();
+    }
+
+    @Transactional
+    public List<API> getAPIs(UsuarioData usuario) {
+        Usuario usuarioBD = usuarioRepository.findByCorreo(usuario.getCorreo()).orElse(null);
+        if (usuarioBD == null) {
+            return null;
+        }
+        return usuarioBD.getApis();
     }
 }
