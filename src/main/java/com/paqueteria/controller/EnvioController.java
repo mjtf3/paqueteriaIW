@@ -1,9 +1,18 @@
 package com.paqueteria.controller;
 
+import com.paqueteria.dto.CrearEnvioDTO;
+import com.paqueteria.dto.EnvioDTO;
+import com.paqueteria.model.DistanciaEnum;
+import com.paqueteria.model.Envio;
+import com.paqueteria.model.EstadoEnum;
+import com.paqueteria.model.Usuario;
+import com.paqueteria.repository.EnvioRepository;
+import com.paqueteria.services.ApiService;
+import com.paqueteria.services.EnvioService;
+import jakarta.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
 import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,24 +22,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.paqueteria.dto.CrearEnvioDTO;
-import com.paqueteria.dto.EnvioDTO;
-import com.paqueteria.model.DistanciaEnum;
-import com.paqueteria.model.Envio;
-import com.paqueteria.model.EstadoEnum;
-import com.paqueteria.repository.EnvioRepository;
-import com.paqueteria.security.RequireApiKey;
-import com.paqueteria.services.EnvioService;
-
-import jakarta.validation.Valid;
-
 @Controller
-@RegisterReflectionForBinding({CrearEnvioDTO.class, EnvioDTO.class, EstadoEnum.class, DistanciaEnum.class})
+@RegisterReflectionForBinding({ CrearEnvioDTO.class, EnvioDTO.class, EstadoEnum.class, DistanciaEnum.class })
 public class EnvioController {
 
     @Autowired
@@ -39,7 +38,11 @@ public class EnvioController {
     @Autowired
     private EnvioRepository envioRepository;
 
+    @Autowired
+    private ApiService apiService;
+
     // Endpoint para la vista web (HTML)
+
     @GetMapping("/seguimiento/tracking")
     public String tracking(@RequestParam(required = false) String code, Model model) {
         if (code == null || code.trim().isEmpty()) {
@@ -67,14 +70,14 @@ public class EnvioController {
         model.addAttribute("stage1Active", envio.isAlmacenOPosterior());
         model.addAttribute("stage2Active", envio.isRepartoOPosterior());
         model.addAttribute("stage3Active", envio.isFinalizado());
-        
+
         model.addAttribute("arrow1Active", envio.isRepartoOPosterior());
         model.addAttribute("arrow2Active", envio.isFinalizado());
 
         model.addAttribute("showEntregadoIcon", envio.isEntregadoExitoso());
         model.addAttribute("showAusenteIcon", envio.isAusente());
         model.addAttribute("showRechazadoIcon", envio.isRechazado());
-        
+
         model.addAttribute("showInfo", true);
 
         return "seguimiento";
@@ -94,11 +97,14 @@ public class EnvioController {
     }
 
     // Endpoint para la API REST (JSON)
+
     @GetMapping("/api/envio")
     @ResponseBody
     public ResponseEntity<Map<String, String>> getEstadoEnvio(@RequestParam String localizador) {
         if (localizador == null || localizador.trim().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "El parámetro 'localizador' es obligatorio"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                Map.of("error", "El parámetro 'localizador' es obligatorio")
+            );
         }
 
         Optional<Envio> envioOpt = envioRepository.findByLocalizador(localizador.trim());
@@ -116,15 +122,19 @@ public class EnvioController {
         return ResponseEntity.ok(response);
     }
 
-    @RequireApiKey
-    @PostMapping("/api/envios")
+    @PostMapping("/api/envio")
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    public EnvioDTO crearEnvio(@Valid @RequestBody(required = false) CrearEnvioDTO dto) {
+    public EnvioDTO crearEnvio(
+        @RequestHeader("X-API-Key") String apiKey,
+        @Valid @RequestBody(required = false) CrearEnvioDTO dto
+    ) {
+        Usuario usuario = apiService.validateAndGetUser(apiKey);
+
         if (dto == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Body no puede estar vacío");
         }
-        // Cuando tengamos usuarios re tiene que pillas la api key, un servicio get id by api key y pasarla aqui
-        return envioService.crearEnvio(dto, -1); // TODO: Usuario simulado con ID 1; obtener ID de usuario autenticado
+
+        return envioService.crearEnvio(dto, usuario.getId());
     }
 }

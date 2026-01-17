@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +20,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<Map<String, Object>> handleResponseStatusException(
-            ResponseStatusException ex, WebRequest request) {
-
+        ResponseStatusException ex,
+        WebRequest request
+    ) {
         HttpStatus status = HttpStatus.resolve(ex.getStatusCode().value());
 
         Map<String, Object> body = new LinkedHashMap<>();
@@ -37,22 +37,31 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationExceptions(
-            MethodArgumentNotValidException ex, WebRequest request) {
-
+        MethodArgumentNotValidException ex,
+        WebRequest request
+    ) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("status", HttpStatus.BAD_REQUEST.value());
         body.put("error", "Bad Request");
 
-        List<String> errors = ex.getBindingResult()
-                .getAllErrors()
-                .stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                .collect(Collectors.toList());
+        List<String> errors = ex
+            .getBindingResult()
+            .getAllErrors()
+            .stream()
+            .map(DefaultMessageSourceResolvable::getDefaultMessage)
+            .collect(Collectors.toList());
 
         body.put("message", "Validation failed");
+        String path = ((ServletWebRequest) request).getRequest().getRequestURI();
+        body.put("path", path);
+        if (path.contains("/api/envio")) {
+            body.put(
+                "campos necesarios",
+                "direccionOrigen, direccionDestino, nombreComprador, numeroPaquetes, peso, distancia"
+            );
+        }
         body.put("errors", errors);
-        body.put("path", ((ServletWebRequest) request).getRequest().getRequestURI());
 
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }

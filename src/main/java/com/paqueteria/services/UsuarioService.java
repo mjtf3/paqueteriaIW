@@ -5,6 +5,7 @@ import com.paqueteria.dto.UsuarioData;
 import com.paqueteria.model.Usuario;
 import com.paqueteria.model.API;
 import com.paqueteria.repository.UsuarioRepository;
+import com.paqueteria.utils.generadorCadenas;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,7 +63,7 @@ public class UsuarioService {
             return;
         }
         API api = modelMapper.map(apiKey,API.class);
-        api.setKey(passwordEncoder.encode(apiKey.getKey()));
+        api.setKey(generadorCadenas.hashSHA256(apiKey.getKey()));
         usuarioBD.addApi(api);
         usuarioRepository.save(usuarioBD);
     }
