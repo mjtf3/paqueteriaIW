@@ -56,6 +56,7 @@ public class TiendaController {
         usuarioService.addApi(usuarioData,apiData);
 
         session.setAttribute("newApi",apiData);
+        model.addAttribute("newApi",apiData);
 
         return "redirect:/tienda/" + usuarioData.getId() + "/apikey";
     }
