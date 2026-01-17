@@ -5,7 +5,9 @@ import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.paqueteria.dto.CrearEnvioDTO;
 import com.paqueteria.dto.EnvioDTO;
@@ -36,20 +38,24 @@ public class EnvioService {
 
     @Autowired
     private ModelMapper modelMapper;
+    
+    private String generarLocalizador() {
+        return UUID.randomUUID().toString().toUpperCase();
+    }
 
     public EnvioDTO crearEnvio(CrearEnvioDTO dto, Integer usuarioId) {
         // Obtener usuario
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + usuarioId));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado con id: " + usuarioId));
 
         // Obtener tarifas
         DistanciaEnum distancia = DistanciaEnum.values()[dto.getDistancia() - 1];
         TarifaDistancia tarifaDistancia = tarifaDistanciaRepository.findByDistanciaAndActiva(distancia, true)
-                .orElseThrow(() -> new RuntimeException("Tarifa de distancia no encontrada"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tarifa de distancia no encontrada"));
 
         Integer pesoEntero = dto.getPeso().intValue();
         TarifaRangoPeso tarifaRangoPeso = tarifaRangoPesoRepository.findByPesoAndActiva(pesoEntero)
-                .orElseThrow(() -> new RuntimeException("Tarifa de peso no encontrada"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tarifa de peso no encontrada"));
 
         // Calcular coste total
         BigDecimal costeTotal = tarifaDistancia.getCoste().add(tarifaRangoPeso.getCoste());
@@ -79,9 +85,5 @@ public class EnvioService {
 
         Envio envioGuardado = envioRepository.save(envio);
         return modelMapper.map(envioGuardado, EnvioDTO.class);
-    }
-
-    private String generarLocalizador() {
-        return UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 }

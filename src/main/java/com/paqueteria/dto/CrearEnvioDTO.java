@@ -1,10 +1,10 @@
 package com.paqueteria.dto;
 
-import java.math.BigDecimal;
-
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 public class CrearEnvioDTO {
 
@@ -25,7 +25,8 @@ public class CrearEnvioDTO {
 
     @NotNull(message = "La distancia no puede ser nula")
     @Min(value = 1, message = "La distancia debe estar entre 1 y 4")
-    private Integer distancia;  // 1=CIUDAD, 2=PROVINCIAL, 3=NACIONAL, 4=INTERNACIONAL
+    @Max(value = 4, message = "La distancia debe estar entre 1 y 4")
+    private Integer distancia; // 1=CIUDAD, 2=PROVINCIAL, 3=NACIONAL, 4=INTERNACIONAL
 
     private Boolean fragil = false;
 
