@@ -200,20 +200,10 @@
             }
         }
     </style>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
-<header>
-    <nav>
-        <a href="/">Inicio</a>
-        <a href="/seguimiento">Seguimiento</a>
-    </nav>
-    <div class="profile-icon">
-        <svg viewBox="0 0 24 24">
-            <circle cx="12" cy="8" r="4"/>
-            <path d="M 4 20 Q 4 14 12 14 Q 20 14 20 20"/>
-        </svg>
-    </div>
-</header>
+<div th:replace="~{fragments/header :: header('perfil')}"></div>
 
 <div class="container">
     <div class="form-card">
