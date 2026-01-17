@@ -70,13 +70,13 @@ public class Usuario {
     private Boolean activa = true;
     
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<API> apis = new ArrayList<>();
+    private List<API> apis = new ArrayList<>();
     
     @OneToMany(mappedBy = "usuario")
-    private final List<Ruta> rutas = new ArrayList<>();
+    private List<Ruta> rutas = new ArrayList<>();
     
     @OneToMany(mappedBy = "usuario")
-    private final List<Envio> enviosRealizados = new ArrayList<>();
+    private List<Envio> enviosRealizados = new ArrayList<>();
     
     // Constructors
     public Usuario() {}

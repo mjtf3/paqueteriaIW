@@ -73,7 +73,14 @@ public class UsuarioService {
         if (usuarioBD == null) {
             return new ArrayList<>();
         }
-        return usuarioBD.getApis().stream().map(api -> modelMapper.map(api,ApiData.class)).toList();
+        List<API> apis = usuarioBD.getApis();
+        if (apis == null) {
+            return new ArrayList<>();
+        }
+
+        return apis.stream()
+                .map(api -> modelMapper.map(api, ApiData.class))
+                .toList();
     }
 
     @Transactional
