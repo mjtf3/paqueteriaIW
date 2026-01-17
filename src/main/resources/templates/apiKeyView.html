@@ -382,7 +382,7 @@
             <div th:each="apiKey : ${apiKeys}" class="api-key-item">
                 <div th:text="${apiKey.nombre}"></div>
                 <div th:text="${apiKey.fecha}"></div>
-                <form th:action="@{/tienda/{id}/eliminar/{apiKeyId}(id=${tienda}, apiKeyId=${apiKey.id})}" method="post" style="display: inline;">
+                <form th:action="@{/tienda/{id}/apikey/delete/{apiKeyId}(id=${tienda}, apiKeyId=${apiKey.id})}" method="post" style="display: inline;">
                     <button type="submit" class="btn-eliminar" onclick="return confirm('¿Estás seguro?')">Eliminar</button>
                 </form>
             </div>

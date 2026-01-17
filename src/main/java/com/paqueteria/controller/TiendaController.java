@@ -66,9 +66,16 @@ public class TiendaController {
         return "ok";
     }
 
-//    @PostMapping("/apikey/delete/{id}")
-//    public String deleteApi() {
-//        return "deleteApi";
-//    }
+    @PostMapping("/apikey/delete/{apiKeyId}")
+    public String deleteApi(@PathVariable(value = "id") Integer idTienda,@PathVariable(value = "apiKeyId") Integer idApi,Authentication authentication,HttpSession session) {
+        UsuarioData usuarioData = usuarioService.findByCorreo(authentication.getName());
+        if (!idTienda.equals(usuarioData.getId())) {
+            return "redirect:/tienda/" + usuarioData.getId() + "/apikey";
+        }
+        ApiData apiData = apiService.findById(idApi);
+        usuarioService.removeApi(usuarioData,apiData);
+        return "redirect:/tienda/" + usuarioData.getId() + "/apikey";
+
+    }
 
 }

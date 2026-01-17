@@ -63,6 +63,7 @@ public class UsuarioService {
         API api = modelMapper.map(apiKey,API.class);
         api.setKey(passwordEncoder.encode(apiKey.getKey()));
         usuarioBD.addApi(api);
+        usuarioRepository.save(usuarioBD);
     }
 
     @Transactional
@@ -72,5 +73,16 @@ public class UsuarioService {
             return null;
         }
         return usuarioBD.getApis();
+    }
+
+    @Transactional
+    public void removeApi(UsuarioData usuario, ApiData apiKey) {
+        Usuario usuarioBD = usuarioRepository.findByCorreo(usuario.getCorreo()).orElse(null);
+        if (usuarioBD == null) {
+            return;
+        }
+        API api = modelMapper.map(apiKey,API.class);
+        usuarioBD.removeApi(api);
+        usuarioRepository.save(usuarioBD);
     }
 }
