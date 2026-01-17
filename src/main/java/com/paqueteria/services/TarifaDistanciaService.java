@@ -1,4 +1,4 @@
-package com.paqueteria.service;
+package com.paqueteria.services;
 
 import java.util.List;
 import java.util.stream.Collectors;

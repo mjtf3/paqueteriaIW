@@ -15,7 +15,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/","/auth/login", "/auth/registro", "/pedidos", "/pedidos/**", "/css/**", "/js/**").permitAll()  // Permite acceso sin login
+                        .requestMatchers("/","/auth/login", "/auth/registro","/tarifas", "/seguimiento", "/pedidos", "/pedidos/**", "/css/**", "/js/**").permitAll()  // Permite acceso sin login
                         .anyRequest().authenticated()  // El resto requiere autenticación
                 )
                 .formLogin(login -> login
@@ -27,7 +27,11 @@ public class SecurityConfiguration {
                         .failureUrl("/auth/login?error=true")
                         .permitAll()
                 )
-                .logout(logout -> logout.permitAll());
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true)
+                        .permitAll());
 
         return http.build();
     }
