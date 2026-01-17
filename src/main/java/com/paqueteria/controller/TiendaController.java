@@ -16,6 +16,7 @@ import com.paqueteria.utils.generadorCadenas;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 @RegisterReflectionForBinding({UsuarioData.class,ApiData.class})
 @RequestMapping("/tienda/{id}")
@@ -34,11 +35,12 @@ public class TiendaController {
             return "redirect:/tienda/" + usuarioData.getId() + "/apikey";
         }
         model.addAttribute("tienda", usuarioData.getId());
-        model.addAttribute("apiKeys",usuarioService.getAPIs(usuarioData));
+        model.addAttribute("apiKeys", usuarioService.getAPIs(usuarioData) != null ? usuarioService.getAPIs(usuarioData) : new ArrayList<>());
         model.addAttribute("apis", usuarioService.getAPIs(usuarioData).isEmpty());
         ApiData newApi = (ApiData) session.getAttribute("newApi");
         if (newApi != null) {
-            model.addAttribute("newApi", newApi);
+            model.addAttribute("newApiNombre", newApi.getNombre());
+            model.addAttribute("newApiKey", newApi.getKey());
         }
         return "apiKeyView";
     }
@@ -55,8 +57,10 @@ public class TiendaController {
         apiData.setKey(generadorCadenas.generarCadena());
         usuarioService.addApi(usuarioData,apiData);
 
+        model.addAttribute("newApiNombre", apiData.getNombre());
+        model.addAttribute("newApiKey", apiData.getKey());
+
         session.setAttribute("newApi",apiData);
-        model.addAttribute("newApi",apiData);
 
         return "redirect:/tienda/" + usuarioData.getId() + "/apikey";
     }
