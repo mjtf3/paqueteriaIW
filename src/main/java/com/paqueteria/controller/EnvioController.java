@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import com.paqueteria.dto.EnvioDTO;
 import com.paqueteria.model.Envio;
 import com.paqueteria.repository.EnvioRepository;
-import com.paqueteria.service.EnvioService;
+import com.paqueteria.services.EnvioService;
 import org.springframework.web.server.ResponseStatusException;
 
 @Controller
