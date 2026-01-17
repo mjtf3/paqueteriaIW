@@ -15,11 +15,16 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/auth/registro", "/css/**", "/js/**").permitAll()  // Permite acceso sin login
+                        .requestMatchers("/","/auth/login", "/auth/registro", "/css/**", "/js/**").permitAll()  // Permite acceso sin login
                         .anyRequest().authenticated()  // El resto requiere autenticación
                 )
                 .formLogin(login -> login
                         .loginPage("/auth/login")
+                        .loginProcessingUrl("/auth/login")
+                        .usernameParameter("correo")
+                        .passwordParameter("contrasena")
+                        .defaultSuccessUrl("/auth/dashboard", true)
+                        .failureUrl("/auth/login?error=true")
                         .permitAll()
                 )
                 .logout(logout -> logout.permitAll());
