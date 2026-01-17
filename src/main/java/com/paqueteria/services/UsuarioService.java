@@ -2,6 +2,7 @@ package com.paqueteria.services;
 
 import com.paqueteria.dto.UsuarioData;
 import com.paqueteria.model.Usuario;
+import com.paqueteria.model.TipoEnum;
 import com.paqueteria.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -49,5 +51,10 @@ public class UsuarioService {
         Usuario usuarioBD = usuarioRepository.findByCorreo(correo).orElse(null);
         if (usuarioBD == null) {return null;}
         return modelMapper.map(usuarioBD,UsuarioData.class);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Usuario> getRepartidoresActivos() {
+        return usuarioRepository.findByTipoAndActivaTrue(TipoEnum.REPARTIDOR);
     }
 }

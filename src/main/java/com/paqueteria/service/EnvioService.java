@@ -5,6 +5,9 @@ import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -13,6 +16,7 @@ import com.paqueteria.dto.CrearEnvioDTO;
 import com.paqueteria.dto.EnvioDTO;
 import com.paqueteria.model.DistanciaEnum;
 import com.paqueteria.model.Envio;
+import com.paqueteria.model.EstadoEnum;
 import com.paqueteria.model.TarifaDistancia;
 import com.paqueteria.model.TarifaRangoPeso;
 import com.paqueteria.model.Usuario;
@@ -85,5 +89,22 @@ public class EnvioService {
 
         Envio envioGuardado = envioRepository.save(envio);
         return modelMapper.map(envioGuardado, EnvioDTO.class);
+    }
+
+    public Page<Envio> getEnviosPorEstado(EstadoEnum estado, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return envioRepository.findByEstado(estado, pageable);
+    }
+
+    public void asignarRepartidor(Integer envioId, Integer repartidorId) {
+        Envio envio = envioRepository.findById(envioId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Envío no encontrado"));
+
+        Usuario repartidor = usuarioRepository.findById(repartidorId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Repartidor no encontrado"));
+
+        // Aquí podrías agregar lógica para crear una ruta o asignar directamente
+        // Por ahora solo guardamos la actualización
+        envioRepository.save(envio);
     }
 }
