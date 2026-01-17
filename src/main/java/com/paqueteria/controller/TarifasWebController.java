@@ -17,8 +17,6 @@ public class TarifasWebController {
     @GetMapping("/tarifas")
     public String getTarifas(@RequestParam(required = false) String tipo, Model model) {
 
-        model.addAttribute("currentPage", "tarifas");
-
         if (tipo == null || tipo.isEmpty()) {
             model.addAttribute("tarifasDistancia", tarifaService.obtenerTarifasDistanciaActivas());
             model.addAttribute("tarifasRangoPeso", tarifaService.obtenerTarifasPesoActivas());

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <body>
-    <header class="header" th:fragment="header">
+    <header class="header" th:fragment="header(currentPage)">
         <nav>
             <a href="/tarifas" th:classappend="${currentPage == 'tarifas'} ? 'active' : ''">Inicio</a>
             <a href="/seguimiento" th:classappend="${currentPage == 'seguimiento'} ? 'active' : ''">Seguimiento</a>
