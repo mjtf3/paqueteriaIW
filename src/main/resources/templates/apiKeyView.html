@@ -446,14 +446,18 @@
 
     function copiarApiKey() {
         const apiKeyInput = document.getElementById('modalApiKey');
-        apiKeyInput.select();
-        document.execCommand('copy');
+        const textToCopy = apiKeyInput.value;
 
-        const feedback = document.getElementById('copyFeedback');
-        feedback.style.display = 'block';
-        setTimeout(() => {
-            feedback.style.display = 'none';
-        }, 2000);
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            const feedback = document.getElementById('copyFeedback');
+            feedback.style.display = 'block';
+            setTimeout(() => {
+                feedback.style.display = 'none';
+            }, 2000);
+        }).catch(err => {
+            console.error('Error al copiar:', err);
+            alert('No se pudo copiar al portapapeles');
+        });
     }
 
     window.onclick = function (event) {
