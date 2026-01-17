@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,7 +71,7 @@ public class UsuarioService {
     public List<ApiData> getAPIs(UsuarioData usuario) {
         Usuario usuarioBD = usuarioRepository.findByCorreo(usuario.getCorreo()).orElse(null);
         if (usuarioBD == null) {
-            return null;
+            return new ArrayList<>();
         }
         return usuarioBD.getApis().stream().map(api -> modelMapper.map(api,ApiData.class)).toList();
     }
