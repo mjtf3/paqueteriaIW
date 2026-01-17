@@ -33,6 +33,7 @@ public class EnvioController {
     @GetMapping("/seguimiento/tracking")
     public String tracking(@RequestParam(required = false) String code, Model model) {
         if (code == null || code.trim().isEmpty()) {
+            setTrackingDefaults(model);
             return "seguimiento";
         }
 
@@ -42,6 +43,7 @@ public class EnvioController {
         Optional<EnvioDTO> envioDTO = envioService.getTrackingInfo(code);
 
         if (envioDTO.isEmpty()) {
+            setTrackingDefaults(model);
             model.addAttribute("error", "No se encontró ningún envío con el código: " + code);
             return "seguimiento";
         }
@@ -51,7 +53,34 @@ public class EnvioController {
         model.addAttribute("hasTracking", true);
         model.addAttribute("message", "Código: " + envio.getLocalizador() + " — Estado: " + envio.getEstadoString());
 
+        // UI Logic pre-calculation
+        model.addAttribute("stage1Active", envio.isAlmacenOPosterior());
+        model.addAttribute("stage2Active", envio.isRepartoOPosterior());
+        model.addAttribute("stage3Active", envio.isFinalizado());
+        
+        model.addAttribute("arrow1Active", envio.isRepartoOPosterior());
+        model.addAttribute("arrow2Active", envio.isFinalizado());
+
+        model.addAttribute("showEntregadoIcon", envio.isEntregadoExitoso());
+        model.addAttribute("showAusenteIcon", envio.isAusente());
+        model.addAttribute("showRechazadoIcon", envio.isRechazado());
+        
+        model.addAttribute("showInfo", true);
+
         return "seguimiento";
+    }
+
+    private void setTrackingDefaults(Model model) {
+        model.addAttribute("hasTracking", false);
+        model.addAttribute("stage1Active", false);
+        model.addAttribute("stage2Active", false);
+        model.addAttribute("stage3Active", false);
+        model.addAttribute("arrow1Active", false);
+        model.addAttribute("arrow2Active", false);
+        model.addAttribute("showEntregadoIcon", true); // Default icon shown if no specific state
+        model.addAttribute("showAusenteIcon", false);
+        model.addAttribute("showRechazadoIcon", false);
+        model.addAttribute("showInfo", false);
     }
 
     // Endpoint para la API REST (JSON)
