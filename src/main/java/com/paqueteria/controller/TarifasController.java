@@ -3,6 +3,7 @@ package com.paqueteria.controller;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,12 +12,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.paqueteria.dto.TarifaDistanciaDTO;
+import com.paqueteria.dto.TarifaRangoPesoDTO;
 import com.paqueteria.security.RequireApiKey;
 import com.paqueteria.service.TarifaDistanciaService;
 import com.paqueteria.service.TarifaRangoPesoService;
 
 @RestController
 @RequestMapping("/api")
+@RegisterReflectionForBinding({TarifaDistanciaDTO.class, TarifaRangoPesoDTO.class})
 public class TarifasController {
 
     @Autowired
