@@ -61,7 +61,18 @@ VALUES (
            true,
            NULL,
            NULL
-       );
+       )
+ON CONFLICT (correo) DO UPDATE SET
+    apodo = EXCLUDED.apodo,
+    nombre = EXCLUDED.nombre,
+    apellidos = EXCLUDED.apellidos,
+    tipo = EXCLUDED.tipo,
+    telefono = EXCLUDED.telefono,
+    contrasena = EXCLUDED.contrasena,
+    fecha_creacion = EXCLUDED.fecha_creacion,
+    activa = EXCLUDED.activa,
+    nombre_tienda = EXCLUDED.nombre_tienda,
+    peso_maximo = EXCLUDED.peso_maximo;
 
 -- 2. REPARTIDOR
 INSERT INTO usuario (apodo, nombre, apellidos, tipo, correo, telefono, contrasena, fecha_creacion, activa, nombre_tienda, peso_maximo)
@@ -77,7 +88,18 @@ VALUES (
            true,
            NULL,
            50.00
-       );
+       )
+ON CONFLICT (correo) DO UPDATE SET
+    apodo = EXCLUDED.apodo,
+    nombre = EXCLUDED.nombre,
+    apellidos = EXCLUDED.apellidos,
+    tipo = EXCLUDED.tipo,
+    telefono = EXCLUDED.telefono,
+    contrasena = EXCLUDED.contrasena,
+    fecha_creacion = EXCLUDED.fecha_creacion,
+    activa = EXCLUDED.activa,
+    nombre_tienda = EXCLUDED.nombre_tienda,
+    peso_maximo = EXCLUDED.peso_maximo;
 
 -- 3. CLIENTE (Tienda)
 INSERT INTO usuario (apodo, nombre, apellidos, tipo, correo, telefono, contrasena, fecha_creacion, activa, nombre_tienda, peso_maximo)
@@ -93,7 +115,18 @@ VALUES (
            true,
            'Electrónica Madrid',
            NULL
-       );
+       )
+ON CONFLICT (correo) DO UPDATE SET
+    apodo = EXCLUDED.apodo,
+    nombre = EXCLUDED.nombre,
+    apellidos = EXCLUDED.apellidos,
+    tipo = EXCLUDED.tipo,
+    telefono = EXCLUDED.telefono,
+    contrasena = EXCLUDED.contrasena,
+    fecha_creacion = EXCLUDED.fecha_creacion,
+    activa = EXCLUDED.activa,
+    nombre_tienda = EXCLUDED.nombre_tienda,
+    peso_maximo = EXCLUDED.peso_maximo;
 
 
 
