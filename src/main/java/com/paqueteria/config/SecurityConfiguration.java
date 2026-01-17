@@ -1,8 +1,8 @@
 package com.paqueteria.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -18,7 +18,7 @@ public class SecurityConfiguration {
                         .ignoringRequestMatchers("/api/**")
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/auth/login", "/auth/registro", "/css/**", "/js/**", "/api/**","/error").permitAll()
+                        .requestMatchers("/", "/auth/login", "/auth/registro","/tarifas", "/seguimiento", "/css/**", "/js/**", "/api/**","/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
@@ -30,7 +30,11 @@ public class SecurityConfiguration {
                         .failureUrl("/auth/login?error=true")
                         .permitAll()
                 )
-                .logout(logout -> logout.permitAll());
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true)
+                        .permitAll());
 
         return http.build();
     }
