@@ -5,6 +5,7 @@ import com.paqueteria.dto.UsuarioData;
 import com.paqueteria.services.ApiService;
 import com.paqueteria.services.UsuarioService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -16,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 
+@RegisterReflectionForBinding({UsuarioData.class,ApiData.class})
 @RequestMapping("/tienda/{id}")
 @Controller
 public class TiendaController {
