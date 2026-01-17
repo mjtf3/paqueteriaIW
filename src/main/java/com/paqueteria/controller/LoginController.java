@@ -36,26 +36,18 @@ public class LoginController {
             model.addAttribute("error", "Ya existe un usuario con ese correo");
         }
 
-        UsuarioData usuario = new UsuarioData();
-        usuario.setCorreo(usuarioData.getCorreo());
-        usuario.setContrasena(usuarioData.getContrasena());
-        usuario.setNombre(usuarioData.getNombre());
-        usuario.setTelefono(usuarioData.getTelefono());
-        usuario.setApodo(usuarioData.getApodo());
-        usuario.setNombreTienda(usuarioData.getNombreTienda());
-        usuario.setApellidos(usuarioData.getApellidos());
-        usuario.setTipo(TipoEnum.CLIENTE);
-        usuario.setFechaCreacion(LocalDate.now());
+        usuarioData.setTipo(TipoEnum.CLIENTE);
+        usuarioData.setFechaCreacion(LocalDate.now());
         UsuarioData usuarioRegistrado;
 
         try{
-            usuarioRegistrado = usuarioService.registrar(usuario);
+            usuarioRegistrado = usuarioService.registrar(usuarioData);
         }catch(Exception e){
             model.addAttribute("error", e.getMessage());
             model.addAttribute("usuario", usuarioData);
             return "registroForm";
         }
-        return "redirect:/";
+        return "redirect:/auth/login";
     }
 
     @GetMapping("/login")
