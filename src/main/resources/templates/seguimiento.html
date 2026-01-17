@@ -32,7 +32,7 @@
         <h3>Detalles del seguimiento</h3>
         <div class="stages">
             <div class="stage"
-                 th:classappend="${trackingInfo != null && trackingInfo.almacenOPosterior} ? 'active' : 'inactive'">
+                 th:classappend="${hasTracking && trackingInfo.almacenOPosterior} ? 'active' : 'inactive'">
                 <svg class="icon" width="120" height="90" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="10" y="10" width="8" height="130" fill="#2E6AA7" />
@@ -63,11 +63,11 @@
 
             <div class="arrow">
                 <div class="bar"
-                     th:classappend="${trackingInfo != null && trackingInfo.repartoOPosterior} ? 'active' : ''"></div>
+                     th:classappend="${hasTracking && trackingInfo.repartoOPosterior} ? 'active' : ''"></div>
             </div>
 
             <div class="stage"
-                 th:classappend="${trackingInfo != null && trackingInfo.repartoOPosterior} ? 'active' : 'inactive'">
+                 th:classappend="${hasTracking && trackingInfo.repartoOPosterior} ? 'active' : 'inactive'">
                 <svg class="icon" width="120" height="90" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20 40 H100 V100 H20 Z" fill="#AEE4F3" />
@@ -85,13 +85,13 @@
 
             <div class="arrow">
                 <div class="bar"
-                     th:classappend="${trackingInfo != null && trackingInfo.finalizado} ? 'active' : ''"></div>
+                     th:classappend="${hasTracking && trackingInfo.finalizado} ? 'active' : ''"></div>
             </div>
 
             <div class="stage"
-                 th:classappend="${trackingInfo != null && trackingInfo.finalizado} ? 'active' : 'inactive'">
+                 th:classappend="${hasTracking && trackingInfo.finalizado} ? 'active' : 'inactive'">
 
-                <div th:if="${trackingInfo == null or (trackingInfo.estadoString != 'AUSENTE' and trackingInfo.estadoString != 'RECHAZADO')}">
+                <div th:if="${!hasTracking or trackingInfo.entregadoExitoso}">
                     <svg class="icon" width="140" height="110" viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
                         <rect width="140" height="110" fill="none"/>
                         <g>
@@ -107,7 +107,7 @@
                     </svg>
                 </div>
 
-                <div th:if="${trackingInfo != null and trackingInfo.estadoString == 'AUSENTE'}">
+                <div th:if="${hasTracking && trackingInfo.ausente}">
                     <svg class="icon" width="140" height="110" viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
                         <rect width="140" height="110" fill="none"/>
                         <g>
@@ -125,7 +125,7 @@
                     </svg>
                 </div>
 
-                <div th:if="${trackingInfo != null and trackingInfo.estadoString == 'RECHAZADO'}">
+                <div th:if="${hasTracking && trackingInfo.rechazado}">
                     <svg class="icon" width="140" height="110" viewBox="0 0 140 110" xmlns="http://www.w3.org/2000/svg">
                         <rect width="140" height="110" fill="none"/>
                         <g>
@@ -143,19 +143,17 @@
                 </div>
 
                 <div class="stage-title">
-                    <span th:if="${trackingInfo == null}">ENTREGADO</span>
-                    <span th:if="${trackingInfo != null}">
-                        <span th:switch="${trackingInfo.estadoString}">
-                            <span th:case="'AUSENTE'">AUSENTE</span>
-                            <span th:case="'RECHAZADO'">RECHAZADO</span>
-                            <span th:case="*">ENTREGADO</span>
-                        </span>
+                    <span th:if="${!hasTracking}">ENTREGADO</span>
+                    <span th:if="${hasTracking}">
+                        <span th:if="${trackingInfo.ausente}">AUSENTE</span>
+                        <span th:if="${trackingInfo.rechazado}">RECHAZADO</span>
+                        <span th:if="${trackingInfo.entregadoExitoso}">ENTREGADO</span>
                     </span>
                 </div>
             </div>
         </div>
 
-        <div th:if="${trackingInfo != null}" class="envio-info">
+        <div th:if="${hasTracking}" class="envio-info">
             <h4>Información del envío</h4>
             <p><strong>Origen:</strong> <span th:text="${trackingInfo.direccionOrigen}">Dirección origen</span></p>
             <p><strong>Destino:</strong> <span th:text="${trackingInfo.direccionDestino}">Dirección destino</span></p>

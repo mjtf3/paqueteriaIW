@@ -48,6 +48,7 @@ public class EnvioController {
 
         EnvioDTO envio = envioDTO.get();
         model.addAttribute("trackingInfo", envio);
+        model.addAttribute("hasTracking", true);
         model.addAttribute("message", "Código: " + envio.getLocalizador() + " — Estado: " + envio.getEstadoString());
 
         return "seguimiento";

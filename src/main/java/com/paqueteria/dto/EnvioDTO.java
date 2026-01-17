@@ -221,6 +221,18 @@ public class EnvioDTO {
         String s = getEstadoString();
         return "ENTREGADO".equals(s) || "AUSENTE".equals(s) || "RECHAZADO".equals(s);
     }
+
+    public boolean isAusente() {
+        return "AUSENTE".equals(getEstadoString());
+    }
+
+    public boolean isRechazado() {
+        return "RECHAZADO".equals(getEstadoString());
+    }
+
+    public boolean isEntregadoExitoso() {
+        return !isAusente() && !isRechazado();
+    }
     public void setEstadoString(String estadoString) {
         this.estadoString = estadoString;
     }
