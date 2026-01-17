@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.paqueteria.security.RequireApiKey;
-import com.paqueteria.service.TarifaDistanciaService;
-import com.paqueteria.service.TarifaRangoPesoService;
+import com.paqueteria.services.TarifaDistanciaService;
+import com.paqueteria.services.TarifaRangoPesoService;
 
 @RestController
 @RequestMapping("/api")

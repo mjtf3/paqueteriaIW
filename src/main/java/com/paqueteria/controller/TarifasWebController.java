@@ -1,7 +1,7 @@
 package com.paqueteria.controller;
 
-import com.paqueteria.service.TarifaDistanciaService;
-import com.paqueteria.service.TarifaRangoPesoService;
+import com.paqueteria.services.TarifaDistanciaService;
+import com.paqueteria.services.TarifaRangoPesoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -3,7 +3,7 @@ package com.paqueteria.controller;
 import com.paqueteria.dto.CrearEnvioDTO;
 import com.paqueteria.dto.EnvioDTO;
 import com.paqueteria.security.RequireApiKey;
-import com.paqueteria.service.EnvioService;
+import com.paqueteria.services.EnvioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
