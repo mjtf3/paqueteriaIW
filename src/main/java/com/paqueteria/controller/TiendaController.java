@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import com.paqueteria.utils.generadorCadenas;
 
 import java.time.LocalDate;
 
@@ -46,7 +47,7 @@ public class TiendaController {
         ApiData apiData = new ApiData();
         apiData.setNombre(nombre);
         apiData.setFecha(LocalDate.now());
-        apiData.setKey("holaa");
+        apiData.setKey(generadorCadenas.generarCadena());
         usuarioService.addApi(usuarioData,apiData);
 
         session.setAttribute("newApi",apiData);
