@@ -2,6 +2,7 @@ package com.paqueteria.service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,5 +39,12 @@ public class TarifaRangoPesoService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontró una tarifa para el peso: " + peso));
 
         return modelMapper.map(tarifa, TarifaRangoPesoDTO.class);
+    }
+
+    public List<TarifaRangoPesoDTO> obtenerTarifasPesoActivas() {
+        return tarifaRangoPesoRepository.findAll().stream()
+                .filter(TarifaRangoPeso::getActiva)
+                .map(TarifaRangoPesoDTO::new)
+                .collect(Collectors.toList());
     }
 }

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarifas - Paquetería IW</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <!-- Header reutilizable -->
+    <div th:replace="~{fragments/header :: header('tarifas')}"></div>
+
+    <div class="main-content">
+        <h1 class="page-title">Tarifas</h1>
+
+        <div th:if="${error}" class="error">
+            <strong>Error:</strong> <span th:text="${error}"></span>
+        </div>
+
+        <div class="tarifas-container">
+            <div class="tarifas-grid">
+                <!-- Tarifas por Distancia -->
+                <div class="tarifa-section">
+                    <h2 class="tarifa-item" >Distancia €€</h2>
+                    <div th:each="tarifa : ${tarifasDistancia}" class="tarifa-item">
+                        <span class="tarifa-nombre" th:text="${tarifa.distancia}">Ciudad</span>
+                        <span class="tarifa-precio" th:text="${tarifa.coste} + '€'">1€</span>
+                    </div>
+                </div>
+
+                <!-- Tarifas por Peso -->
+                <div class="tarifa-section">
+                    <h2 class="tarifa-item" >Rango de peso €€</h2>
+                    <div th:each="tarifa : ${tarifasRangoPeso}" class="tarifa-item">
+                        <span class="tarifa-nombre" th:text="${tarifa.pesoMinimo} + ' - ' + ${tarifa.pesoMaximo} + ' kg'">0 - 5 kg</span>
+                        <span class="tarifa-precio" th:text="${tarifa.coste} + '€'">1€</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
