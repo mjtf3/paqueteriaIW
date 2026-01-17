@@ -2,11 +2,12 @@ package com.paqueteria.dto;
 
 import java.math.BigDecimal;
 
+import com.paqueteria.model.DistanciaEnum;
 import com.paqueteria.model.TarifaDistancia;
 
 public class TarifaDistanciaDTO {
 
-    private String distancia;
+    private DistanciaEnum distancia;
     private BigDecimal coste;
 
     // Constructor vacío
@@ -15,16 +16,16 @@ public class TarifaDistanciaDTO {
 
     // Constructor desde entidad
     public TarifaDistanciaDTO(TarifaDistancia tarifa) {
-        this.distancia = tarifa.getDistancia().name();
+        this.distancia = tarifa.getDistancia();
         this.coste = tarifa.getCoste();
     }
 
     // Getters y Setters
-    public String getDistancia() {
+    public DistanciaEnum getDistancia() {
         return distancia;
     }
 
-    public void setDistancia(String distancia) {
+    public void setDistancia(DistanciaEnum distancia) {
         this.distancia = distancia;
     }
 
