@@ -25,9 +25,9 @@ ON CONFLICT (id) DO UPDATE SET
     activa = EXCLUDED.activa;
 
 -- Insert de usuario de ejemplo
--- Si ya existe (id=1), actualiza los datos
+-- Si ya existe (id=-1), actualiza los datos
 INSERT INTO usuario (id, nombre, apellidos, tipo, correo, telefono, contrasena, fecha_creacion, peso_maximo, activa, apodo, nombre_tienda)
-VALUES (-1, 'Usuario', 'Ejemplo', 'CLIENTE', 'usuario@ejemplo.com', '600123456', 'password123', CURRENT_DATE, 100.0, true, 'usuarioDemo', 'Tienda Demo')
+VALUES (-1, 'Usuario', 'Ejemplo', 'CLIENTE', 'usuario1@ejemplo.com', '600123456', 'password123', CURRENT_DATE, 100.0, true, 'usuarioDemo', 'Tienda Demo')
 ON CONFLICT (id) DO UPDATE SET
     nombre = EXCLUDED.nombre,
     apellidos = EXCLUDED.apellidos,

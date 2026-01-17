@@ -1,4 +1,4 @@
-package com.paqueteria.service;
+package com.paqueteria.services;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -11,7 +11,7 @@ import com.paqueteria.model.Envio;
 import com.paqueteria.model.EstadoEnum;
 import com.paqueteria.repository.EnvioRepository;
 import java.math.BigDecimal;
-import java.util.UUID;
+import com.paqueteria.utils.generadorCadenas;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -86,9 +86,7 @@ public class EnvioService {
     }
 
     
-    private String generarLocalizador() {
-        return UUID.randomUUID().toString().toUpperCase();
-    }
+
 
     public EnvioDTO crearEnvio(CrearEnvioDTO dto, Integer usuarioId) {
         // Obtener usuario
@@ -108,7 +106,7 @@ public class EnvioService {
         BigDecimal costeTotal = tarifaDistancia.getCoste().add(tarifaRangoPeso.getCoste());
 
         // Generar localizador único
-        String localizador = generarLocalizador();
+        String localizador = generadorCadenas.generarCadena();
 
         // Crear envío
         Envio envio = new Envio(

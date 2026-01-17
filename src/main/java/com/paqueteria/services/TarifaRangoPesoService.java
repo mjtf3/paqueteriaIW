@@ -1,4 +1,4 @@
-package com.paqueteria.service;
+package com.paqueteria.services;
 
 import java.math.BigDecimal;
 import java.util.List;
