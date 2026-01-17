@@ -18,6 +18,7 @@ import com.paqueteria.dto.EnvioDTO;
 import com.paqueteria.model.Envio;
 import com.paqueteria.repository.EnvioRepository;
 import com.paqueteria.service.EnvioService;
+import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 public class EnvioController {
@@ -78,7 +79,10 @@ public class EnvioController {
     @RequireApiKey
     @PostMapping("/api/envios")
     @ResponseStatus(HttpStatus.CREATED)
-    public EnvioDTO crearEnvio(@Valid @RequestBody CrearEnvioDTO dto) {
+    public EnvioDTO crearEnvio(@Valid @RequestBody(required = false) CrearEnvioDTO dto) {
+        if (dto == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Body no puede estar vacío");
+        }
         // Cuando tengamos usuarios re tiene que pillas la api key, un servicio get id by api key y pasarla aqui
         return envioService.crearEnvio(dto, 1); // TODO: Usuario simulado con ID 1; obtener ID de usuario autenticado
     }

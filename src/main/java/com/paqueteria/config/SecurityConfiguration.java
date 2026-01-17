@@ -18,7 +18,7 @@ public class SecurityConfiguration {
                         .ignoringRequestMatchers("/api/**")
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/auth/login", "/auth/registro", "/css/**", "/js/**", "/api/**").permitAll()
+                        .requestMatchers("/", "/auth/login", "/auth/registro", "/css/**", "/js/**", "/api/**","/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
