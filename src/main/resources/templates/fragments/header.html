@@ -20,13 +20,19 @@
             <a th:if="${usuarioActual != null && usuarioActual.isAdmin()}" th:href="@{/webmaster/pedidos}" th:classappend="${currentPage == 'admin-pedidos'} ? 'active' : ''">Pedidos</a>
             <a th:if="${usuarioActual != null && usuarioActual.isAdmin()}" th:href="@{/webmaster/historial}" th:classappend="${currentPage == 'admin-historial'} ? 'active' : ''">Historial</a>
         </nav>
-        <a th:href="@{/perfil}" class="user-icon-link" th:classappend="${currentPage == 'perfil'} ? 'active' : ''">
-            <div class="user-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                </svg>
+        <div class="user-dropdown">
+            <a th:href="@{/perfil}" class="user-icon-link" th:classappend="${currentPage == 'perfil'} ? 'active' : ''">
+                <div class="user-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                </div>
+            </a>
+            <div th:if="${usuarioActual != null}" class="dropdown-menu">
+                <a th:href="@{/perfil}" class="dropdown-item">Perfil</a>
+                <a th:href="@{/logout}" class="dropdown-item">Cerrar sesión</a>
             </div>
-        </a>
+        </div>
     </header>
 </body>
 </html>
