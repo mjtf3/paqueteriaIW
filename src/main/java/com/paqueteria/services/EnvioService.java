@@ -69,20 +69,7 @@ public class EnvioService {
     }
 
     public String mapEstadoToFrontendStatus(EstadoEnum estado) {
-        switch (estado) {
-            case PENDIENTE:
-                return "EN ALMACEN";
-            case RUTA:
-                return "EN REPARTO";
-            case ENTREGADO:
-                return "ENTREGADO";
-            case AUSENTE:
-                return "AUSENTE";
-            case RECHAZADO:
-                return "RECHAZADO";
-            default:
-                return "EN_ALMACEN";
-        }
+        return (estado != null) ? estado.getDisplayName() : "EN ALMACEN";
     }
 
     

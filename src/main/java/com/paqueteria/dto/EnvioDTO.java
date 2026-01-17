@@ -192,45 +192,17 @@ public class EnvioDTO {
         if (this.estadoString != null) {
             return this.estadoString;
         }
-        if (this.estado != null) {
-            switch (this.estado) {
-                case PENDIENTE:
-                    return "EN ALMACEN";
-                case RUTA:
-                    return "EN REPARTO";
-                case ENTREGADO:
-                    return "ENTREGADO";
-                case AUSENTE:
-                    return "AUSENTE";
-                case RECHAZADO:
-                    return "RECHAZADO";
-                default:
-                    return "EN ALMACEN";
-            }
-        }
-        return "";
+        return (this.estado != null) ? this.estado.getDisplayName() : "";
     }
 
     // Helpers para la vista (Thymeleaf Native Image friendly)
     public boolean isAlmacenOPosterior() {
-        String s = getEstadoString();
-        return (
-            "EN ALMACEN".equals(s) ||
-            "EN REPARTO".equals(s) ||
-            "ENTREGADO".equals(s) ||
-            "AUSENTE".equals(s) ||
-            "RECHAZADO".equals(s)
-        );
+        return !getEstadoString().isEmpty();
     }
 
     public boolean isRepartoOPosterior() {
         String s = getEstadoString();
-        return (
-            "EN REPARTO".equals(s) ||
-            "ENTREGADO".equals(s) ||
-            "AUSENTE".equals(s) ||
-            "RECHAZADO".equals(s)
-        );
+        return !"EN ALMACEN".equals(s) && !s.isEmpty();
     }
 
     public boolean isFinalizado() {
