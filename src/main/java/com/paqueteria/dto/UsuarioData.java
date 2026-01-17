@@ -123,6 +123,18 @@ public class UsuarioData {
         this.activa = activa;
     }
 
+    public Boolean isAdmin() {
+        return this.tipo == TipoEnum.WEBMASTER;
+    }
+
+    public Boolean isTienda() {
+        return this.tipo == TipoEnum.CLIENTE;
+    }
+
+    public Boolean isRepartidor() {
+        return this.tipo == TipoEnum.REPARTIDOR;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
