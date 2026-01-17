@@ -4,23 +4,33 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import com.paqueteria.dto.CrearEnvioDTO;
-import com.paqueteria.security.RequireApiKey;
-import jakarta.validation.Valid;
+import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import com.paqueteria.dto.EnvioDTO;
-import com.paqueteria.model.Envio;
-import com.paqueteria.repository.EnvioRepository;
-import com.paqueteria.services.EnvioService;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.paqueteria.dto.CrearEnvioDTO;
+import com.paqueteria.dto.EnvioDTO;
+import com.paqueteria.model.DistanciaEnum;
+import com.paqueteria.model.Envio;
+import com.paqueteria.model.EstadoEnum;
+import com.paqueteria.repository.EnvioRepository;
+import com.paqueteria.security.RequireApiKey;
+import com.paqueteria.services.EnvioService;
+
+import jakarta.validation.Valid;
+
 @Controller
+@RegisterReflectionForBinding({CrearEnvioDTO.class, EnvioDTO.class, EstadoEnum.class, DistanciaEnum.class})
 public class EnvioController {
 
     @Autowired
