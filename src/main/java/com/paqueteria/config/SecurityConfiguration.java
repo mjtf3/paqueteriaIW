@@ -27,7 +27,11 @@ public class SecurityConfiguration {
                         .failureUrl("/auth/login?error=true")
                         .permitAll()
                 )
-                .logout(logout -> logout.permitAll());
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true)
+                        .permitAll());
 
         return http.build();
     }
