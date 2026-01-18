@@ -399,7 +399,7 @@
             const tiendaId = button.getAttribute('data-tienda-id');
 
             // Hacer petición AJAX para obtener los datos reales
-            fetch('/tienda/' + tiendaId + '/info/data')
+            fetch('/webmaster/tiendas/' + tiendaId + '/info/data')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Error al cargar los detalles');

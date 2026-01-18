@@ -70,5 +70,18 @@ public class TiendasWebmasterWebController {
             return "ERROR: " + e.getMessage();
         }
     }
-}
 
+    @GetMapping("/{tiendaId}/info/data")
+    @ResponseBody
+    public UsuarioData obtenerDatosTienda(@PathVariable Integer tiendaId) {
+        try {
+            UsuarioData tienda = usuarioService.findById(tiendaId);
+            if (tienda == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tienda no encontrada");
+            }
+            return tienda;
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al obtener datos de la tienda");
+        }
+    }
+}
