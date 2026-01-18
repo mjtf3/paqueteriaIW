@@ -1,30 +1,28 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <title>Paginación</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
-    <!-- Fragmento de paginación genérico y reutilizable -->
-    <div th:fragment="paginacion(page, urlBase, params)"
+    <!-- Fragmento de paginación simple -->
+    <div th:fragment="paginacion(tienePaginacion, tienePrevio, paginaPrevia, tieneSiguiente, paginaSiguiente, paginaActual, paginas, urlBase)"
          class="pagination"
-         th:if="${page.totalPages > 1}">
+         th:if="${tienePaginacion}">
 
         <!-- Botón Anterior -->
-        <a th:if="${page.number > 0}"
-           th:href="@{${urlBase}(${params} + {pageNumber: page.number - 1})}">Anterior</a>
+        <a th:if="${tienePrevio}"
+           th:href="@{${urlBase}(${otherParams} + {__${paramName}__: ${paginaPrevia}})}">Anterior</a>
 
         <!-- Números de página -->
-        <span th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}">
-            <a th:href="@{${urlBase}(${params} + {pageNumber: i})}"
+        <span th:each="i : ${paginas}">
+            <a th:href="@{${urlBase}(${otherParams} + {__${paramName}__: ${i}})}"
                th:text="${i + 1}"
-               th:classappend="${i == page.number} ? 'active' : ''">1</a>
+               th:classappend="${i == paginaActual} ? 'active' : ''">1</a>
         </span>
 
         <!-- Botón Siguiente -->
-        <a th:if="${page.number < page.totalPages - 1}"
-           th:href="@{${urlBase}(${params} + {pageNumber: page.number + 1})}">Siguiente</a>
+        <a th:if="${tieneSiguiente}"
+           th:href="@{${urlBase}(${otherParams} + {__${paramName}__: ${paginaSiguiente}})}">Siguiente</a>
     </div>
 </body>
 </html>
-
