@@ -1,13 +1,11 @@
 package com.paqueteria.dto;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
 import com.paqueteria.model.DistanciaEnum;
 import com.paqueteria.model.Envio;
 import com.paqueteria.model.EstadoEnum;
-import org.springframework.cglib.core.Local;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 public class EnvioDTO {
@@ -25,14 +23,15 @@ public class EnvioDTO {
     private Boolean fragil;
     private Integer numeroPaquetes;
     private BigDecimal costeTotal;
+
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate fecha;
+
     private String nombreUsuario;
     private Integer usuarioId;
 
     // Constructor vacío
-    public EnvioDTO() {
-    }
+    public EnvioDTO() {}
 
     // Constructor desde entidad
     public EnvioDTO(Envio envio) {
@@ -53,8 +52,13 @@ public class EnvioDTO {
         this.nombreUsuario = envio.getUsuario().getNombre();
     }
 
-    public EnvioDTO(String localizador, String estadoString, String direccionOrigen,
-            String direccionDestino, String fecha) {
+    public EnvioDTO(
+        String localizador,
+        String estadoString,
+        String direccionOrigen,
+        String direccionDestino,
+        String fecha
+    ) {
         this.localizador = localizador;
         this.direccionOrigen = direccionOrigen;
         this.direccionDestino = direccionDestino;
@@ -99,6 +103,7 @@ public class EnvioDTO {
     public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
     }
+
     public void setDireccionDestino(String direccionDestino) {
         this.direccionDestino = direccionDestino;
     }
@@ -187,39 +192,26 @@ public class EnvioDTO {
         if (this.estadoString != null) {
             return this.estadoString;
         }
-        if (this.estado != null) {
-            switch (this.estado) {
-                case PENDIENTE:
-                    return "EN ALMACEN";
-                case RUTA:
-                    return "EN REPARTO";
-                case ENTREGADO:
-                    return "ENTREGADO";
-                case AUSENTE:
-                    return "AUSENTE";
-                case RECHAZADO:
-                    return "RECHAZADO";
-                default:
-                    return "EN ALMACEN";
-            }
-        }
-        return "";
+        return (this.estado != null) ? this.estado.getDisplayName() : "";
     }
 
     // Helpers para la vista (Thymeleaf Native Image friendly)
     public boolean isAlmacenOPosterior() {
-        String s = getEstadoString();
-        return "EN ALMACEN".equals(s) || "EN REPARTO".equals(s) || "ENTREGADO".equals(s) || "AUSENTE".equals(s) || "RECHAZADO".equals(s);
+        return !getEstadoString().isEmpty();
     }
 
     public boolean isRepartoOPosterior() {
         String s = getEstadoString();
-        return "EN REPARTO".equals(s) || "ENTREGADO".equals(s) || "AUSENTE".equals(s) || "RECHAZADO".equals(s);
+        return !"EN ALMACEN".equals(s) && !s.isEmpty();
     }
 
     public boolean isFinalizado() {
         String s = getEstadoString();
-        return "ENTREGADO".equals(s) || "AUSENTE".equals(s) || "RECHAZADO".equals(s);
+        return (
+            "ENTREGADO".equals(s) ||
+            "AUSENTE".equals(s) ||
+            "RECHAZADO".equals(s)
+        );
     }
 
     public boolean isAusente() {
@@ -233,6 +225,7 @@ public class EnvioDTO {
     public boolean isEntregadoExitoso() {
         return !isAusente() && !isRechazado();
     }
+
     public void setEstadoString(String estadoString) {
         this.estadoString = estadoString;
     }
