@@ -1,10 +1,11 @@
 package com.paqueteria.controller;
 
-import com.paqueteria.model.Envio;
+import com.paqueteria.dto.EnvioDTO;
+import com.paqueteria.dto.RepartidorDTO;
 import com.paqueteria.model.EstadoEnum;
-import com.paqueteria.model.Usuario;
 import com.paqueteria.services.EnvioService;
 import com.paqueteria.services.UsuarioService;
+import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/webmaster/pedidos")
+@RegisterReflectionForBinding({EnvioDTO.class, RepartidorDTO.class})
 public class PedidosWebmasterWebController {
 
     @Autowired
@@ -32,13 +34,13 @@ public class PedidosWebmasterWebController {
 
         int pageSize = 10;
 
-        // Obtener envíos por estado con paginación
-        Page<Envio> ausentes = envioService.getEnviosPorEstado(EstadoEnum.AUSENTE, pageAusentes, pageSize);
-        Page<Envio> rechazados = envioService.getEnviosPorEstado(EstadoEnum.RECHAZADO, pageRechazados, pageSize);
-        Page<Envio> pendientes = envioService.getEnviosPorEstado(EstadoEnum.PENDIENTE, pagePendientes, pageSize);
+        // Obtener envíos por estado con paginación (ahora devuelven DTOs)
+        Page<EnvioDTO> ausentes = envioService.getEnviosPorEstado(EstadoEnum.AUSENTE, pageAusentes, pageSize);
+        Page<EnvioDTO> rechazados = envioService.getEnviosPorEstado(EstadoEnum.RECHAZADO, pageRechazados, pageSize);
+        Page<EnvioDTO> pendientes = envioService.getEnviosPorEstado(EstadoEnum.PENDIENTE, pagePendientes, pageSize);
 
-        // Obtener todos los repartidores activos (filtraremos por cada envío individualmente)
-        List<Usuario> repartidores = usuarioService.getRepartidoresActivos();
+        // Obtener todos los repartidores activos (ahora devuelve DTOs)
+        List<RepartidorDTO> repartidores = usuarioService.getRepartidoresActivos();
 
         // Añadir datos al modelo
         model.addAttribute("ausentes", ausentes);

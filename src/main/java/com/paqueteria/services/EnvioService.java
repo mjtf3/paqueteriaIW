@@ -134,9 +134,10 @@ public class EnvioService {
         return modelMapper.map(envioGuardado, EnvioDTO.class);
     }
 
-    public Page<Envio> getEnviosPorEstado(EstadoEnum estado, int page, int size) {
+    public Page<EnvioDTO> getEnviosPorEstado(EstadoEnum estado, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("fecha").ascending());
-        return envioRepository.findByEstado(estado, pageable);
+        Page<Envio> envios = envioRepository.findByEstado(estado, pageable);
+        return envios.map(envio -> modelMapper.map(envio, EnvioDTO.class));
     }
 
     public void asignarRepartidor(Integer envioId, Integer repartidorId) {
