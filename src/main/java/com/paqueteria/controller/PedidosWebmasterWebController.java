@@ -35,17 +35,20 @@ public class PedidosWebmasterWebController {
         int pageSize = 10;
 
         // Obtener envíos por estado con paginación (ahora devuelven DTOs)
-        Page<EnvioDTO> ausentes = envioService.getEnviosPorEstado(EstadoEnum.AUSENTE, pageAusentes, pageSize);
-        Page<EnvioDTO> rechazados = envioService.getEnviosPorEstado(EstadoEnum.RECHAZADO, pageRechazados, pageSize);
-        Page<EnvioDTO> pendientes = envioService.getEnviosPorEstado(EstadoEnum.PENDIENTE, pagePendientes, pageSize);
+        Page<EnvioDTO> ausentesPage = envioService.getEnviosPorEstado(EstadoEnum.AUSENTE, pageAusentes, pageSize);
+        Page<EnvioDTO> rechazadosPage = envioService.getEnviosPorEstado(EstadoEnum.RECHAZADO, pageRechazados, pageSize);
+        Page<EnvioDTO> pendientesPage = envioService.getEnviosPorEstado(EstadoEnum.PENDIENTE, pagePendientes, pageSize);
 
         // Obtener todos los repartidores activos (ahora devuelve DTOs)
         List<RepartidorDTO> repartidores = usuarioService.getRepartidoresActivos();
 
-        // Añadir datos al modelo
-        model.addAttribute("ausentes", ausentes);
-        model.addAttribute("rechazados", rechazados);
-        model.addAttribute("pendientes", pendientes);
+        // Añadir datos al modelo - pasamos tanto el Page completo como su contenido
+        model.addAttribute("ausentes", ausentesPage);
+        model.addAttribute("ausentesContent", ausentesPage.getContent());
+        model.addAttribute("rechazados", rechazadosPage);
+        model.addAttribute("rechazadosContent", rechazadosPage.getContent());
+        model.addAttribute("pendientes", pendientesPage);
+        model.addAttribute("pendientesContent", pendientesPage.getContent());
         model.addAttribute("repartidores", repartidores);
 
         // Añadir valores actuales de paginación para mantener el estado
