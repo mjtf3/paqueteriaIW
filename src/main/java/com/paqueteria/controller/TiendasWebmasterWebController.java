@@ -27,7 +27,7 @@ public class TiendasWebmasterWebController {
             @RequestParam(defaultValue = "0") int page,
             Model model) {
 
-        int pageSize = 1;
+        int pageSize = 10;
 
         // Obtener tiendas paginadas
         Page<UsuarioData> tiendasPage = usuarioService.getTiendasPaginadas(page, pageSize);
