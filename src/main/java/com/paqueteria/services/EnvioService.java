@@ -110,12 +110,10 @@ public class EnvioService {
 
         LocalDate fechaRuta = LocalDate.now(); // Usar la fecha actual para la ruta
 
-        // Verificar si el envío actual es urgente (más de 5 días)
+
         boolean esEnvioUrgente = envio.getFecha().plusDays(4).isBefore(LocalDate.now());
 
-        // Si el envío NO es urgente, verificar si hay envíos urgentes pendientes
         if (!esEnvioUrgente) {
-            // Buscar envíos urgentes en estados PENDIENTE, AUSENTE o RECHAZADO
             boolean hayEnviosUrgentes = envioRepository.existeEnviosUrgentes(LocalDate.now().minusDays(4));
 
             if (hayEnviosUrgentes) {
@@ -126,11 +124,9 @@ public class EnvioService {
             }
         }
 
-        // Calcular peso ya asignado al repartidor en esta fecha
         BigDecimal pesoAsignado = envioRepository.calcularPesoAsignadoPorRepartidorYFecha(repartidorId, fechaRuta);
         BigDecimal pesoDisponible = repartidor.getPesoMaximo().subtract(pesoAsignado);
 
-        // Validar que el repartidor puede aceptar este envío
         if (envio.getPeso().compareTo(pesoDisponible) > 0) {
             throw new ResponseStatusException(
                 HttpStatus.BAD_REQUEST,
@@ -138,7 +134,6 @@ public class EnvioService {
             );
         }
 
-        // Buscar o crear ruta para el repartidor en esta fecha
         Ruta ruta = rutaRepository.findByUsuarioAndFecha(repartidor, fechaRuta)
                 .orElseGet(() -> {
                     Ruta nuevaRuta = new Ruta(fechaRuta, repartidor);
