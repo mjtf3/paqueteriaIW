@@ -128,10 +128,10 @@ public class TiendaController {
     public String editar(@PathVariable(value = "id") Integer idTienda, Authentication authentication, @ModelAttribute @Valid UsuarioData usuarioData, Model model, BindingResult result) {
         UsuarioData usuarioDB = usuarioService.findByCorreo(authentication.getName());
         if (!idTienda.equals(usuarioDB.getId())) {
-            return "redirect:/tienda/" + usuarioData.getId() + "/info";
+            return "redirect:/tienda/" + usuarioDB.getId() + "/info";
         }
         if (result.hasErrors()) {
-            return "redirect:/tienda/" + usuarioData.getId() + "/info";
+            return "redirect:/tienda/" + usuarioDB.getId() + "/info";
 
         }
 
@@ -142,7 +142,7 @@ public class TiendaController {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        return "redirect:/tienda/" + usuarioData.getId() + "/info";
+        return "redirect:/tienda/" + usuarioDB.getId() + "/info";
     }
 
 }
