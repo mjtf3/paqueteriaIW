@@ -1,11 +1,12 @@
 package com.paqueteria.dto;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
 import com.paqueteria.model.DistanciaEnum;
 import com.paqueteria.model.Envio;
 import com.paqueteria.model.EstadoEnum;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 public class EnvioDTO {
 
@@ -14,6 +15,7 @@ public class EnvioDTO {
     private String direccionOrigen;
     private String direccionDestino;
     private EstadoEnum estado;
+    private String estadoString;
     private String nombreComprador;
     private String nota;
     private BigDecimal peso;
@@ -21,14 +23,16 @@ public class EnvioDTO {
     private Boolean fragil;
     private Integer numeroPaquetes;
     private BigDecimal costeTotal;
+
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDate fecha;
+
     private String nombreUsuario;
     private Integer usuarioId;
     private Boolean esUrgente; // true si han pasado más de 5 días
 
     // Constructor vacío
-    public EnvioDTO() {
-    }
+    public EnvioDTO() {}
 
     // Constructor desde entidad
     public EnvioDTO(Envio envio) {
@@ -49,6 +53,21 @@ public class EnvioDTO {
         this.nombreUsuario = envio.getUsuario().getNombre();
         // Calcular si es urgente
         this.esUrgente = envio.getFecha().plusDays(5).isBefore(LocalDate.now());
+    }
+
+    public EnvioDTO(
+        String localizador,
+        String estadoString,
+        String direccionOrigen,
+        String direccionDestino,
+        String fecha
+    ) {
+        this.localizador = localizador;
+        this.direccionOrigen = direccionOrigen;
+        this.direccionDestino = direccionDestino;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        this.fecha = LocalDate.parse(fecha, formatter);
+        this.estadoString = estadoString;
     }
 
     // Getters y Setters
@@ -78,6 +97,14 @@ public class EnvioDTO {
 
     public String getDireccionDestino() {
         return direccionDestino;
+    }
+
+    public LocalDate getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
     }
 
     public void setDireccionDestino(String direccionDestino) {
@@ -148,14 +175,6 @@ public class EnvioDTO {
         this.costeTotal = costeTotal;
     }
 
-    public LocalDate getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(LocalDate fecha) {
-        this.fecha = fecha;
-    }
-
     public String getNombreUsuario() {
         return nombreUsuario;
     }
@@ -172,11 +191,53 @@ public class EnvioDTO {
         this.usuarioId = usuarioId;
     }
 
+
     public Boolean getEsUrgente() {
         return esUrgente;
     }
 
     public void setEsUrgente(Boolean esUrgente) {
         this.esUrgente = esUrgente;
+
+    public String getEstadoString() {
+        if (this.estadoString != null) {
+            return this.estadoString;
+        }
+        return (this.estado != null) ? this.estado.getDisplayName() : "";
+    }
+
+    // Helpers para la vista (Thymeleaf Native Image friendly)
+    public boolean isAlmacenOPosterior() {
+        return !getEstadoString().isEmpty();
+    }
+
+    public boolean isRepartoOPosterior() {
+        String s = getEstadoString();
+        return !"EN ALMACEN".equals(s) && !s.isEmpty();
+    }
+
+    public boolean isFinalizado() {
+        String s = getEstadoString();
+        return (
+            "ENTREGADO".equals(s) ||
+            "AUSENTE".equals(s) ||
+            "RECHAZADO".equals(s)
+        );
+    }
+
+    public boolean isAusente() {
+        return "AUSENTE".equals(getEstadoString());
+    }
+
+    public boolean isRechazado() {
+        return "RECHAZADO".equals(getEstadoString());
+    }
+
+    public boolean isEntregadoExitoso() {
+        return !isAusente() && !isRechazado();
+    }
+
+    public void setEstadoString(String estadoString) {
+        this.estadoString = estadoString;
     }
 }

@@ -106,7 +106,7 @@ public class Envio {
     public Envio(String localizador, String direccionOrigen, String direccionDestino,
             String nombreComprador, BigDecimal peso, DistanciaEnum distancia,
             Integer numeroPaquetes, BigDecimal costeTotal, Usuario usuario,
-            TarifaDistancia tarifaDistancia, TarifaRangoPeso tarifaRangoPeso) {
+            TarifaDistancia tarifaDistancia, TarifaRangoPeso tarifaRangoPeso, LocalDate fecha) {
         this.localizador = localizador;
         this.direccionOrigen = direccionOrigen;
         this.direccionDestino = direccionDestino;
@@ -120,7 +120,7 @@ public class Envio {
         this.tarifaRangoPeso = tarifaRangoPeso;
         this.estado = EstadoEnum.PENDIENTE;
         this.fragil = false;
-        this.fecha = LocalDate.now();
+        this.fecha = fecha;
     }
 
     // Getters and Setters

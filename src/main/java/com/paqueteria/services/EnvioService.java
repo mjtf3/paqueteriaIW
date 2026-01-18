@@ -1,5 +1,15 @@
 package com.paqueteria.services;
 
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.paqueteria.dto.EnvioDTO;
+import com.paqueteria.model.Envio;
+import com.paqueteria.model.EstadoEnum;
+import com.paqueteria.repository.EnvioRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import com.paqueteria.utils.generadorCadenas;
@@ -11,11 +21,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.paqueteria.dto.CrearEnvioDTO;
-import com.paqueteria.dto.EnvioDTO;
 import com.paqueteria.model.DistanciaEnum;
 import com.paqueteria.model.Envio;
 import com.paqueteria.model.EstadoEnum;
@@ -49,6 +57,35 @@ public class EnvioService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+    public Optional<EnvioDTO> getTrackingInfo(String localizador) {
+        Optional<Envio> envioOpt = envioRepository.findByLocalizador(localizador);
+
+        if (envioOpt.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Envio envio = envioOpt.get();
+
+        String frontendStatus = mapEstadoToFrontendStatus(envio.getEstado());
+
+        EnvioDTO envioDTO = new EnvioDTO(
+            envio.getLocalizador(),
+            frontendStatus,
+            envio.getDireccionOrigen(),
+            envio.getDireccionDestino(),
+            envio.getFecha().format(DATE_FORMATTER)
+        );
+
+        return Optional.of(envioDTO);
+    }
+
+    public String mapEstadoToFrontendStatus(EstadoEnum estado) {
+        return (estado != null) ? estado.getDisplayName() : "EN ALMACEN";
+    }
+
     
 
 
@@ -84,7 +121,8 @@ public class EnvioService {
                 costeTotal,
                 usuario,
                 tarifaDistancia,
-                tarifaRangoPeso
+                tarifaRangoPeso,
+                dto.getFecha()
         );
 
         envio.setFragil(dto.getFragil());

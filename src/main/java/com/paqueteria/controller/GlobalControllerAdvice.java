@@ -4,7 +4,6 @@ import com.paqueteria.dto.UsuarioData;
 import com.paqueteria.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -17,9 +16,11 @@ public class GlobalControllerAdvice {
 
     @ModelAttribute
     public void addUsuarioToModel(Authentication authentication, Model model) {
-
-        if (authentication != null && authentication.isAuthenticated()
-                && !"anonymousUser".equals(authentication.getPrincipal())) {
+        if (
+            authentication != null &&
+            authentication.isAuthenticated() &&
+            !"anonymousUser".equals(authentication.getPrincipal())
+        ) {
             String correo = authentication.getName();
             UsuarioData usuario = usuarioService.findByCorreo(correo);
 
