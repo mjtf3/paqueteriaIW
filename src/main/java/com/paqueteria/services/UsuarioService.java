@@ -121,4 +121,22 @@ public class UsuarioService {
                 ))
                 .collect(Collectors.toList());
     }
+  
+    @Transactional
+    public void editUser(UsuarioData usuarioData) {
+        Usuario usuarioBD = usuarioRepository.findByCorreo(usuarioData.getCorreo()).orElse(null);
+        if (usuarioBD == null) {
+            throw new UsuarioServiceException("Usuario no encontrado");
+        }
+
+        usuarioBD.setNombre(usuarioData.getNombre());
+        usuarioBD.setApellidos(usuarioData.getApellidos());
+        usuarioBD.setTelefono(usuarioData.getTelefono());
+        usuarioBD.setApodo(usuarioData.getApodo());
+        usuarioBD.setNombreTienda(usuarioData.getNombreTienda());
+        usuarioBD.setPesoMaximo(usuarioData.getPesoMaximo());
+        usuarioBD.setActiva(usuarioData.getActiva());
+
+        usuarioRepository.save(usuarioBD);
+    }
 }
