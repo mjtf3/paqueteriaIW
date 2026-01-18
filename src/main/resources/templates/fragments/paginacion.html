@@ -11,18 +11,18 @@
 
         <!-- Botón Anterior -->
         <a th:if="${tienePrevio}"
-           th:href="@{${urlBase}(${otherParams} + {__${paramName}__: ${paginaPrevia}})}">Anterior</a>
+           th:href="@{${urlBase}(page=${paginaPrevia})}">Anterior</a>
 
         <!-- Números de página -->
         <span th:each="i : ${paginas}">
-            <a th:href="@{${urlBase}(${otherParams} + {__${paramName}__: ${i}})}"
+            <a th:href="@{${urlBase}(page=${i})}"
                th:text="${i + 1}"
                th:classappend="${i == paginaActual} ? 'active' : ''">1</a>
         </span>
 
         <!-- Botón Siguiente -->
         <a th:if="${tieneSiguiente}"
-           th:href="@{${urlBase}(${otherParams} + {__${paramName}__: ${paginaSiguiente}})}">Siguiente</a>
+           th:href="@{${urlBase}(page=${paginaSiguiente})}">Siguiente</a>
     </div>
 </body>
 </html>
