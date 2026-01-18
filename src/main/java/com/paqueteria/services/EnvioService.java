@@ -137,7 +137,20 @@ public class EnvioService {
     public Page<EnvioDTO> getEnviosPorEstado(EstadoEnum estado, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("fecha").ascending());
         Page<Envio> envios = envioRepository.findByEstado(estado, pageable);
-        return envios.map(envio -> modelMapper.map(envio, EnvioDTO.class));
+
+        LocalDate fechaActual = LocalDate.now();
+
+        return envios.map(envio -> {
+            EnvioDTO dto = modelMapper.map(envio, EnvioDTO.class);
+            // Calcular si es urgente (más de 4 días desde la fecha del envío)
+            if (envio.getFecha() != null) {
+                LocalDate fechaLimite = envio.getFecha().plusDays(4);
+                dto.setEsUrgente(fechaLimite.isBefore(fechaActual));
+            } else {
+                dto.setEsUrgente(false);
+            }
+            return dto;
+        });
     }
 
     public void asignarRepartidor(Integer envioId, Integer repartidorId) {

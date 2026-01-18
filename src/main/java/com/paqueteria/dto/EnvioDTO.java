@@ -51,8 +51,8 @@ public class EnvioDTO {
         this.fecha = envio.getFecha();
         this.usuarioId = envio.getUsuario().getId();
         this.nombreUsuario = envio.getUsuario().getNombre();
-        // Calcular si es urgente
-        this.esUrgente = envio.getFecha().plusDays(5).isBefore(LocalDate.now());
+        // NO calcular esUrgente aquí - se hará en el servicio
+        this.esUrgente = false;
     }
 
     public EnvioDTO(

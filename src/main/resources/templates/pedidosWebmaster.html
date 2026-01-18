@@ -243,10 +243,10 @@
                     </thead>
                     <tbody>
                         <tr th:each="envio : ${ausentesContent}"
-                            th:classappend="${envio.fecha.plusDays(4).isBefore(T(java.time.LocalDate).now())} ? 'urgente' : ''">
+                            th:classappend="${envio.esUrgente} ? 'urgente' : ''">
                             <td th:text="${envio.localizador}">1</td>
-                            <td th:text="${#temporals.format(envio.fecha, 'dd/MM/yyyy')}">01/12/2025</td>
-                            <td th:text="${envio.direccionDestino}">Mi casa</td>
+                            <td th:text="${envio.fecha != null ? #temporals.format(envio.fecha, 'dd/MM/yyyy') : '-'}">01/12/2025</td>
+                            <td th:text="${envio.direccionDestino ?: '-'}">Mi casa</td>
                             <td th:text="${envio.peso}">27</td>
                             <td>
                                 <select th:id="'repartidor-ausente-' + ${envio.id}" class="repartidor-select">
@@ -259,7 +259,7 @@
                             </td>
                             <td>
                                 <button class="btn-asignar"
-                                        th:onclick="'mostrarConfirmacion(' + ${envio.id} + ', \'ausente\')'">
+                                        th:onclick="|mostrarConfirmacion(${envio.id}, 'ausente')|">
                                     Asignar
                                 </button>
                             </td>
@@ -277,7 +277,7 @@
                     <span th:each="i : ${#numbers.sequence(0, ausentes.totalPages - 1)}">
                         <a th:href="@{/webmaster/pedidos(pageAusentes=${i}, pageRechazados=${pageRechazados}, pagePendientes=${pagePendientes})}"
                            th:text="${i + 1}"
-                           th:classappend="${i == ausentes.number} ? 'active' : ''">1</a>
+                           th:class="${i == ausentes.number} ? 'active' : ''">1</a>
                     </span>
                     <a th:if="${ausentes.number < ausentes.totalPages - 1}"
                        th:href="@{/webmaster/pedidos(pageAusentes=${ausentes.number + 1}, pageRechazados=${pageRechazados}, pagePendientes=${pagePendientes})}">Siguiente</a>
@@ -302,10 +302,10 @@
                     </thead>
                     <tbody>
                         <tr th:each="envio : ${rechazadosContent}"
-                            th:classappend="${envio.fecha.plusDays(4).isBefore(T(java.time.LocalDate).now())} ? 'urgente' : ''">
+                            th:classappend="${envio.esUrgente} ? 'urgente' : ''">
                             <td th:text="${envio.localizador}">1</td>
-                            <td th:text="${#temporals.format(envio.fecha, 'dd/MM/yyyy')}">01/12/2025</td>
-                            <td th:text="${envio.direccionDestino}">Mi casa</td>
+                            <td th:text="${envio.fecha != null ? #temporals.format(envio.fecha, 'dd/MM/yyyy') : '-'}">01/12/2025</td>
+                            <td th:text="${envio.direccionDestino ?: '-'}">Mi casa</td>
                             <td th:text="${envio.peso}">27</td>
                             <td>
                                 <select th:id="'repartidor-rechazado-' + ${envio.id}" class="repartidor-select">
@@ -318,7 +318,7 @@
                             </td>
                             <td>
                                 <button class="btn-asignar"
-                                        th:onclick="'mostrarConfirmacion(' + ${envio.id} + ', \'rechazado\')'">
+                                        th:onclick="|mostrarConfirmacion(${envio.id}, 'rechazado')|">
                                     Asignar
                                 </button>
                             </td>
@@ -336,7 +336,7 @@
                     <span th:each="i : ${#numbers.sequence(0, rechazados.totalPages - 1)}">
                         <a th:href="@{/webmaster/pedidos(pageAusentes=${pageAusentes}, pageRechazados=${i}, pagePendientes=${pagePendientes})}"
                            th:text="${i + 1}"
-                           th:classappend="${i == rechazados.number} ? 'active' : ''">1</a>
+                           th:class="${i == rechazados.number} ? 'active' : ''">1</a>
                     </span>
                     <a th:if="${rechazados.number < rechazados.totalPages - 1}"
                        th:href="@{/webmaster/pedidos(pageAusentes=${pageAusentes}, pageRechazados=${rechazados.number + 1}, pagePendientes=${pagePendientes})}">Siguiente</a>
@@ -361,10 +361,10 @@
                     </thead>
                     <tbody>
                         <tr th:each="envio : ${pendientesContent}"
-                            th:classappend="${envio.fecha.plusDays(4).isBefore(T(java.time.LocalDate).now())} ? 'urgente' : ''">
+                            th:classappend="${envio.esUrgente} ? 'urgente' : ''">
                             <td th:text="${envio.localizador}">1</td>
-                            <td th:text="${#temporals.format(envio.fecha, 'dd/MM/yyyy')}">01/12/2025</td>
-                            <td th:text="${envio.direccionDestino}">Mi casa</td>
+                            <td th:text="${envio.fecha != null ? #temporals.format(envio.fecha, 'dd/MM/yyyy') : '-'}">01/12/2025</td>
+                            <td th:text="${envio.direccionDestino ?: '-'}">Mi casa</td>
                             <td th:text="${envio.peso}">27</td>
                             <td>
                                 <select th:id="'repartidor-pendiente-' + ${envio.id}" class="repartidor-select">
@@ -377,7 +377,7 @@
                             </td>
                             <td>
                                 <button class="btn-asignar"
-                                        th:onclick="'mostrarConfirmacion(' + ${envio.id} + ', \'pendiente\')'">
+                                        th:onclick="|mostrarConfirmacion(${envio.id}, 'pendiente')|">
                                     Asignar
                                 </button>
                             </td>
@@ -395,7 +395,7 @@
                     <span th:each="i : ${#numbers.sequence(0, pendientes.totalPages - 1)}">
                         <a th:href="@{/webmaster/pedidos(pageAusentes=${pageAusentes}, pageRechazados=${pageRechazados}, pagePendientes=${i})}"
                            th:text="${i + 1}"
-                           th:classappend="${i == pendientes.number} ? 'active' : ''">1</a>
+                           th:class="${i == pendientes.number} ? 'active' : ''">1</a>
                     </span>
                     <a th:if="${pendientes.number < pendientes.totalPages - 1}"
                        th:href="@{/webmaster/pedidos(pageAusentes=${pageAusentes}, pageRechazados=${pageRechazados}, pagePendientes=${pendientes.number + 1})}">Siguiente</a>
@@ -414,13 +414,18 @@
         </div>
     </div>
 
-    <script>
+    <script th:inline="javascript">
         let envioSeleccionado = null;
-        let tipoSeleccionado = null;
 
         function mostrarConfirmacion(envioId, tipo) {
             const selectId = 'repartidor-' + tipo + '-' + envioId;
             const select = document.getElementById(selectId);
+
+            if (!select) {
+                alert('Error: No se encontró el selector de repartidor');
+                return;
+            }
+
             const repartidorId = select.value;
 
             if (!repartidorId) {
@@ -431,7 +436,6 @@
             const repartidorNombre = select.options[select.selectedIndex].text;
 
             envioSeleccionado = { envioId: envioId, repartidorId: repartidorId };
-            tipoSeleccionado = tipo;
 
             const modal = document.getElementById('confirmModal');
             const mensaje = modal.querySelector('p');
@@ -443,7 +447,6 @@
         function cerrarModal() {
             document.getElementById('confirmModal').style.display = 'none';
             envioSeleccionado = null;
-            tipoSeleccionado = null;
         }
 
         function confirmarAsignacion() {
@@ -471,20 +474,20 @@
                     alert('Repartidor asignado correctamente');
                     location.reload();
                 } else {
-                    // Mostrar el mensaje de error completo
                     alert(data);
                 }
             })
-            .catch(error => {
+            .catch(function(error) {
                 cerrarModal();
                 alert('Error de conexión al asignar repartidor');
+                console.error('Error:', error);
             });
         }
 
         // Cerrar modal al hacer clic fuera de él
         window.onclick = function(event) {
             const modal = document.getElementById('confirmModal');
-            if (event.target == modal) {
+            if (event.target === modal) {
                 cerrarModal();
             }
         }

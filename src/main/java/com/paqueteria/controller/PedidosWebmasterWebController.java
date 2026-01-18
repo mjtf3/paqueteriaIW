@@ -56,6 +56,9 @@ public class PedidosWebmasterWebController {
         model.addAttribute("pageRechazados", pageRechazados);
         model.addAttribute("pagePendientes", pagePendientes);
 
+        // Añadir fecha actual para comparaciones (evitar T(java.time.LocalDate) en templates)
+        model.addAttribute("fechaActual", java.time.LocalDate.now());
+
         return "pedidosWebmaster";
     }
 
