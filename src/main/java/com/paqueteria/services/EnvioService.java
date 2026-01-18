@@ -107,7 +107,8 @@ public class EnvioService {
                 costeTotal,
                 usuario,
                 tarifaDistancia,
-                tarifaRangoPeso
+                tarifaRangoPeso,
+                dto.getFecha()
         );
 
         envio.setFragil(dto.getFragil());
