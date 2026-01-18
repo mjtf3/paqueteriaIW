@@ -1,10 +1,13 @@
 package com.paqueteria.services;
 
 import com.paqueteria.dto.ApiData;
+import com.paqueteria.dto.RepartidorDTO;
 import com.paqueteria.dto.UsuarioData;
 import com.paqueteria.model.Usuario;
 import com.paqueteria.model.API;
+import com.paqueteria.model.TipoEnum;
 import com.paqueteria.repository.UsuarioRepository;
+import com.paqueteria.repository.EnvioRepository;
 import com.paqueteria.utils.generadorCadenas;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,10 +15,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UsuarioService {
@@ -28,6 +34,9 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private EnvioRepository envioRepository;
 
     @Transactional
     public UsuarioData registrar(UsuarioData usuario) {
@@ -99,6 +108,20 @@ public class UsuarioService {
         usuarioRepository.save(usuarioBD);
     }
 
+    @Transactional(readOnly = true)
+    public List<RepartidorDTO> getRepartidoresActivos() {
+        List<Usuario> repartidores = usuarioRepository.findByTipoAndActivaTrue(TipoEnum.REPARTIDOR);
+        return repartidores.stream()
+                .map(rep -> new RepartidorDTO(
+                        rep.getId(),
+                        rep.getApodo(),
+                        rep.getNombre(),
+                        rep.getApellidos(),
+                        rep.getPesoMaximo()
+                ))
+                .collect(Collectors.toList());
+    }
+  
     @Transactional
     public void editUser(UsuarioData usuarioData) {
         Usuario usuarioBD = usuarioRepository.findByCorreo(usuarioData.getCorreo()).orElse(null);

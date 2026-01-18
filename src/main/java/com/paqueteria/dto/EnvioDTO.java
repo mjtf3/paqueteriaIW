@@ -29,6 +29,7 @@ public class EnvioDTO {
 
     private String nombreUsuario;
     private Integer usuarioId;
+    private Boolean esUrgente; // true si han pasado más de 5 días
 
     // Constructor vacío
     public EnvioDTO() {}
@@ -50,6 +51,8 @@ public class EnvioDTO {
         this.fecha = envio.getFecha();
         this.usuarioId = envio.getUsuario().getId();
         this.nombreUsuario = envio.getUsuario().getNombre();
+        // NO calcular esUrgente aquí - se hará en el servicio
+        this.esUrgente = false;
     }
 
     public EnvioDTO(
@@ -188,6 +191,14 @@ public class EnvioDTO {
         this.usuarioId = usuarioId;
     }
 
+
+    public Boolean getEsUrgente() {
+        return esUrgente;
+    }
+
+    public void setEsUrgente(Boolean esUrgente) {
+        this.esUrgente = esUrgente;
+    }
     public String getEstadoString() {
         if (this.estadoString != null) {
             return this.estadoString;

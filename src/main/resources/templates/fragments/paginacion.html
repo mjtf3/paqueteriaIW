@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Paginación</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <!-- Fragmento de paginación genérico y reutilizable -->
+    <div th:fragment="paginacion(page, urlBase, params)"
+         class="pagination"
+         th:if="${page.totalPages > 1}">
+
+        <!-- Botón Anterior -->
+        <a th:if="${page.number > 0}"
+           th:href="@{${urlBase}(${params} + {pageNumber: page.number - 1})}">Anterior</a>
+
+        <!-- Números de página -->
+        <span th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}">
+            <a th:href="@{${urlBase}(${params} + {pageNumber: i})}"
+               th:text="${i + 1}"
+               th:classappend="${i == page.number} ? 'active' : ''">1</a>
+        </span>
+
+        <!-- Botón Siguiente -->
+        <a th:if="${page.number < page.totalPages - 1}"
+           th:href="@{${urlBase}(${params} + {pageNumber: page.number + 1})}">Siguiente</a>
+    </div>
+</body>
+</html>
+
