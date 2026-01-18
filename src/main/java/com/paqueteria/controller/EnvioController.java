@@ -2,6 +2,7 @@ package com.paqueteria.controller;
 
 import com.paqueteria.dto.CrearEnvioDTO;
 import com.paqueteria.dto.EnvioDTO;
+import com.paqueteria.dto.EnvioRespuestaDTO;
 import com.paqueteria.model.DistanciaEnum;
 import com.paqueteria.model.Envio;
 import com.paqueteria.model.EstadoEnum;
@@ -125,7 +126,7 @@ public class EnvioController {
     @PostMapping({ "/api/envio", "/api/envios" })
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    public EnvioDTO crearEnvio(
+    public EnvioRespuestaDTO crearEnvio(
         @RequestHeader("X-API-Key") String apiKey,
         @Valid @RequestBody(required = false) CrearEnvioDTO dto
     ) {
@@ -134,7 +135,12 @@ public class EnvioController {
         if (dto == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Body no puede estar vacío");
         }
-
-        return envioService.crearEnvio(dto, usuario.getId());
+        EnvioDTO envioCompleto = envioService.crearEnvio(dto, usuario.getId());
+        EnvioRespuestaDTO envioADevolver = new EnvioRespuestaDTO(
+            envioCompleto.getLocalizador(),
+            envioCompleto.getFecha()
+        );
+        envioADevolver.setLocalizador(envioCompleto.getLocalizador());
+        return envioADevolver;
     }
 }
