@@ -136,8 +136,8 @@ ON CONFLICT (correo) DO UPDATE SET
 -- 4. Insertamos envíos de ejemplo con diferentes estados
 -- Envío EN ALMACÉN (PENDIENTE)
 INSERT INTO envio (localizador, direccion_origen, direccion_destino, estado, nombre_comprador, peso, distancia, fragil, numero_paquetes, coste_total, fecha, usuario_id, tarifa_distancia_id, tarifa_rango_peso_id, nota) VALUES
-                                                                                                                                                                                                                              ('ENV-2024-001', 'Calle Mayor 123, Madrid', 'Avenida Libertad 45, Barcelona', 'PENDIENTE', 'Carlos Ruiz', 2.5, 'NACIONAL', false, 1, 17.00, '2024-01-16', -1, 3, 2, 'Entregar antes de las 18:00'),
-                                                                                                                                                                                                                              ('ENV-2024-002', 'Plaza España 10, Sevilla', 'Calle Real 8, Málaga', 'PENDIENTE', 'Ana Martín', 0.8, 'CIUDAD', true, 1, 7.00, '2024-01-16', -1, 1, 1, 'Frágil - Manejar con cuidado')
+    ('ENV-2024-001', 'Calle Mayor 123, Madrid', 'Avenida Libertad 45, Barcelona', 'RUTA', 'Carlos Ruiz', 2.5, 'NACIONAL', false, 6, 17.00, '2024-01-16', 3, 3, 2, 'Entregar antes de las 18:00'),
+    ('ENV-2024-002', 'Plaza España 10, Sevilla', 'Calle Real 8, Málaga', 'RUTA', 'Ana Martín', 0.8, 'CIUDAD', true, 1, 7.00, '2024-01-16', 3, 1, 1, 'Frágil - Manejar con cuidado')
 ON CONFLICT (localizador) DO UPDATE SET
     direccion_origen = EXCLUDED.direccion_origen,
     direccion_destino = EXCLUDED.direccion_destino,

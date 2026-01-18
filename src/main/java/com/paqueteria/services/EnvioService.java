@@ -16,6 +16,8 @@ import com.paqueteria.utils.generadorCadenas;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+import java.util.List;
+import java.util.ArrayList;
 
 import com.paqueteria.dto.CrearEnvioDTO;
 import com.paqueteria.model.DistanciaEnum;
@@ -44,7 +46,61 @@ public class EnvioService {
     @Autowired
     private ModelMapper modelMapper;
 
+    public List<EnvioDTO> obtenerEnviosPorRepartidorTodosEstados(Long repartidorId) {
+        List<Envio> envios = envioRepository.findAll();
+        List<EnvioDTO> resultado = new ArrayList<>();
+        for (Envio envio : envios) {
+            if (envio.getUsuario() != null && envio.getUsuario().getId().equals(repartidorId.intValue())) {
+                resultado.add(new EnvioDTO(envio));
+            }
+        }
+        return resultado;
+    }
+
+    public int contarPaquetesPendientesRepartidor(Integer repartidorId) {
+        return (int) envioRepository.findAll().stream()
+                .filter(e -> e.getUsuario().getId().equals(repartidorId))
+                .filter(e -> e.getEstado() == EstadoEnum.RUTA)
+                .count();
+    }
+
+    public List<EnvioDTO> obtenerEnviosPorRepartidor(Long repartidorId) {
+        List<Envio> envios = envioRepository.findAll();
+        List<EnvioDTO> resultado = new ArrayList<>();
+        for (Envio envio : envios) {
+            if (envio.getUsuario() != null && envio.getUsuario().getId().equals(repartidorId.intValue()) &&
+                (envio.getEstado() == EstadoEnum.PENDIENTE || envio.getEstado() == EstadoEnum.RUTA)) {
+                resultado.add(new EnvioDTO(envio));
+            }
+        }
+        return resultado;
+    }
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+        public void cambiarEstadoEnvio(Integer envioId, String estado) {
+            Optional<Envio> envioOpt = envioRepository.findById(envioId);
+            if (envioOpt.isPresent()) {
+                Envio envio = envioOpt.get();
+                EstadoEnum nuevoEstado;
+                switch (estado.toUpperCase()) {
+                    case "RECHAZADO":
+                        nuevoEstado = EstadoEnum.RECHAZADO;
+                        break;
+                    case "AUSENTE":
+                        nuevoEstado = EstadoEnum.AUSENTE;
+                        break;
+                    case "ENTREGADO":
+                        nuevoEstado = EstadoEnum.ENTREGADO;
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Estado no válido");
+                }
+                envio.setEstado(nuevoEstado);
+                envioRepository.save(envio);
+            } else {
+                throw new IllegalArgumentException("Envío no encontrado");
+            }
+        }
 
     public Optional<EnvioDTO> getTrackingInfo(String localizador) {
         Optional<Envio> envioOpt = envioRepository.findByLocalizador(localizador);

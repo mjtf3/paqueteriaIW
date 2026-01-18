@@ -40,6 +40,13 @@ public class EnvioController {
 
     @Autowired
     private ApiService apiService;
+        @PostMapping("/envio/estado")
+    public String cambiarEstadoEnvio(@RequestParam("envioId") Integer envioId,
+                                     @RequestParam("estado") String estado,
+                                     @RequestParam("repartidorId") Long repartidorId) {
+        envioService.cambiarEstadoEnvio(envioId, estado);
+        return "redirect:/ruta?repartidorId=" + repartidorId;
+    }
 
     // Endpoint para la vista web (HTML)
 

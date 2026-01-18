@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ruta del Repartidor</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header('ruta')}"></div>
+    <div class="main-content" style="display: flex; flex-direction: column; align-items: center; min-height: 80vh; background: #b0b0b0;">
+        <h2 style="font-size: 2em; font-weight: bold; margin: 1em 0; color: #222;">Ruta</h2>
+        <div th:if="${envios != null and !envios.isEmpty()}">
+            <div class="envio-card" style="background: #d1d3d6; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 2em; margin-bottom: 2em; min-width: 400px; max-width: 600px;">
+                <div style="display: flex; align-items: center; gap: 1em; margin-bottom: 1em;">
+                    <div style="width: 60px; height: 60px; background: #f3f3f3; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2em;"></div>
+                    <span style="font-size: 1.3em; font-weight: bold;" th:text="${envios.get(0).nombreComprador}"></span>
+                </div>
+                <div style="margin-bottom: 1em;">
+                    <span th:text="${envios.get(0).direccionDestino}"></span>
+                </div>
+                <div style="display: flex; gap: 2em; margin-bottom: 1em;">
+                    <div>
+                        <div>Localizador</div>
+                        <div th:text="${envios.get(0).localizador}"></div>
+                    </div>
+                    <div>
+                        <div>Peso</div>
+                        <div th:text="${envios.get(0).peso}"></div>
+                    </div>
+                    <div>
+                        <div>Distancia</div>
+                        <div th:text="${envios.get(0).distancia}"></div>
+                    </div>
+                    <div>
+                        <div>Frágil</div>
+                        <div th:text="${envios.get(0).fragil ? 'Sí' : 'No'}"></div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 1em;">
+                    <div>Notas extra</div>
+                    <div th:text="${envios.get(0).nota}"></div>
+                </div>
+                <form th:action="@{/envio/estado}" method="post" style="display: flex; gap: 1em; justify-content: center;">
+                    <input type="hidden" name="envioId" th:value="${envios.get(0).id}" />
+                    <input type="hidden" name="repartidorId" th:value="${repartidorId}" />
+                    <button type="submit" name="estado" value="RECHAZADO" style="background-color:#f25c5c; color:#222; border:none; border-radius:8px; padding:0.8em 2em; font-size:1.1em;">Rechazado</button>
+                    <button type="submit" name="estado" value="AUSENTE" style="background-color:#ffe25c; color:#222; border:none; border-radius:8px; padding:0.8em 2em; font-size:1.1em;">Ausente</button>
+                    <button type="submit" name="estado" value="ENTREGADO" style="background-color:#2d5be3; color:#fff; border:none; border-radius:8px; padding:0.8em 2em; font-size:1.1em;">Entregado</button>
+                </form>
+            </div>
+        </div>
+        <div th:if="${envios == null or envios.isEmpty()}">
+            <h3 style="color: #222;">No hay más envíos pendientes en la ruta.</h3>
+        </div>
+        <form th:action="@{/ruta/finalizar}" method="get" style="margin-top: 2em;">
+            <input type="hidden" name="repartidorId" th:value="${repartidorId}" />
+            <button type="submit" style="background-color:#f25c5c; color:#222; border:none; border-radius:8px; padding:0.8em 2em; font-size:1.1em;">Finalizar ruta</button>
+        </form>
+    </div>
+</body>
+</html>

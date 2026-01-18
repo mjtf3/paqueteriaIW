@@ -67,7 +67,7 @@ public class LoginController {
         return switch (usuario.getTipo()) {
             case CLIENTE -> "redirect:/tienda/" + usuario.getId() + "/apikey";
             case WEBMASTER -> "redirect:/";
-            case REPARTIDOR -> "redirect:/";
+            case REPARTIDOR -> "redirect:/repartidor/inicio";
             default -> "redirect:/";
         };
     }
