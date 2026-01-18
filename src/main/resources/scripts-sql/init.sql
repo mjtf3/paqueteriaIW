@@ -146,7 +146,18 @@ VALUES (
            true,
            NULL,
            75.00
-       );
+       )
+ON CONFLICT (correo) DO UPDATE SET
+    apodo = EXCLUDED.apodo,
+    nombre = EXCLUDED.nombre,
+    apellidos = EXCLUDED.apellidos,
+    tipo = EXCLUDED.tipo,
+    telefono = EXCLUDED.telefono,
+    contrasena = EXCLUDED.contrasena,
+    fecha_creacion = EXCLUDED.fecha_creacion,
+    activa = EXCLUDED.activa,
+    nombre_tienda = EXCLUDED.nombre_tienda,
+    peso_maximo = EXCLUDED.peso_maximo;
 
 INSERT INTO usuario (apodo, nombre, apellidos, tipo, correo, telefono, contrasena, fecha_creacion, activa, nombre_tienda, peso_maximo)
 VALUES (
@@ -161,7 +172,18 @@ VALUES (
            true,
            NULL,
            60.00
-       );
+       )
+ON CONFLICT (correo) DO UPDATE SET
+    apodo = EXCLUDED.apodo,
+    nombre = EXCLUDED.nombre,
+    apellidos = EXCLUDED.apellidos,
+    tipo = EXCLUDED.tipo,
+    telefono = EXCLUDED.telefono,
+    contrasena = EXCLUDED.contrasena,
+    fecha_creacion = EXCLUDED.fecha_creacion,
+    activa = EXCLUDED.activa,
+    nombre_tienda = EXCLUDED.nombre_tienda,
+    peso_maximo = EXCLUDED.peso_maximo;
 
 -- ENVÍOS DE PRUEBA
 -- Nota: Asumiendo que los IDs de usuario son 1 (Webmaster), 2 (Repartidor), 3 (Cliente/Tienda), 4 (Pedro), 5 (Ana)

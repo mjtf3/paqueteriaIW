@@ -198,7 +198,7 @@ public class EnvioDTO {
 
     public void setEsUrgente(Boolean esUrgente) {
         this.esUrgente = esUrgente;
-
+    }
     public String getEstadoString() {
         if (this.estadoString != null) {
             return this.estadoString;
