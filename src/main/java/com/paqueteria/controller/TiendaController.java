@@ -113,6 +113,16 @@ public class TiendaController {
         return "tiendaInfoView";
     }
 
+    @GetMapping("/info/data")
+    @ResponseBody
+    public UsuarioData infoData(@PathVariable(value = "id") Integer idTienda) {
+        UsuarioData usuarioData = usuarioService.findById(idTienda);
+        if (usuarioData == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tienda no encontrada");
+        }
+        return usuarioData;
+    }
+
     @GetMapping("/info/editar")
     public String editarPage(@PathVariable(value = "id") Integer idTienda, Authentication authentication, Model model) {
         UsuarioData usuarioData = usuarioService.findByCorreo(authentication.getName());

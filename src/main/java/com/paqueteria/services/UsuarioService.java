@@ -14,6 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -61,6 +65,13 @@ public class UsuarioService {
     @Transactional
     public UsuarioData findByCorreo(String correo) {
         Usuario usuarioBD = usuarioRepository.findByCorreo(correo).orElse(null);
+        if (usuarioBD == null) {return null;}
+        return modelMapper.map(usuarioBD,UsuarioData.class);
+    }
+
+    @Transactional
+    public UsuarioData findById(Integer id) {
+        Usuario usuarioBD = usuarioRepository.findById(id).orElse(null);
         if (usuarioBD == null) {return null;}
         return modelMapper.map(usuarioBD,UsuarioData.class);
     }
@@ -138,5 +149,36 @@ public class UsuarioService {
         usuarioBD.setActiva(usuarioData.getActiva());
 
         usuarioRepository.save(usuarioBD);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<UsuarioData> getTiendasPaginadas(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("nombreTienda").ascending());
+        Page<Usuario> tiendas = usuarioRepository.findByTipo(TipoEnum.CLIENTE, pageable);
+        return tiendas.map(tienda -> {
+            UsuarioData data = modelMapper.map(tienda, UsuarioData.class);
+            // Calcular y asignar el número de envíos de esta tienda
+            long numEnvios = envioRepository.countByUsuarioId(tienda.getId());
+            data.setNumeroEnvios((int) numEnvios);
+            return data;
+        });
+    }
+
+    @Transactional
+    public void eliminarTienda(Integer tiendaId) {
+        Usuario tienda = usuarioRepository.findById(tiendaId)
+                .orElseThrow(() -> new UsuarioServiceException("Tienda no encontrada"));
+
+        if (tienda.getTipo() != TipoEnum.CLIENTE) {
+            throw new UsuarioServiceException("El usuario no es una tienda");
+        }
+
+        // Verificar si tiene envíos asociados
+        long enviosCount = envioRepository.countByUsuarioId(tiendaId);
+        if (enviosCount > 0) {
+            throw new UsuarioServiceException("No se puede eliminar la tienda porque tiene " + enviosCount + " envíos asociados");
+        }
+
+        usuarioRepository.delete(tienda);
     }
 }

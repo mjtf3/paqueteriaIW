@@ -26,6 +26,7 @@ public class UsuarioData {
     private LocalDate fechaCreacion;
     private BigDecimal pesoMaximo;
     private Boolean activa = true;
+    private Integer numeroEnvios;
 
     public Integer getId() {
         return id;
@@ -121,6 +122,14 @@ public class UsuarioData {
 
     public void setActiva(Boolean activa) {
         this.activa = activa;
+    }
+
+    public Integer getNumeroEnvios() {
+        return numeroEnvios;
+    }
+
+    public void setNumeroEnvios(Integer numeroEnvios) {
+        this.numeroEnvios = numeroEnvios;
     }
 
     public Boolean isAdmin() {
