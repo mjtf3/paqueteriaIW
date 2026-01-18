@@ -264,7 +264,7 @@
                                 </button>
                             </td>
                         </tr>
-                        <tr th:if="${#lists.isEmpty(ausentesContent)}">
+                        <tr th:if="${ausentesVacio}">
                             <td colspan="6" style="text-align: center;">No hay envíos ausentes</td>
                         </tr>
                     </tbody>
@@ -323,7 +323,7 @@
                                 </button>
                             </td>
                         </tr>
-                        <tr th:if="${#lists.isEmpty(rechazadosContent)}">
+                        <tr th:if="${rechazadosVacio}">
                             <td colspan="6" style="text-align: center;">No hay envíos rechazados</td>
                         </tr>
                     </tbody>
@@ -382,7 +382,7 @@
                                 </button>
                             </td>
                         </tr>
-                        <tr th:if="${#lists.isEmpty(pendientesContent)}">
+                        <tr th:if="${pendientesVacio}">
                             <td colspan="6" style="text-align: center;">No hay envíos pendientes</td>
                         </tr>
                     </tbody>

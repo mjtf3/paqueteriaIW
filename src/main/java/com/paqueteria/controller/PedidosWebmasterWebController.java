@@ -51,6 +51,11 @@ public class PedidosWebmasterWebController {
         model.addAttribute("pendientesContent", pendientesPage.getContent());
         model.addAttribute("repartidores", repartidores);
 
+        // Añadir banderas de listas vacías (evitar problemas de reflexión en GraalVM)
+        model.addAttribute("ausentesVacio", ausentesPage.getContent().isEmpty());
+        model.addAttribute("rechazadosVacio", rechazadosPage.getContent().isEmpty());
+        model.addAttribute("pendientesVacio", pendientesPage.getContent().isEmpty());
+
         // Añadir valores actuales de paginación para mantener el estado
         model.addAttribute("pageAusentes", pageAusentes);
         model.addAttribute("pageRechazados", pageRechazados);
