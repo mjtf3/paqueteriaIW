@@ -23,4 +23,8 @@ public interface EnvioRepository extends JpaRepository<Envio, Integer> {
         @Param("repartidorId") Integer repartidorId,
         @Param("fecha") LocalDate fecha
     );
+
+    // Verificar si existen envíos urgentes (más de 5 días) en estados pendientes
+    @Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END FROM Envio e WHERE e.fecha < :fechaLimite AND e.estado IN ('PENDIENTE', 'AUSENTE', 'RECHAZADO')")
+    boolean existeEnviosUrgentes(@Param("fechaLimite") LocalDate fechaLimite);
 }

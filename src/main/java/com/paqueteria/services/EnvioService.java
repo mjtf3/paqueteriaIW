@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -96,7 +97,7 @@ public class EnvioService {
     }
 
     public Page<Envio> getEnviosPorEstado(EstadoEnum estado, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("fecha").ascending());
         return envioRepository.findByEstado(estado, pageable);
     }
 
@@ -107,10 +108,26 @@ public class EnvioService {
         Usuario repartidor = usuarioRepository.findById(repartidorId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Repartidor no encontrado"));
 
-        LocalDate fechaEnvio = LocalDate.now();
+        LocalDate fechaRuta = LocalDate.now(); // Usar la fecha actual para la ruta
+
+        // Verificar si el envío actual es urgente (más de 5 días)
+        boolean esEnvioUrgente = envio.getFecha().plusDays(4).isBefore(LocalDate.now());
+
+        // Si el envío NO es urgente, verificar si hay envíos urgentes pendientes
+        if (!esEnvioUrgente) {
+            // Buscar envíos urgentes en estados PENDIENTE, AUSENTE o RECHAZADO
+            boolean hayEnviosUrgentes = envioRepository.existeEnviosUrgentes(LocalDate.now().minusDays(4));
+
+            if (hayEnviosUrgentes) {
+                throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "No se pueden asignar pedidos no urgentes mientras existan pedidos urgentes pendientes. Por favor, procese primero los pedidos urgentes."
+                );
+            }
+        }
 
         // Calcular peso ya asignado al repartidor en esta fecha
-        BigDecimal pesoAsignado = envioRepository.calcularPesoAsignadoPorRepartidorYFecha(repartidorId, fechaEnvio);
+        BigDecimal pesoAsignado = envioRepository.calcularPesoAsignadoPorRepartidorYFecha(repartidorId, fechaRuta);
         BigDecimal pesoDisponible = repartidor.getPesoMaximo().subtract(pesoAsignado);
 
         // Validar que el repartidor puede aceptar este envío
@@ -122,13 +139,12 @@ public class EnvioService {
         }
 
         // Buscar o crear ruta para el repartidor en esta fecha
-        Ruta ruta = rutaRepository.findByUsuarioAndFecha(repartidor, fechaEnvio)
+        Ruta ruta = rutaRepository.findByUsuarioAndFecha(repartidor, fechaRuta)
                 .orElseGet(() -> {
-                    Ruta nuevaRuta = new Ruta(fechaEnvio, repartidor);
+                    Ruta nuevaRuta = new Ruta(fechaRuta, repartidor);
                     return rutaRepository.save(nuevaRuta);
                 });
-        ruta.addEnvio(envio);
-        rutaRepository.save(ruta);
+
         envio.setRuta(ruta);
         envio.setEstado(EstadoEnum.RUTA);
         envioRepository.save(envio);

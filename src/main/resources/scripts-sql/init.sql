@@ -137,8 +137,8 @@ VALUES
 ('PEND-002-2026', 'Gran Vía 45, Madrid', 'Calle Serrano 89, Madrid', 'PENDIENTE', 'Carlos Ruiz', 'Piso 3º derecha', 15.0, 'CIUDAD', false, 2, 70.0, '2026-01-16', 3, 1, 2),
 ('PEND-003-2026', 'Plaza España 12, Madrid', 'Calle Alcalá 156, Madrid', 'PENDIENTE', 'Marta Jiménez', NULL, 8.2, 'CIUDAD', true, 1, 60.0, '2026-01-16', 3, 1, 1),
 ('PEND-004-2026', 'Calle Toledo 67, Madrid', 'Paseo de la Castellana 200, Madrid', 'PENDIENTE', 'Roberto Sánchez', 'Llamar al llegar', 25.5, 'CIUDAD', false, 3, 85.0, '2026-01-17', 3, 1, 3),
-('PEND-005-2026', 'Avenida América 34, Madrid', 'Calle Princesa 78, Madrid', 'PENDIENTE', 'Isabel Torres', NULL, 12.0, 'CIUDAD', false, 1, 70.0, '2026-01-17', 3, 1, 2),
-('PEND-006-2026', 'Calle Bravo Murillo 123, Madrid', 'Glorieta de Bilbao 5, Madrid', 'PENDIENTE', 'Francisco Díaz', 'Frágil - manipular con cuidado', 7.8, 'CIUDAD', true, 1, 60.0, '2026-01-17', 3, 1, 1),
+('PEND-005-2026', 'Avenida América 34, Madrid', 'Calle Princesa 78, Madrid', 'PENDIENTE', 'Isabel Torres', NULL, 12.0, 'CIUDAD', false, 1, 70.0, '2026-01-13', 3, 1, 2),
+('PEND-006-2026', 'Calle Bravo Murillo 123, Madrid', 'Glorieta de Bilbao 5, Madrid', 'PENDIENTE', 'Francisco Díaz', 'Frágil - manipular con cuidado', 7.8, 'CIUDAD', true, 1, 60.0, '2026-01-14', 3, 1, 1),
 ('PEND-007-2026', 'Calle Goya 56, Madrid', 'Calle Velázquez 90, Madrid', 'PENDIENTE', 'Carmen Moreno', NULL, 18.5, 'CIUDAD', false, 2, 70.0, '2026-01-17', 3, 1, 2),
 ('PEND-008-2026', 'Paseo Recoletos 12, Madrid', 'Calle Fuencarral 145, Madrid', 'PENDIENTE', 'Alberto Castro', 'Portón negro', 22.0, 'CIUDAD', false, 1, 85.0, '2026-01-17', 3, 1, 3),
 ('PEND-009-2026', 'Calle Atocha 89, Madrid', 'Plaza Cibeles 1, Madrid', 'PENDIENTE', 'Beatriz Romero', NULL, 9.5, 'CIUDAD', false, 1, 60.0, '2026-01-17', 3, 1, 1),
@@ -149,7 +149,7 @@ VALUES
 -- ENVÍOS AUSENTES (cliente no estaba en casa)
 INSERT INTO envio (localizador, direccion_origen, direccion_destino, estado, nombre_comprador, nota, peso, distancia, fragil, numero_paquetes, coste_total, fecha, usuario_id, tarifa_distancia_id, tarifa_rango_peso_id)
 VALUES
-('AUS-001-2026', 'Calle Luna 23, Madrid', 'Calle Sol 45, Madrid', 'AUSENTE', 'Jorge Martín', 'No había nadie en casa', 11.5, 'CIUDAD', false, 1, 70.0, '2026-01-14', 3, 1, 2),
+('AUS-001-2026', 'Calle Luna 23, Madrid', 'Calle Sol 45, Madrid', 'AUSENTE', 'Jorge Martín', 'No había nadie en casa', 11.5, 'CIUDAD', false, 1, 70.0, '2026-01-11', 3, 1, 2),
 ('AUS-002-2026', 'Plaza Mayor 8, Madrid', 'Calle Mayor 112, Madrid', 'AUSENTE', 'Patricia González', 'Llamaron pero no abrieron', 8.0, 'CIUDAD', false, 1, 60.0, '2026-01-14', 3, 1, 1),
 ('AUS-003-2026', 'Calle Arenal 34, Madrid', 'Gran Vía 123, Madrid', 'AUSENTE', 'Sergio Ramírez', NULL, 19.5, 'CIUDAD', false, 2, 70.0, '2026-01-15', 3, 1, 2),
 ('AUS-004-2026', 'Paseo Prado 56, Madrid', 'Calle Alcalá 234, Madrid', 'AUSENTE', 'Lucía Herrera', 'Buzón lleno, no se pudo dejar aviso', 13.2, 'CIUDAD', true, 1, 70.0, '2026-01-15', 3, 1, 2),
@@ -157,7 +157,7 @@ VALUES
 ('AUS-006-2026', 'Avenida Reina Victoria 45, Madrid', 'Calle Bravo Murillo 234, Madrid', 'AUSENTE', 'Silvia Campos', 'Portero no atendió', 9.8, 'CIUDAD', false, 1, 60.0, '2026-01-16', 3, 1, 1),
 ('AUS-007-2026', 'Calle Alberto Aguilera 78, Madrid', 'Calle Princesa 145, Madrid', 'AUSENTE', 'Óscar Delgado', NULL, 16.5, 'CIUDAD', false, 2, 70.0, '2026-01-16', 3, 1, 2),
 ('AUS-008-2026', 'Glorieta Cuatro Caminos 3, Madrid', 'Calle Bravo Murillo 89, Madrid', 'AUSENTE', 'Cristina Ortiz', 'Dirección confusa', 21.0, 'CIUDAD', false, 2, 85.0, '2026-01-16', 3, 1, 3),
-('AUS-009-2026', 'Calle Arturo Soria 123, Madrid', 'Calle María de Molina 234, Madrid', 'AUSENTE', 'Antonio Blanco', NULL, 7.5, 'CIUDAD', true, 1, 60.0, '2026-01-16', 3, 1, 1),
+('AUS-009-2026', 'Calle Arturo Soria 123, Madrid', 'Calle María de Molina 234, Madrid', 'AUSENTE', 'Antonio Blanco', NULL, 7.5, 'CIUDAD', true, 1, 60.0, '2026-01-09', 3, 1, 1),
 ('AUS-010-2026', 'Paseo Castellana 145, Madrid', 'Calle Serrano 156, Madrid', 'AUSENTE', 'Rosa Gil', 'Timbre no funciona', 12.8, 'CIUDAD', false, 1, 70.0, '2026-01-16', 3, 1, 2),
 ('AUS-011-2026', 'Calle Diego de León 67, Madrid', 'Calle Velázquez 178, Madrid', 'AUSENTE', 'Javier Pascual', NULL, 32.0, 'CIUDAD', false, 3, 85.0, '2026-01-17', 3, 1, 3),
 ('AUS-012-2026', 'Calle Goya 234, Madrid', 'Calle Conde de Peñalver 89, Madrid', 'AUSENTE', 'Nuria Santos', 'Oficina cerrada', 5.2, 'CIUDAD', false, 1, 60.0, '2026-01-17', 3, 1, 1);

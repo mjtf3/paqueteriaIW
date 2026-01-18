@@ -216,6 +216,11 @@
             background-color: #c0c0c0;
             color: black;
         }
+
+        /* Clase urgente */
+        .urgente {
+            background-color: #f8d7da;
+        }
     </style>
 </head>
 <body>
@@ -242,7 +247,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="envio : ${ausentes.content}">
+                        <tr th:each="envio : ${ausentes.content}"
+                            th:classappend="${envio.fecha.plusDays(4).isBefore(T(java.time.LocalDate).now())} ? 'urgente' : ''">
                             <td th:text="${envio.localizador}">1</td>
                             <td th:text="${#temporals.format(envio.fecha, 'dd/MM/yyyy')}">01/12/2025</td>
                             <td th:text="${envio.direccionDestino}">Mi casa</td>
@@ -271,13 +277,15 @@
 
                 <!-- Paginación Ausentes -->
                 <div class="pagination" th:if="${ausentes.totalPages > 1}">
-                    <a th:href="@{/pedidos(pageAusentes=0, pageRechazados=${param.pageRechazados}, pagePendientes=${param.pagePendientes})}">Anterior</a>
+                    <a th:if="${ausentes.number > 0}"
+                       th:href="@{/webmaster/pedidos(pageAusentes=${ausentes.number - 1}, pageRechazados=${pageRechazados}, pagePendientes=${pagePendientes})}">Anterior</a>
                     <span th:each="i : ${#numbers.sequence(0, ausentes.totalPages - 1)}">
-                        <a th:href="@{/pedidos(pageAusentes=${i}, pageRechazados=${param.pageRechazados}, pagePendientes=${param.pagePendientes})}"
+                        <a th:href="@{/webmaster/pedidos(pageAusentes=${i}, pageRechazados=${pageRechazados}, pagePendientes=${pagePendientes})}"
                            th:text="${i + 1}"
                            th:classappend="${i == ausentes.number} ? 'active' : ''">1</a>
                     </span>
-                    <a th:href="@{/pedidos(pageAusentes=${ausentes.totalPages - 1}, pageRechazados=${param.pageRechazados}, pagePendientes=${param.pagePendientes})}">Siguiente</a>
+                    <a th:if="${ausentes.number < ausentes.totalPages - 1}"
+                       th:href="@{/webmaster/pedidos(pageAusentes=${ausentes.number + 1}, pageRechazados=${pageRechazados}, pagePendientes=${pagePendientes})}">Siguiente</a>
                 </div>
             </div>
         </div>
@@ -298,7 +306,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="envio : ${rechazados.content}">
+                        <tr th:each="envio : ${rechazados.content}"
+                            th:classappend="${envio.fecha.plusDays(4).isBefore(T(java.time.LocalDate).now())} ? 'urgente' : ''">
                             <td th:text="${envio.localizador}">1</td>
                             <td th:text="${#temporals.format(envio.fecha, 'dd/MM/yyyy')}">01/12/2025</td>
                             <td th:text="${envio.direccionDestino}">Mi casa</td>
@@ -356,7 +365,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="envio : ${pendientes.content}">
+                        <tr th:each="envio : ${pendientes.content}"
+                            th:classappend="${envio.fecha.plusDays(4).isBefore(T(java.time.LocalDate).now())} ? 'urgente' : ''">
                             <td th:text="${envio.localizador}">1</td>
                             <td th:text="${#temporals.format(envio.fecha, 'dd/MM/yyyy')}">01/12/2025</td>
                             <td th:text="${envio.direccionDestino}">Mi casa</td>
@@ -385,13 +395,15 @@
 
                 <!-- Paginación Pendientes -->
                 <div class="pagination" th:if="${pendientes.totalPages > 1}">
-                    <a th:href="@{/pedidos(pageAusentes=${param.pageAusentes}, pageRechazados=${param.pageRechazados}, pagePendientes=0)}">Anterior</a>
+                    <a th:if="${pendientes.number > 0}"
+                       th:href="@{/webmaster/pedidos(pageAusentes=${pageAusentes}, pageRechazados=${pageRechazados}, pagePendientes=${pendientes.number - 1})}">Anterior</a>
                     <span th:each="i : ${#numbers.sequence(0, pendientes.totalPages - 1)}">
-                        <a th:href="@{/pedidos(pageAusentes=${param.pageAusentes}, pageRechazados=${param.pageRechazados}, pagePendientes=${i})}"
+                        <a th:href="@{/webmaster/pedidos(pageAusentes=${pageAusentes}, pageRechazados=${pageRechazados}, pagePendientes=${i})}"
                            th:text="${i + 1}"
                            th:classappend="${i == pendientes.number} ? 'active' : ''">1</a>
                     </span>
-                    <a th:href="@{/pedidos(pageAusentes=${param.pageAusentes}, pageRechazados=${param.pageRechazados}, pagePendientes=${pendientes.totalPages - 1})}">Siguiente</a>
+                    <a th:if="${pendientes.number < pendientes.totalPages - 1}"
+                       th:href="@{/webmaster/pedidos(pageAusentes=${pageAusentes}, pageRechazados=${pageRechazados}, pagePendientes=${pendientes.number + 1})}">Siguiente</a>
                 </div>
             </div>
         </div>
