@@ -271,16 +271,16 @@
                 </table>
 
                 <!-- Paginación Ausentes -->
-                <div class="pagination" th:if="${ausentes.totalPages > 1}">
-                    <a th:if="${ausentes.number > 0}"
-                       th:href="@{/webmaster/pedidos(pageAusentes=${ausentes.number - 1}, pageRechazados=${pageRechazados}, pagePendientes=${pagePendientes})}">Anterior</a>
-                    <span th:each="i : ${#numbers.sequence(0, ausentes.totalPages - 1)}">
+                <div class="pagination" th:if="${ausentesTienePaginacion}">
+                    <a th:if="${ausentesTienePrevio}"
+                       th:href="@{/webmaster/pedidos(pageAusentes=${ausentesPaginaPrevia}, pageRechazados=${pageRechazados}, pagePendientes=${pagePendientes})}">Anterior</a>
+                    <span th:each="i : ${ausentesPaginas}">
                         <a th:href="@{/webmaster/pedidos(pageAusentes=${i}, pageRechazados=${pageRechazados}, pagePendientes=${pagePendientes})}"
                            th:text="${i + 1}"
-                           th:class="${i == ausentes.number} ? 'active' : ''">1</a>
+                           th:class="${i == ausentesPaginaActual} ? 'active' : ''">1</a>
                     </span>
-                    <a th:if="${ausentes.number < ausentes.totalPages - 1}"
-                       th:href="@{/webmaster/pedidos(pageAusentes=${ausentes.number + 1}, pageRechazados=${pageRechazados}, pagePendientes=${pagePendientes})}">Siguiente</a>
+                    <a th:if="${ausentesTieneSiguiente}"
+                       th:href="@{/webmaster/pedidos(pageAusentes=${ausentesPaginaSiguiente}, pageRechazados=${pageRechazados}, pagePendientes=${pagePendientes})}">Siguiente</a>
                 </div>
             </div>
         </div>
@@ -330,16 +330,16 @@
                 </table>
 
                 <!-- Paginación Rechazados -->
-                <div class="pagination" th:if="${rechazados.totalPages > 1}">
-                    <a th:if="${rechazados.number > 0}"
-                       th:href="@{/webmaster/pedidos(pageAusentes=${pageAusentes}, pageRechazados=${rechazados.number - 1}, pagePendientes=${pagePendientes})}">Anterior</a>
-                    <span th:each="i : ${#numbers.sequence(0, rechazados.totalPages - 1)}">
+                <div class="pagination" th:if="${rechazadosTienePaginacion}">
+                    <a th:if="${rechazadosTienePrevio}"
+                       th:href="@{/webmaster/pedidos(pageAusentes=${pageAusentes}, pageRechazados=${rechazadosPaginaPrevia}, pagePendientes=${pagePendientes})}">Anterior</a>
+                    <span th:each="i : ${rechazadosPaginas}">
                         <a th:href="@{/webmaster/pedidos(pageAusentes=${pageAusentes}, pageRechazados=${i}, pagePendientes=${pagePendientes})}"
                            th:text="${i + 1}"
-                           th:class="${i == rechazados.number} ? 'active' : ''">1</a>
+                           th:class="${i == rechazadosPaginaActual} ? 'active' : ''">1</a>
                     </span>
-                    <a th:if="${rechazados.number < rechazados.totalPages - 1}"
-                       th:href="@{/webmaster/pedidos(pageAusentes=${pageAusentes}, pageRechazados=${rechazados.number + 1}, pagePendientes=${pagePendientes})}">Siguiente</a>
+                    <a th:if="${rechazadosTieneSiguiente}"
+                       th:href="@{/webmaster/pedidos(pageAusentes=${pageAusentes}, pageRechazados=${rechazadosPaginaSiguiente}, pagePendientes=${pagePendientes})}">Siguiente</a>
                 </div>
             </div>
         </div>
@@ -389,16 +389,16 @@
                 </table>
 
                 <!-- Paginación Pendientes -->
-                <div class="pagination" th:if="${pendientes.totalPages > 1}">
-                    <a th:if="${pendientes.number > 0}"
-                       th:href="@{/webmaster/pedidos(pageAusentes=${pageAusentes}, pageRechazados=${pageRechazados}, pagePendientes=${pendientes.number - 1})}">Anterior</a>
-                    <span th:each="i : ${#numbers.sequence(0, pendientes.totalPages - 1)}">
+                <div class="pagination" th:if="${pendientesTienePaginacion}">
+                    <a th:if="${pendientesTienePrevio}"
+                       th:href="@{/webmaster/pedidos(pageAusentes=${pageAusentes}, pageRechazados=${pageRechazados}, pagePendientes=${pendientesPaginaPrevia})}">Anterior</a>
+                    <span th:each="i : ${pendientesPaginas}">
                         <a th:href="@{/webmaster/pedidos(pageAusentes=${pageAusentes}, pageRechazados=${pageRechazados}, pagePendientes=${i})}"
                            th:text="${i + 1}"
-                           th:class="${i == pendientes.number} ? 'active' : ''">1</a>
+                           th:class="${i == pendientesPaginaActual} ? 'active' : ''">1</a>
                     </span>
-                    <a th:if="${pendientes.number < pendientes.totalPages - 1}"
-                       th:href="@{/webmaster/pedidos(pageAusentes=${pageAusentes}, pageRechazados=${pageRechazados}, pagePendientes=${pendientes.number + 1})}">Siguiente</a>
+                    <a th:if="${pendientesTieneSiguiente}"
+                       th:href="@{/webmaster/pedidos(pageAusentes=${pageAusentes}, pageRechazados=${pageRechazados}, pagePendientes=${pendientesPaginaSiguiente})}">Siguiente</a>
                 </div>
             </div>
         </div>

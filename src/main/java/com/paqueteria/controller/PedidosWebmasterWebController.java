@@ -61,6 +61,51 @@ public class PedidosWebmasterWebController {
         model.addAttribute("pageRechazados", pageRechazados);
         model.addAttribute("pagePendientes", pagePendientes);
 
+        // Calcular información de paginación para Ausentes (evitar operaciones en template)
+        model.addAttribute("ausentesTienePaginacion", ausentesPage.getTotalPages() > 1);
+        model.addAttribute("ausentesTienePrevio", ausentesPage.getNumber() > 0);
+        model.addAttribute("ausentesPaginaPrevia", ausentesPage.getNumber() - 1);
+        model.addAttribute("ausentesTieneSiguiente", ausentesPage.getNumber() < ausentesPage.getTotalPages() - 1);
+        model.addAttribute("ausentesPaginaSiguiente", ausentesPage.getNumber() + 1);
+        model.addAttribute("ausentesPaginaActual", ausentesPage.getNumber());
+
+        // Generar lista de números de página para Ausentes
+        List<Integer> ausentesPaginas = new java.util.ArrayList<>();
+        for (int i = 0; i < ausentesPage.getTotalPages(); i++) {
+            ausentesPaginas.add(i);
+        }
+        model.addAttribute("ausentesPaginas", ausentesPaginas);
+
+        // Calcular información de paginación para Rechazados
+        model.addAttribute("rechazadosTienePaginacion", rechazadosPage.getTotalPages() > 1);
+        model.addAttribute("rechazadosTienePrevio", rechazadosPage.getNumber() > 0);
+        model.addAttribute("rechazadosPaginaPrevia", rechazadosPage.getNumber() - 1);
+        model.addAttribute("rechazadosTieneSiguiente", rechazadosPage.getNumber() < rechazadosPage.getTotalPages() - 1);
+        model.addAttribute("rechazadosPaginaSiguiente", rechazadosPage.getNumber() + 1);
+        model.addAttribute("rechazadosPaginaActual", rechazadosPage.getNumber());
+
+        // Generar lista de números de página para Rechazados
+        List<Integer> rechazadosPaginas = new java.util.ArrayList<>();
+        for (int i = 0; i < rechazadosPage.getTotalPages(); i++) {
+            rechazadosPaginas.add(i);
+        }
+        model.addAttribute("rechazadosPaginas", rechazadosPaginas);
+
+        // Calcular información de paginación para Pendientes
+        model.addAttribute("pendientesTienePaginacion", pendientesPage.getTotalPages() > 1);
+        model.addAttribute("pendientesTienePrevio", pendientesPage.getNumber() > 0);
+        model.addAttribute("pendientesPaginaPrevia", pendientesPage.getNumber() - 1);
+        model.addAttribute("pendientesTieneSiguiente", pendientesPage.getNumber() < pendientesPage.getTotalPages() - 1);
+        model.addAttribute("pendientesPaginaSiguiente", pendientesPage.getNumber() + 1);
+        model.addAttribute("pendientesPaginaActual", pendientesPage.getNumber());
+
+        // Generar lista de números de página para Pendientes
+        List<Integer> pendientesPaginas = new java.util.ArrayList<>();
+        for (int i = 0; i < pendientesPage.getTotalPages(); i++) {
+            pendientesPaginas.add(i);
+        }
+        model.addAttribute("pendientesPaginas", pendientesPaginas);
+
         // Añadir fecha actual para comparaciones (evitar T(java.time.LocalDate) en templates)
         model.addAttribute("fechaActual", java.time.LocalDate.now());
 
