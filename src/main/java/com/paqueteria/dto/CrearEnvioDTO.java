@@ -35,6 +35,7 @@ public class CrearEnvioDTO {
     private Integer numeroPaquetes;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @NotNull(message = "La fecha no puede ser nula")
     private LocalDate fecha;
 
     public LocalDate getFecha() {

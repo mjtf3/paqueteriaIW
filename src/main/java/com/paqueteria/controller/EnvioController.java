@@ -140,7 +140,6 @@ public class EnvioController {
             envioCompleto.getLocalizador(),
             envioCompleto.getFecha()
         );
-        envioADevolver.setLocalizador(envioCompleto.getLocalizador());
         return envioADevolver;
     }
 }
