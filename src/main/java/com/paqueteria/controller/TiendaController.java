@@ -5,12 +5,14 @@ import com.paqueteria.dto.UsuarioData;
 import com.paqueteria.services.ApiService;
 import com.paqueteria.services.UsuarioService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import com.paqueteria.utils.generadorCadenas;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,7 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-@RegisterReflectionForBinding({UsuarioData.class,ApiData.class})
+@RegisterReflectionForBinding({UsuarioData.class, ApiData.class})
 @RequestMapping("/tienda/{id}")
 @Controller
 public class TiendaController {
@@ -46,7 +48,7 @@ public class TiendaController {
     }
 
     @PostMapping("/apikey")
-    public String createApi(@PathVariable(value = "id") Integer idTienda, Authentication authentication, String nombre, Model model,HttpSession session) {
+    public String createApi(@PathVariable(value = "id") Integer idTienda, Authentication authentication, String nombre, Model model, HttpSession session) {
         UsuarioData usuarioData = usuarioService.findByCorreo(authentication.getName());
         if (!idTienda.equals(usuarioData.getId())) {
             return "redirect:/tienda/" + usuarioData.getId() + "/apikey";
@@ -55,12 +57,12 @@ public class TiendaController {
         apiData.setNombre(nombre);
         apiData.setFecha(LocalDate.now());
         apiData.setKey(generadorCadenas.generarCadena());
-        usuarioService.addApi(usuarioData,apiData);
+        usuarioService.addApi(usuarioData, apiData);
 
         model.addAttribute("newApiNombre", apiData.getNombre());
         model.addAttribute("newApiKey", apiData.getKey());
 
-        session.setAttribute("newApi",apiData);
+        session.setAttribute("newApi", apiData);
 
         return "redirect:/tienda/" + usuarioData.getId() + "/apikey";
     }
@@ -68,7 +70,7 @@ public class TiendaController {
     //Para que cuando cierre el pop up ya se borre los datos del new api
     @PostMapping("/borrarNewApi")
     @ResponseBody
-    public String borrarNewApi(@PathVariable(value = "id") Integer idTienda, Authentication authentication, HttpSession session){
+    public String borrarNewApi(@PathVariable(value = "id") Integer idTienda, Authentication authentication, HttpSession session) {
         UsuarioData usuarioData = usuarioService.findByCorreo(authentication.getName());
 
         if (!idTienda.equals(usuarioData.getId())) {
@@ -80,7 +82,7 @@ public class TiendaController {
     }
 
     @PostMapping("/apikey/delete/{apiKeyId}")
-    public String deleteApi(@PathVariable(value = "id") Integer idTienda,@PathVariable(value = "apiKeyId") Integer idApi,Authentication authentication,HttpSession session) {
+    public String deleteApi(@PathVariable(value = "id") Integer idTienda, @PathVariable(value = "apiKeyId") Integer idApi, Authentication authentication, HttpSession session) {
         UsuarioData usuarioData = usuarioService.findByCorreo(authentication.getName());
         if (!idTienda.equals(usuarioData.getId())) {
             return "redirect:/tienda/" + usuarioData.getId() + "/apikey";
@@ -95,9 +97,52 @@ public class TiendaController {
         if (!ownsApi) {
             return "redirect:/tienda/" + usuarioData.getId() + "/apikey";
         }
-        usuarioService.removeApi(usuarioData,apiData);
+        usuarioService.removeApi(usuarioData, apiData);
         return "redirect:/tienda/" + usuarioData.getId() + "/apikey";
 
+    }
+
+    @GetMapping("/info")
+    public String infoPage(@PathVariable(value = "id") Integer idTienda, Authentication authentication, Model model) {
+        UsuarioData usuarioData = usuarioService.findByCorreo(authentication.getName());
+        if (!idTienda.equals(usuarioData.getId())) {
+            return "redirect:/tienda/" + usuarioData.getId() + "/info";
+        }
+        model.addAttribute("tienda", usuarioData.getId());
+        model.addAttribute("usuarioData", usuarioData);
+        return "tiendaInfoView";
+    }
+
+    @GetMapping("/info/editar")
+    public String editarPage(@PathVariable(value = "id") Integer idTienda, Authentication authentication, Model model) {
+        UsuarioData usuarioData = usuarioService.findByCorreo(authentication.getName());
+        if (!idTienda.equals(usuarioData.getId())) {
+            return "redirect:/tienda/" + usuarioData.getId() + "/info";
+        }
+        model.addAttribute("tienda", usuarioData.getId());
+        model.addAttribute("usuarioData", usuarioData);
+        return "tiendaInfoEdit";
+    }
+
+    @PostMapping("/info/editar")
+    public String editar(@PathVariable(value = "id") Integer idTienda, Authentication authentication, @ModelAttribute @Valid UsuarioData usuarioData, Model model, BindingResult result) {
+        UsuarioData usuarioDB = usuarioService.findByCorreo(authentication.getName());
+        if (!idTienda.equals(usuarioDB.getId())) {
+            return "redirect:/tienda/" + usuarioData.getId() + "/info";
+        }
+        if (result.hasErrors()) {
+            return "redirect:/tienda/" + usuarioData.getId() + "/info";
+
+        }
+
+        usuarioData.setCorreo(authentication.getName());
+
+        try {
+            usuarioService.editUser(usuarioData);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return "redirect:/tienda/" + usuarioData.getId() + "/info";
     }
 
 }
