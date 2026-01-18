@@ -8,7 +8,6 @@ import com.paqueteria.utils.generadorCadenas;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -20,9 +19,6 @@ public class ApiService {
 
     @Autowired
     private ModelMapper modelMapper;
-
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
 
     public ApiData findById(Integer id) {
         API apiBD = apiRepository.findById(id).orElse(null);

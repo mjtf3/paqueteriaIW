@@ -122,7 +122,7 @@ public class EnvioController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/api/envio")
+    @PostMapping({ "/api/envio", "/api/envios" })
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     public EnvioDTO crearEnvio(
