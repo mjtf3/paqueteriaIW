@@ -3,7 +3,7 @@ package com.paqueteria.controller;
 import com.paqueteria.model.Envio;
 import com.paqueteria.model.EstadoEnum;
 import com.paqueteria.model.Usuario;
-import com.paqueteria.service.EnvioService;
+import com.paqueteria.services.EnvioService;
 import com.paqueteria.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,7 +37,7 @@ public class PedidosWebmasterWebController {
         Page<Envio> rechazados = envioService.getEnviosPorEstado(EstadoEnum.RECHAZADO, pageRechazados, pageSize);
         Page<Envio> pendientes = envioService.getEnviosPorEstado(EstadoEnum.PENDIENTE, pagePendientes, pageSize);
 
-        // Obtener lista de repartidores activos
+        // Obtener todos los repartidores activos (filtraremos por cada envío individualmente)
         List<Usuario> repartidores = usuarioService.getRepartidoresActivos();
 
         // Añadir datos al modelo
@@ -45,6 +45,11 @@ public class PedidosWebmasterWebController {
         model.addAttribute("rechazados", rechazados);
         model.addAttribute("pendientes", pendientes);
         model.addAttribute("repartidores", repartidores);
+
+        // Añadir valores actuales de paginación para mantener el estado
+        model.addAttribute("pageAusentes", pageAusentes);
+        model.addAttribute("pageRechazados", pageRechazados);
+        model.addAttribute("pagePendientes", pagePendientes);
 
         return "pedidosWebmaster";
     }
@@ -55,9 +60,11 @@ public class PedidosWebmasterWebController {
         try {
             envioService.asignarRepartidor(envioId, repartidorId);
             return "OK";
+        } catch (org.springframework.web.server.ResponseStatusException e) {
+            // Extraer solo el mensaje de error sin el código HTTP
+            return "ERROR: " + e.getReason();
         } catch (Exception e) {
             return "ERROR: " + e.getMessage();
         }
     }
 }
-

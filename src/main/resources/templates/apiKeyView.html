@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>API KEY - Paquetería</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
     <style>
         * {
             margin: 0;
@@ -335,21 +336,11 @@
             }
         }
     </style>
+
 </head>
 <body>
 <header>
-    <nav>
-        <div class="header-title">
-            <a href="/">Inicio</a>
-            <span class="api-key-text">API KEY</span>
-        </div>
-    </nav>
-    <div class="profile-icon">
-        <svg viewBox="0 0 24 24">
-            <circle cx="12" cy="8" r="4"/>
-            <path d="M 4 20 Q 4 14 12 14 Q 20 14 20 20"/>
-        </svg>
-    </div>
+    <div th:replace="~{fragments/header :: header('apikey')}"></div>
 </header>
 
 <div class="container">

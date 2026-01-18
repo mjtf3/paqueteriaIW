@@ -1,6 +1,7 @@
 package com.paqueteria.services;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import com.paqueteria.utils.generadorCadenas;
 
 import org.modelmapper.ModelMapper;
@@ -17,10 +18,12 @@ import com.paqueteria.dto.EnvioDTO;
 import com.paqueteria.model.DistanciaEnum;
 import com.paqueteria.model.Envio;
 import com.paqueteria.model.EstadoEnum;
+import com.paqueteria.model.Ruta;
 import com.paqueteria.model.TarifaDistancia;
 import com.paqueteria.model.TarifaRangoPeso;
 import com.paqueteria.model.Usuario;
 import com.paqueteria.repository.EnvioRepository;
+import com.paqueteria.repository.RutaRepository;
 import com.paqueteria.repository.TarifaDistanciaRepository;
 import com.paqueteria.repository.TarifaRangoPesoRepository;
 import com.paqueteria.repository.UsuarioRepository;
@@ -39,6 +42,9 @@ public class EnvioService {
 
     @Autowired
     private TarifaRangoPesoRepository tarifaRangoPesoRepository;
+
+    @Autowired
+    private RutaRepository rutaRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -101,8 +107,30 @@ public class EnvioService {
         Usuario repartidor = usuarioRepository.findById(repartidorId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Repartidor no encontrado"));
 
-        // Aquí podrías agregar lógica para crear una ruta o asignar directamente
-        // Por ahora solo guardamos la actualización
+        LocalDate fechaEnvio = LocalDate.now();
+
+        // Calcular peso ya asignado al repartidor en esta fecha
+        BigDecimal pesoAsignado = envioRepository.calcularPesoAsignadoPorRepartidorYFecha(repartidorId, fechaEnvio);
+        BigDecimal pesoDisponible = repartidor.getPesoMaximo().subtract(pesoAsignado);
+
+        // Validar que el repartidor puede aceptar este envío
+        if (envio.getPeso().compareTo(pesoDisponible) > 0) {
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "No se puede asignar. El repartidor solo puede cargar " + pesoDisponible + " kg más hoy. Este envío pesa " + envio.getPeso() + " kg."
+            );
+        }
+
+        // Buscar o crear ruta para el repartidor en esta fecha
+        Ruta ruta = rutaRepository.findByUsuarioAndFecha(repartidor, fechaEnvio)
+                .orElseGet(() -> {
+                    Ruta nuevaRuta = new Ruta(fechaEnvio, repartidor);
+                    return rutaRepository.save(nuevaRuta);
+                });
+        ruta.addEnvio(envio);
+        rutaRepository.save(ruta);
+        envio.setRuta(ruta);
+        envio.setEstado(EstadoEnum.RUTA);
         envioRepository.save(envio);
     }
 }

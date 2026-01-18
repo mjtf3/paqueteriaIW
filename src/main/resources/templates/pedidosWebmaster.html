@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>Pedidos - Sistema de Paquetería</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <style>
@@ -218,7 +220,7 @@
 </head>
 <body>
     <!-- Navegación -->
-    <div th:replace="~{fragments/header :: header('pedidos')}"></div>
+    <div th:replace="~{fragments/header :: header('admin-pedidos')}"></div>
 
     <!-- Contenido principal -->
     <div class="container">
@@ -250,7 +252,7 @@
                                     <option value="">Seleccionar</option>
                                     <option th:each="rep : ${repartidores}"
                                             th:value="${rep.id}"
-                                            th:text="${rep.nombre}">
+                                            th:text="${rep.apodo}">
                                     </option>
                                 </select>
                             </td>
@@ -292,6 +294,7 @@
                             <th>Destino</th>
                             <th>Peso total</th>
                             <th>Repartidor</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -300,23 +303,39 @@
                             <td th:text="${#temporals.format(envio.fecha, 'dd/MM/yyyy')}">01/12/2025</td>
                             <td th:text="${envio.direccionDestino}">Mi casa</td>
                             <td th:text="${envio.peso}">27</td>
-                            <td>-</td>
+                            <td>
+                                <select th:id="'repartidor-rechazado-' + ${envio.id}" class="repartidor-select">
+                                    <option value="">Seleccionar</option>
+                                    <option th:each="rep : ${repartidores}"
+                                            th:value="${rep.id}"
+                                            th:text="${rep.apodo}">
+                                    </option>
+                                </select>
+                            </td>
+                            <td>
+                                <button class="btn-asignar"
+                                        th:onclick="'mostrarConfirmacion(' + ${envio.id} + ', \'rechazado\')'">
+                                    Asignar
+                                </button>
+                            </td>
                         </tr>
                         <tr th:if="${rechazados.content.empty}">
-                            <td colspan="5" style="text-align: center;">No hay envíos rechazados</td>
+                            <td colspan="6" style="text-align: center;">No hay envíos rechazados</td>
                         </tr>
                     </tbody>
                 </table>
 
                 <!-- Paginación Rechazados -->
                 <div class="pagination" th:if="${rechazados.totalPages > 1}">
-                    <a th:href="@{/pedidos(pageAusentes=${param.pageAusentes}, pageRechazados=0, pagePendientes=${param.pagePendientes})}">Anterior</a>
+                    <a th:if="${rechazados.number > 0}"
+                       th:href="@{/webmaster/pedidos(pageAusentes=${pageAusentes}, pageRechazados=${rechazados.number - 1}, pagePendientes=${pagePendientes})}">Anterior</a>
                     <span th:each="i : ${#numbers.sequence(0, rechazados.totalPages - 1)}">
-                        <a th:href="@{/pedidos(pageAusentes=${param.pageAusentes}, pageRechazados=${i}, pagePendientes=${param.pagePendientes})}"
+                        <a th:href="@{/webmaster/pedidos(pageAusentes=${pageAusentes}, pageRechazados=${i}, pagePendientes=${pagePendientes})}"
                            th:text="${i + 1}"
                            th:classappend="${i == rechazados.number} ? 'active' : ''">1</a>
                     </span>
-                    <a th:href="@{/pedidos(pageAusentes=${param.pageAusentes}, pageRechazados=${rechazados.totalPages - 1}, pagePendientes=${param.pagePendientes})}">Siguiente</a>
+                    <a th:if="${rechazados.number < rechazados.totalPages - 1}"
+                       th:href="@{/webmaster/pedidos(pageAusentes=${pageAusentes}, pageRechazados=${rechazados.number + 1}, pagePendientes=${pagePendientes})}">Siguiente</a>
                 </div>
             </div>
         </div>
@@ -347,7 +366,7 @@
                                     <option value="">Seleccionar</option>
                                     <option th:each="rep : ${repartidores}"
                                             th:value="${rep.id}"
-                                            th:text="${rep.nombre}">
+                                            th:text="${rep.apodo}">
                                     </option>
                                 </select>
                             </td>
@@ -423,27 +442,35 @@
         function confirmarAsignacion() {
             if (!envioSeleccionado) return;
 
+            // Obtener token CSRF
+            const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+            const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
             const formData = new FormData();
             formData.append('envioId', envioSeleccionado.envioId);
             formData.append('repartidorId', envioSeleccionado.repartidorId);
 
-            fetch('/pedidos/asignar', {
+            fetch('/webmaster/pedidos/asignar', {
                 method: 'POST',
+                headers: {
+                    [header]: token
+                },
                 body: formData
             })
             .then(response => response.text())
             .then(data => {
+                cerrarModal();
                 if (data === 'OK') {
                     alert('Repartidor asignado correctamente');
                     location.reload();
                 } else {
-                    alert('Error al asignar repartidor: ' + data);
+                    // Mostrar el mensaje de error completo
+                    alert(data);
                 }
-                cerrarModal();
             })
             .catch(error => {
-                alert('Error al asignar repartidor');
                 cerrarModal();
+                alert('Error de conexión al asignar repartidor');
             });
         }
 
@@ -457,4 +484,3 @@
     </script>
 </body>
 </html>
-

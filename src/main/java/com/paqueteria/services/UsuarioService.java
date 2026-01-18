@@ -6,15 +6,18 @@ import com.paqueteria.model.Usuario;
 import com.paqueteria.model.API;
 import com.paqueteria.model.TipoEnum;
 import com.paqueteria.repository.UsuarioRepository;
+import com.paqueteria.repository.EnvioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UsuarioService {
@@ -27,6 +30,9 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private EnvioRepository envioRepository;
 
     @Transactional
     public UsuarioData registrar(UsuarioData usuario) {
@@ -90,5 +96,27 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public List<Usuario> getRepartidoresActivos() {
         return usuarioRepository.findByTipoAndActivaTrue(TipoEnum.REPARTIDOR);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Usuario> getRepartidoresDisponiblesParaFecha(LocalDate fecha) {
+        List<Usuario> repartidores = usuarioRepository.findByTipoAndActivaTrue(TipoEnum.REPARTIDOR);
+
+        // Filtrar solo los que no han superado su peso máximo
+        return repartidores.stream()
+                .filter(rep -> {
+                    BigDecimal pesoAsignado = envioRepository.calcularPesoAsignadoPorRepartidorYFecha(rep.getId(), fecha);
+                    return pesoAsignado.compareTo(rep.getPesoMaximo()) < 0;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public BigDecimal getPesoDisponibleRepartidor(Integer repartidorId, LocalDate fecha) {
+        Usuario repartidor = usuarioRepository.findById(repartidorId)
+                .orElseThrow(() -> new IllegalArgumentException("Repartidor no encontrado"));
+
+        BigDecimal pesoAsignado = envioRepository.calcularPesoAsignadoPorRepartidorYFecha(repartidorId, fecha);
+        return repartidor.getPesoMaximo().subtract(pesoAsignado);
     }
 }
