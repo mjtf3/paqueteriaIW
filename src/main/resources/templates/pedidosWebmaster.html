@@ -242,7 +242,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="envio : ${ausentes.content}"
+                        <tr th:each="envio : ${ausentes.getContent()}"
                             th:classappend="${envio.fecha.plusDays(4).isBefore(T(java.time.LocalDate).now())} ? 'urgente' : ''">
                             <td th:text="${envio.localizador}">1</td>
                             <td th:text="${#temporals.format(envio.fecha, 'dd/MM/yyyy')}">01/12/2025</td>
@@ -264,7 +264,7 @@
                                 </button>
                             </td>
                         </tr>
-                        <tr th:if="${ausentes.content.empty}">
+                        <tr th:if="${ausentes.getContent().isEmpty()}">
                             <td colspan="6" style="text-align: center;">No hay envíos ausentes</td>
                         </tr>
                     </tbody>
@@ -301,7 +301,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="envio : ${rechazados.content}"
+                        <tr th:each="envio : ${rechazados.getContent()}"
                             th:classappend="${envio.fecha.plusDays(4).isBefore(T(java.time.LocalDate).now())} ? 'urgente' : ''">
                             <td th:text="${envio.localizador}">1</td>
                             <td th:text="${#temporals.format(envio.fecha, 'dd/MM/yyyy')}">01/12/2025</td>
@@ -323,7 +323,7 @@
                                 </button>
                             </td>
                         </tr>
-                        <tr th:if="${rechazados.content.empty}">
+                        <tr th:if="${rechazados.getContent().isEmpty()}">
                             <td colspan="6" style="text-align: center;">No hay envíos rechazados</td>
                         </tr>
                     </tbody>
@@ -360,7 +360,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="envio : ${pendientes.content}"
+                        <tr th:each="envio : ${pendientes.getContent()}"
                             th:classappend="${envio.fecha.plusDays(4).isBefore(T(java.time.LocalDate).now())} ? 'urgente' : ''">
                             <td th:text="${envio.localizador}">1</td>
                             <td th:text="${#temporals.format(envio.fecha, 'dd/MM/yyyy')}">01/12/2025</td>
@@ -382,7 +382,7 @@
                                 </button>
                             </td>
                         </tr>
-                        <tr th:if="${pendientes.content.empty}">
+                        <tr th:if="${pendientes.getContent().isEmpty()}">
                             <td colspan="6" style="text-align: center;">No hay envíos pendientes</td>
                         </tr>
                     </tbody>
