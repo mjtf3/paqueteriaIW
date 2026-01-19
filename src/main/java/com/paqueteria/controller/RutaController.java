@@ -25,10 +25,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
+import org.thymeleaf.expression.Lists;
 
 
 @Controller
-@RegisterReflectionForBinding({ GrupoHistorial.class, EnvioDTO.class, Ruta.class, Usuario.class, ArrayList.class })
+@RegisterReflectionForBinding({ GrupoHistorial.class, EnvioDTO.class, Ruta.class, Usuario.class, ArrayList.class, Lists.class })
 public class RutaController {
                 
     @Autowired
