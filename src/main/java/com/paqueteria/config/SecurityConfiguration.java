@@ -14,9 +14,6 @@ public class SecurityConfiguration {
     @Bean
     public static BCryptPasswordEncoder passwordEncoder() {return new BCryptPasswordEncoder();}
 
-    @Autowired
-    private CustomAccessDeniedHandler customAccessDeniedHandler;
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -31,7 +28,15 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception
-                        .accessDeniedHandler(customAccessDeniedHandler))
+                        .accessDeniedPage("/access-denied")
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            String referer = request.getHeader("Referer");
+                            if (referer != null && !referer.isEmpty()) {
+                                response.sendRedirect(referer);
+                            } else {
+                                response.sendRedirect("/auth/login");
+                            }
+                        }))
                 .formLogin(login -> login
                         .loginPage("/auth/login")
                         .loginProcessingUrl("/auth/login")
