@@ -30,7 +30,7 @@
 
         <div class="table-header">
             <div class="col-name">Nombre ⌄</div>
-            <div class="col-date">Fecha contratacion ⌄</div>
+            <div class="col-date">Fecha contratación</div>
             <div class="col-deliveries">Repartos ⌄</div>
             <div class="col-status">Estado ⌄</div>
             <div class="col-actions"></div>
@@ -88,7 +88,7 @@
                 </div>
                 <div class="modal-field">
                     <label>Fecha de contratación</label>
-                    <input type="date" name="fechaCreacion" th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+                    <input type="date" name="fechaCreacion" th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}" readonly>
                 </div>
                 <div class="modal-field">
                     <label>Contraseña</label>
@@ -145,12 +145,12 @@
             
             <div style="text-align: left; margin-top: 20px;">
                 <p><strong>Usuario:</strong> <br> <span id="detailsApodo">User</span></p>
-                <p><strong>Fecha de contratacion:</strong> <br> <span id="detailsFecha">Date</span></p>
+                <p><strong>Fecha de contratación:</strong> <br> <span id="detailsFecha">Date</span></p>
                 <p><strong>Número total de envíos:</strong> <br> <span id="detailsEnvios">0</span></p>
             </div>
             
             <div style="margin-top: 20px;">
-                <button class="btn-modal-edit" id="btnEditDetails" onclick="">Editar</button>
+                <button class="btn-modal-edit" id="btnEditDetails">Editar</button>
             </div>
         </div>
     </div>
