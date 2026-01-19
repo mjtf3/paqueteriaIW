@@ -145,7 +145,7 @@ public class UsuarioService {
     @Transactional
     public void crearRepartidor(RepartidorDTO dto) {
         // Verificar duplicados por apodo (simulado comprobando correo generado)
-        String correoGenerado = dto.getApodo() + "@driver.paqueteria.com";
+        String correoGenerado = dto.getApodo() + ".driver@paqueteria.com";
         if (usuarioRepository.findByCorreo(correoGenerado).isPresent()) {
             throw new UsuarioServiceException("El usuario (apodo) ya existe");
         }
