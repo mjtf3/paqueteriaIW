@@ -13,15 +13,14 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response,
-                       AccessDeniedException accessDeniedException) throws IOException {
+                       AccessDeniedException accessDeniedException) throws IOException, ServletException {
 
-        // Redirigir a la página anterior (Referer header)
         String referer = request.getHeader("Referer");
-        if (referer != null && !referer.isEmpty()) {
+        // Redirige al Referer o al login, NUNCA a dashboard
+        if (referer != null && !referer.isEmpty() && !referer.contains("/dashboard")) {
             response.sendRedirect(referer);
         } else {
-            // Si no hay página anterior, redirige al dashboard
-            response.sendRedirect("/auth/dashboard");
+            response.sendRedirect("/auth/login");
         }
     }
 }

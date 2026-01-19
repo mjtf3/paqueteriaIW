@@ -24,10 +24,10 @@ public class SecurityConfiguration {
                         .ignoringRequestMatchers("/api/**")
                 )
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/", "/auth/**","/tarifas", "/seguimiento/**", "/css/**", "/js/**", "/api/**","/error").permitAll()
                         .requestMatchers("/webmaster/**").hasRole("WEBMASTER")
                         .requestMatchers("/tienda/**").hasRole("CLIENTE")
                         .requestMatchers("/repartidor/**").hasRole("REPARTIDOR")
-                        .requestMatchers("/", "/auth/**","/tarifas", "/seguimiento/**", "/css/**", "/js/**", "/api/**","/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception
