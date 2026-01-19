@@ -53,6 +53,10 @@ public class RutaController {
         if (esWebmaster) {
             // Agrupar rutas por repartidor
             var rutas = historialRutaService.obtenerHistorialWebmaster();
+            // Mapa con el conteo de envíos por ruta para usar en las plantillas
+            Map<Integer, Integer> rutaEnviosCount = rutas.stream()
+                .collect(Collectors.toMap(r -> r.getId(), r -> (r.getEnvios() == null ? 0 : r.getEnvios().size())));
+            model.addAttribute("rutaEnviosCount", rutaEnviosCount);
             Map<String, List<Ruta>> rutasPorRepartidor = rutas.stream()
                     .filter(r -> r.getUsuario() != null)
                     .collect(Collectors.groupingBy(r -> r.getUsuario().getNombre() + " " + r.getUsuario().getApellidos()));
@@ -81,6 +85,9 @@ public class RutaController {
 
         } else if (usuario != null) {
             var rutas = historialRutaService.obtenerHistorialRepartidor(usuario);
+            Map<Integer, Integer> rutaEnviosCount = rutas.stream()
+                    .collect(Collectors.toMap(r -> r.getId(), r -> (r.getEnvios() == null ? 0 : r.getEnvios().size())));
+            model.addAttribute("rutaEnviosCount", rutaEnviosCount);
             model.addAttribute("rutasUsuario", rutas);
         }
         model.addAttribute("esWebmaster", esWebmaster);
