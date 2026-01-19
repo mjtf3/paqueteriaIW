@@ -6,8 +6,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 import com.paqueteria.dto.EnvioDTO;
@@ -29,7 +27,6 @@ import java.util.List;
 
 @Controller
 public class RutaController {
-    private static final Logger logger = LoggerFactory.getLogger(RutaController.class);
                 
             
 
@@ -54,13 +51,11 @@ public class RutaController {
         if (auth != null && auth.getName() != null) {
             // auth.getPrincipal() is a UserDetails, so buscamos el Usuario por correo
             usuario = usuarioRepository.findByCorreo(auth.getName()).orElse(null);
-            logger.info("Historial: principal={} -> usuarioFound={}", auth.getName(), usuario != null);
         }
         boolean esWebmaster = usuario != null && usuario.getTipo() == TipoEnum.WEBMASTER;
         if (esWebmaster) {
             // Agrupar rutas por repartidor
             var rutas = historialRutaService.obtenerHistorialWebmaster();
-            logger.info("Historial: rutas totales={} (webmaster)", rutas == null ? 0 : rutas.size());
             Map<String, List<Ruta>> rutasPorRepartidor = rutas.stream()
                     .filter(r -> r.getUsuario() != null)
                     .collect(Collectors.groupingBy(r -> r.getUsuario().getNombre() + " " + r.getUsuario().getApellidos()));
@@ -96,7 +91,6 @@ public class RutaController {
                     model.addAttribute("fechaFiltro", fechaStr);
                 } catch (Exception ex) {
                     // ignore parse errors
-                    logger.warn("Fecha de filtro inválida: {}", fechaStr);
                 }
             }
 
@@ -108,7 +102,6 @@ public class RutaController {
 
         } else if (usuario != null) {
             var rutas = historialRutaService.obtenerHistorialRepartidor(usuario);
-            logger.info("Historial: rutas del usuario {}: {}", usuario.getCorreo(), rutas == null ? 0 : rutas.size());
             model.addAttribute("rutasUsuario", rutas);
         }
         model.addAttribute("esWebmaster", esWebmaster);
