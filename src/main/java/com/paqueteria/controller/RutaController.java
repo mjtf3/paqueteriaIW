@@ -5,6 +5,7 @@ import com.paqueteria.model.Usuario;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 
@@ -17,6 +18,7 @@ import com.paqueteria.repository.UsuarioRepository;
 import com.paqueteria.model.TipoEnum;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,6 +32,17 @@ import java.util.List;
 @Controller
 public class RutaController {
                 
+    public static class GrupoHistorial {
+        private String titulo;
+        private List<Ruta> rutas;
+
+        public GrupoHistorial(String titulo, List<Ruta> rutas) {
+            this.titulo = titulo;
+            this.rutas = rutas;
+        }
+        public String getTitulo() { return titulo; }
+        public List<Ruta> getRutas() { return rutas; }
+    }
             
 
     @Autowired
@@ -52,63 +65,52 @@ public class RutaController {
             usuario = usuarioRepository.findByCorreo(auth.getName()).orElse(null);
         }
         boolean esWebmaster = usuario != null && usuario.getTipo() == TipoEnum.WEBMASTER;
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
         if (esWebmaster) {
-            // Obtener rutas del historial
             var rutas = historialRutaService.obtenerHistorialWebmaster();
 
-            // Contar envíos por ruta (usar servicio para evitar lazy-loading en plantillas)
+            // 1. Procesar Conteos y Fechas individuales (como ya hacías)
             var rutaEnviosCount = new HashMap<Integer, Integer>();
+            var rutaFechaMap = new HashMap<Integer, String>();
             for (Ruta r : rutas) {
                 if (r != null && r.getId() != null) {
                     var lista = envioService.obtenerEnviosPorRuta(r.getId());
                     rutaEnviosCount.put(r.getId(), lista == null ? 0 : lista.size());
-                }
-            }
-            model.addAttribute("rutaEnviosCount", rutaEnviosCount);
-
-            // Agrupar rutas por repartidor
-            Map<String, List<Ruta>> rutasPorRepartidor = rutas.stream()
-                    .filter(r -> r.getUsuario() != null)
-                    .collect(Collectors.groupingBy(r -> r.getUsuario().getNombre() + " " + r.getUsuario().getApellidos()));
-            model.addAttribute("rutasPorRepartidor", rutasPorRepartidor);
-
-            var repartidores = usuarioRepository.findAll().stream()
-                    .filter(u -> u.getTipo() == com.paqueteria.model.TipoEnum.REPARTIDOR)
-                    .toList();
-            model.addAttribute("repartidores", repartidores);
-
-            // Agrupar rutas por fecha y usar claves formateadas para la vista
-            var rutasPorFechaTmp = rutas.stream()
-                    .filter(r -> r.getFecha() != null)
-                    .collect(Collectors.groupingBy(Ruta::getFecha));
-            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-            var rutasPorFecha = rutasPorFechaTmp.entrySet().stream()
-                    .sorted(Map.Entry.<java.time.LocalDate, List<Ruta>>comparingByKey(java.util.Comparator.reverseOrder()))
-                    .collect(java.util.stream.Collectors.toMap(
-                            e -> e.getKey().format(fmt),
-                            Map.Entry::getValue,
-                            (e1, e2) -> e1,
-                            java.util.LinkedHashMap::new
-                    ));
-            model.addAttribute("rutasPorFecha", rutasPorFecha);
-
-            // Mapa idRuta -> fecha formateada (para usar donde se muestra la fecha de cada ruta)
-            var rutaFechaMap = new HashMap<Integer, String>();
-            for (Ruta r : rutas) {
-                if (r != null && r.getId() != null) {
                     rutaFechaMap.put(r.getId(), r.getFecha() == null ? "" : r.getFecha().format(fmt));
                 }
             }
+            model.addAttribute("rutaEnviosCount", rutaEnviosCount);
             model.addAttribute("rutaFechaMap", rutaFechaMap);
-            // Control de modo: 'fecha' o 'nombre'
+
+            // 2. AGRUPAR POR REPARTIDOR (Convertir Map a List de GrupoHistorial)
+            Map<String, List<Ruta>> mapRepartidor = rutas.stream()
+                    .filter(r -> r.getUsuario() != null)
+                    .collect(Collectors.groupingBy(r -> r.getUsuario().getNombre() + " " + r.getUsuario().getApellidos()));
+            
+            List<GrupoHistorial> gruposPorRepartidor = new ArrayList<>();
+            mapRepartidor.forEach((nombre, lista) -> gruposPorRepartidor.add(new GrupoHistorial(nombre, lista)));
+            model.addAttribute("gruposPorRepartidor", gruposPorRepartidor);
+
+            // 3. AGRUPAR POR FECHA (Convertir Map a List de GrupoHistorial)
+            var mapFecha = rutas.stream()
+                    .filter(r -> r.getFecha() != null)
+                    .collect(Collectors.groupingBy(Ruta::getFecha, TreeMap::new, Collectors.toList()));
+            
+            List<GrupoHistorial> gruposPorFecha = new ArrayList<>();
+            // Usamos descendingMap para que las fechas más recientes salgan primero
+            ((TreeMap<LocalDate, List<Ruta>>) mapFecha).descendingMap().forEach((fecha, lista) -> {
+                gruposPorFecha.add(new GrupoHistorial(fecha.format(fmt), lista));
+            });
+            model.addAttribute("gruposPorFecha", gruposPorFecha);
+
             model.addAttribute("mode", (mode == null || mode.isBlank()) ? "fecha" : mode);
 
-
         } else if (usuario != null) {
+            // Lógica para Repartidor (ya estaba bien, pero usamos rutaFechaMap para seguridad)
             var rutas = historialRutaService.obtenerHistorialRepartidor(usuario);
             var rutaEnviosCount = new HashMap<Integer, Integer>();
             var rutaFechaMap = new HashMap<Integer, String>();
-            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy");
             for (Ruta r : rutas) {
                 if (r != null && r.getId() != null) {
                     var lista = envioService.obtenerEnviosPorRuta(r.getId());
@@ -120,6 +122,7 @@ public class RutaController {
             model.addAttribute("rutaFechaMap", rutaFechaMap);
             model.addAttribute("rutasUsuario", rutas);
         }
+        
         model.addAttribute("esWebmaster", esWebmaster);
         return "historial";
     }

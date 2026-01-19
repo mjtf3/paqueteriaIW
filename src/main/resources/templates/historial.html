@@ -34,15 +34,14 @@
                 
             </div>
 
-            <!-- Vista POR FECHA -->
             <div th:if="${mode == 'fecha'}">
-                <div th:each="entry,iterStat : ${rutasPorFecha}">
+                <div th:each="grupo,iterStat : ${gruposPorFecha}">
                     <div class="repartidor-header" style="display:flex; justify-content:space-between; align-items:center;">
-                        <span th:text="${entry.key}"></span>
+                        <span th:text="${grupo.titulo}"></span>
                         <button type="button" class="ruta-btn" th:attr="onclick=${'toggleDetailsFecha(' + iterStat.index + ')'}">Detalles</button>
                     </div>
                     <div class="rutas-list" th:id="${'detailsFecha' + iterStat.index}" style="display:none;">
-                        <div th:each="ruta : ${entry.value}" class="ruta-row">
+                        <div th:each="ruta : ${grupo.rutas}" class="ruta-row">
                             <span class="ruta-fecha" th:text="${ruta.usuario.nombre + ' ' + ruta.usuario.apellidos}"></span>
                             <span class="ruta-pedidos">
                                 <span th:text="${rutaEnviosCount[ruta.id]} + ' pedidos'"></span>
@@ -56,15 +55,14 @@
                 </div>
             </div>
 
-            <!-- Vista POR NOMBRE -->
             <div th:if="${mode == 'nombre'}">
-                <div th:each="entry,iterStat : ${rutasPorRepartidor}">
+                <div th:each="grupo,iterStat : ${gruposPorRepartidor}">
                     <div class="repartidor-header" style="display:flex; justify-content:space-between; align-items:center;">
-                        <span th:text="${entry.key}"></span>
+                        <span th:text="${grupo.titulo}"></span>
                         <button type="button" class="ruta-btn" th:attr="onclick=${'toggleDetailsRep(' + iterStat.index + ')'}">Detalles</button>
                     </div>
                     <div class="rutas-list" th:id="${'detailsRep' + iterStat.index}" style="display:none;">
-                        <div th:each="ruta : ${entry.value}" class="ruta-row">
+                        <div th:each="ruta : ${grupo.rutas}" class="ruta-row">
                             <span class="ruta-fecha" th:text="${rutaFechaMap[ruta.id]}"></span>
                             <span class="ruta-pedidos">
                                 <span th:text="${rutaEnviosCount[ruta.id]} + ' pedidos'"></span>
