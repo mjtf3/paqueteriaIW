@@ -102,6 +102,23 @@ public class EnvioService {
             }
         }
 
+    /**
+     * Asigna la ruta indicada a todos los envíos del repartidor que estén en estado
+     * PENDIENTE o RUTA. Esto evita que envíos ya ENTREGADOS de rutas pasadas se
+     * contabilicen en la nueva ruta.
+     */
+    public void asignarRutaAEnviosActivosDelRepartidor(Integer repartidorId, com.paqueteria.model.Ruta ruta) {
+        List<Envio> envios = envioRepository.findAll();
+        for (Envio envio : envios) {
+            if (envio.getUsuario() != null && envio.getUsuario().getId().equals(repartidorId)) {
+                if (envio.getEstado() == EstadoEnum.PENDIENTE || envio.getEstado() == EstadoEnum.RUTA) {
+                    envio.setRuta(ruta);
+                    envioRepository.save(envio);
+                }
+            }
+        }
+    }
+
     public Optional<EnvioDTO> getTrackingInfo(String localizador) {
         Optional<Envio> envioOpt = envioRepository.findByLocalizador(localizador);
 
@@ -173,5 +190,19 @@ public class EnvioService {
 
         Envio envioGuardado = envioRepository.save(envio);
         return modelMapper.map(envioGuardado, EnvioDTO.class);
+    }
+
+    /**
+     * Devuelve todos los envíos asociados a una ruta (por ruta_id).
+     */
+    public List<EnvioDTO> obtenerEnviosPorRuta(Integer rutaId) {
+        List<Envio> envios = envioRepository.findAll();
+        List<EnvioDTO> resultado = new ArrayList<>();
+        for (Envio envio : envios) {
+            if (envio.getRuta() != null && envio.getRuta().getId() != null && envio.getRuta().getId().equals(rutaId)) {
+                resultado.add(new EnvioDTO(envio));
+            }
+        }
+        return resultado;
     }
 }

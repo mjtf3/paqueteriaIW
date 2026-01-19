@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Historial de Rutas</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <style>
+        .historial-box { background: #e0e0e0; border-radius: 8px; margin: 2em auto; padding: 2em; max-width: 800px; }
+        .repartidor-header { background: #bdbdbd; font-weight: bold; padding: 0.7em 1em; border-radius: 6px 6px 0 0; }
+        .rutas-list { background: #fff; border-radius: 0 0 6px 6px; margin-bottom: 2em; }
+        .ruta-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ccc; padding: 1em; }
+        .ruta-row:last-child { border-bottom: none; }
+        .ruta-fecha { font-weight: bold; }
+        .ruta-pedidos { color: #333; }
+        .ruta-btn { background: #d1d3d6; border: none; border-radius: 6px; padding: 0.5em 1.5em; font-size: 1em; cursor: pointer; }
+        .ruta-btn:hover { background: #b0b0b0; }
+    </style>
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header('historial')}"></div>
+    <div class="historial-box">
+        <h2 style="text-align:center; font-size:2em; margin-bottom:1em;">Historial</h2>
+        <div th:if="${esWebmaster}">
+            <div th:each="entry : ${rutasPorRepartidor}">
+                <div class="repartidor-header" th:text="${entry.key}"></div>
+                <div class="rutas-list">
+                    <div th:each="ruta : ${entry.value}" class="ruta-row">
+                        <span class="ruta-fecha" th:text="${#temporals.format(ruta.fecha, 'dd-MM-yyyy')}"></span>
+                        <span class="ruta-pedidos">
+                            <span th:text="${ruta.envios.size()} + ' pedidos'"></span>
+                        </span>
+                        <form th:action="@{/ruta/resumen}" method="get" style="margin:0;">
+                            <input type="hidden" name="rutaId" th:value="${ruta.id}" />
+                            <button type="submit" class="ruta-btn">Ir al resumen</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:if="${!esWebmaster}">
+            <div class="repartidor-header">Mis rutas</div>
+            <div class="rutas-list">
+                <div th:each="ruta : ${rutasUsuario}" class="ruta-row">
+                    <span class="ruta-fecha" th:text="${#temporals.format(ruta.fecha, 'dd-MM-yyyy')}"></span>
+                    <span class="ruta-pedidos">
+                        <span th:text="${ruta.envios.size()} + ' pedidos'"></span>
+                    </span>
+                    <form th:action="@{/ruta/resumen}" method="get" style="margin:0;">
+                        <input type="hidden" name="rutaId" th:value="${ruta.id}" />
+                        <button type="submit" class="ruta-btn">Ir al resumen</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

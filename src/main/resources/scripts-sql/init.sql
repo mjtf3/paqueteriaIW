@@ -154,6 +154,59 @@ ON CONFLICT (localizador) DO UPDATE SET
     tarifa_rango_peso_id = EXCLUDED.tarifa_rango_peso_id,
     nota = EXCLUDED.nota;
 
+-- Rutas nuevas para el usuario con id = 3
+-- Usamos ids fijos (100 y 101) para evitar colisiones y mantener idempotencia
+INSERT INTO ruta (id, fecha, usuario_id) VALUES
+    (100, '2025-01-10', 3),
+    (101, '2025-01-11', 3)
+ON CONFLICT (id) DO UPDATE SET
+    fecha = EXCLUDED.fecha,
+    usuario_id = EXCLUDED.usuario_id;
+
+-- Envíos ENTREGADOS asociados a la ruta 100 (2 envíos)
+INSERT INTO envio (localizador, direccion_origen, direccion_destino, estado, nombre_comprador, peso, distancia, fragil, numero_paquetes, coste_total, fecha, usuario_id, tarifa_distancia_id, tarifa_rango_peso_id, ruta_id, nota) VALUES
+    ('ENV-2025-001', 'Calle Falsa 1, Madrid', 'Calle Real 2, Toledo', 'ENTREGADO', 'Cliente A', 1.2, 'PROVINCIAL', false, 1, 12.00, '2025-01-10', 3, 2, 1, 100, 'Entrega sin incidencias'),
+    ('ENV-2025-002', 'Calle Falsa 3, Madrid', 'Calle Nueva 5, Madrid', 'ENTREGADO', 'Cliente B', 0.5, 'CIUDAD', false, 1, 8.00, '2025-01-10', 3, 1, 1, 100, 'Entregado en mano')
+ON CONFLICT (localizador) DO UPDATE SET
+    direccion_origen = EXCLUDED.direccion_origen,
+    direccion_destino = EXCLUDED.direccion_destino,
+    estado = EXCLUDED.estado,
+    nombre_comprador = EXCLUDED.nombre_comprador,
+    peso = EXCLUDED.peso,
+    distancia = EXCLUDED.distancia,
+    fragil = EXCLUDED.fragil,
+    numero_paquetes = EXCLUDED.numero_paquetes,
+    coste_total = EXCLUDED.coste_total,
+    fecha = EXCLUDED.fecha,
+    usuario_id = EXCLUDED.usuario_id,
+    tarifa_distancia_id = EXCLUDED.tarifa_distancia_id,
+    tarifa_rango_peso_id = EXCLUDED.tarifa_rango_peso_id,
+    ruta_id = EXCLUDED.ruta_id,
+    nota = EXCLUDED.nota;
+
+-- Envíos ENTREGADOS asociados a la ruta 101 (4 envíos)
+INSERT INTO envio (localizador, direccion_origen, direccion_destino, estado, nombre_comprador, peso, distancia, fragil, numero_paquetes, coste_total, fecha, usuario_id, tarifa_distancia_id, tarifa_rango_peso_id, ruta_id, nota) VALUES
+    ('ENV-2025-003', 'Avenida Alta 10, Valladolid', 'Calle Baja 4, Burgos', 'ENTREGADO', 'Cliente C', 2.0, 'PROVINCIAL', false, 2, 18.00, '2025-01-11', 3, 2, 2, 101, 'Recibido por conserje'),
+    ('ENV-2025-004', 'Plaza Verde 6, León', 'Calle Mayor 8, Oviedo', 'ENTREGADO', 'Cliente D', 3.3, 'NACIONAL', false, 1, 25.00, '2025-01-11', 3, 3, 3, 101, NULL),
+    ('ENV-2025-005', 'Calle Río 12, Salamanca', 'Avenida Sol 20, Zamora', 'ENTREGADO', 'Cliente E', 0.9, 'CIUDAD', false, 1, 9.00, '2025-01-11', 3, 1, 1, 101, 'Puerta lateral'),
+    ('ENV-2025-006', 'Camino Antiguo 7, Segovia', 'Calle Puerta 2, Ávila', 'ENTREGADO', 'Cliente F', 5.0, 'NACIONAL', false, 3, 30.00, '2025-01-11', 3, 3, 4, 101, 'Dejar en recepción')
+ON CONFLICT (localizador) DO UPDATE SET
+    direccion_origen = EXCLUDED.direccion_origen,
+    direccion_destino = EXCLUDED.direccion_destino,
+    estado = EXCLUDED.estado,
+    nombre_comprador = EXCLUDED.nombre_comprador,
+    peso = EXCLUDED.peso,
+    distancia = EXCLUDED.distancia,
+    fragil = EXCLUDED.fragil,
+    numero_paquetes = EXCLUDED.numero_paquetes,
+    coste_total = EXCLUDED.coste_total,
+    fecha = EXCLUDED.fecha,
+    usuario_id = EXCLUDED.usuario_id,
+    tarifa_distancia_id = EXCLUDED.tarifa_distancia_id,
+    tarifa_rango_peso_id = EXCLUDED.tarifa_rango_peso_id,
+    ruta_id = EXCLUDED.ruta_id,
+    nota = EXCLUDED.nota;
+
 -- Envío EN REPARTO (RUTA)
 INSERT INTO envio (localizador, direccion_origen, direccion_destino, estado, nombre_comprador, peso, distancia, fragil, numero_paquetes, coste_total, fecha, usuario_id, tarifa_distancia_id, tarifa_rango_peso_id, nota) VALUES
                                                                                                                                                                                                                               ('ENV-2024-003', 'Calle Sol 56, Valencia', 'Avenida del Mar 22, Alicante', 'RUTA', 'Pedro Sánchez', 4.2, 'PROVINCIAL', false, 2, 21.00, '2024-01-15', -1, 2, 2, NULL),
