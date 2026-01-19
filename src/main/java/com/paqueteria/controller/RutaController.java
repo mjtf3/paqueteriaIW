@@ -88,7 +88,22 @@ public class RutaController {
     }
 
     @GetMapping("/repartidor/ruta")
-    public String mostrarRuta(@RequestParam("repartidorId") Long repartidorId, Model model) {
+    public String mostrarRuta(@RequestParam(value = "repartidorId", required = false) Long repartidorId, Model model) {
+        // Si no se pasa repartidorId intentar inferirlo del usuario autenticado
+        if (repartidorId == null) {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.getName() != null) {
+                var userOpt = usuarioRepository.findByCorreo(auth.getName());
+                if (userOpt.isPresent()) {
+                    repartidorId = Long.valueOf(userOpt.get().getId());
+                } else {
+                    return "redirect:/";
+                }
+            } else {
+                return "redirect:/";
+            }
+        }
+
         List<EnvioDTO> envios = envioService.obtenerEnviosPorRepartidor(repartidorId);
 
         // Crear o recuperar la ruta del día para este repartidor y asignar los envíos activos
@@ -113,7 +128,21 @@ public class RutaController {
     }
 
     @GetMapping("/repartidor/ruta/finalizar")
-    public String mostrarResumenGet(@RequestParam("repartidorId") Long repartidorId, Model model) {
+    public String mostrarResumenGet(@RequestParam(value = "repartidorId", required = false) Long repartidorId, Model model) {
+        // Si no se pasa repartidorId intentar inferirlo del usuario autenticado
+        if (repartidorId == null) {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.getName() != null) {
+                var userOpt = usuarioRepository.findByCorreo(auth.getName());
+                if (userOpt.isPresent()) {
+                    repartidorId = Long.valueOf(userOpt.get().getId());
+                } else {
+                    return "redirect:/";
+                }
+            } else {
+                return "redirect:/";
+            }
+        }
         // Intentar obtener la ruta del día para este repartidor
         Usuario usuario = usuarioRepository.findById(repartidorId.intValue()).orElse(null);
         List<EnvioDTO> envios;
