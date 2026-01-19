@@ -28,7 +28,7 @@ import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 
 
 @Controller
-@RegisterReflectionForBinding({ GrupoHistorial.class, EnvioDTO.class, Ruta.class, Usuario.class })
+@RegisterReflectionForBinding({ GrupoHistorial.class, EnvioDTO.class, Ruta.class, Usuario.class, ArrayList.class })
 public class RutaController {
                 
     @Autowired
