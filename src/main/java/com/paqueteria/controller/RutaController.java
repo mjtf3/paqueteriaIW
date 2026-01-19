@@ -16,6 +16,8 @@ import com.paqueteria.model.Usuario;
 import com.paqueteria.repository.UsuarioRepository;
 import com.paqueteria.model.TipoEnum;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -51,43 +53,71 @@ public class RutaController {
         }
         boolean esWebmaster = usuario != null && usuario.getTipo() == TipoEnum.WEBMASTER;
         if (esWebmaster) {
-            // Agrupar rutas por repartidor
+            // Obtener rutas del historial
             var rutas = historialRutaService.obtenerHistorialWebmaster();
-            // Mapa con el conteo de envíos por ruta para usar en las plantillas
-            Map<Integer, Integer> rutaEnviosCount = rutas.stream()
-                .collect(Collectors.toMap(r -> r.getId(), r -> (r.getEnvios() == null ? 0 : r.getEnvios().size())));
+
+            // Contar envíos por ruta (usar servicio para evitar lazy-loading en plantillas)
+            var rutaEnviosCount = new HashMap<Integer, Integer>();
+            for (Ruta r : rutas) {
+                if (r != null && r.getId() != null) {
+                    var lista = envioService.obtenerEnviosPorRuta(r.getId());
+                    rutaEnviosCount.put(r.getId(), lista == null ? 0 : lista.size());
+                }
+            }
             model.addAttribute("rutaEnviosCount", rutaEnviosCount);
+
+            // Agrupar rutas por repartidor
             Map<String, List<Ruta>> rutasPorRepartidor = rutas.stream()
                     .filter(r -> r.getUsuario() != null)
                     .collect(Collectors.groupingBy(r -> r.getUsuario().getNombre() + " " + r.getUsuario().getApellidos()));
             model.addAttribute("rutasPorRepartidor", rutasPorRepartidor);
 
-                var repartidores = usuarioRepository.findAll().stream()
+            var repartidores = usuarioRepository.findAll().stream()
                     .filter(u -> u.getTipo() == com.paqueteria.model.TipoEnum.REPARTIDOR)
                     .toList();
-                model.addAttribute("repartidores", repartidores);
+            model.addAttribute("repartidores", repartidores);
 
-                var rutasPorFechaTmp = rutas.stream()
+            // Agrupar rutas por fecha y usar claves formateadas para la vista
+            var rutasPorFechaTmp = rutas.stream()
                     .filter(r -> r.getFecha() != null)
                     .collect(Collectors.groupingBy(Ruta::getFecha));
-                var rutasPorFecha = rutasPorFechaTmp.entrySet().stream()
-                    .sorted(Map.Entry.<java.time.LocalDate, List<Ruta>>comparingByKey(java.util.Comparator.reverseOrder()) )
+            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            var rutasPorFecha = rutasPorFechaTmp.entrySet().stream()
+                    .sorted(Map.Entry.<java.time.LocalDate, List<Ruta>>comparingByKey(java.util.Comparator.reverseOrder()))
                     .collect(java.util.stream.Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (e1, e2) -> e1,
-                        java.util.LinkedHashMap::new
+                            e -> e.getKey().format(fmt),
+                            Map.Entry::getValue,
+                            (e1, e2) -> e1,
+                            java.util.LinkedHashMap::new
                     ));
-                model.addAttribute("rutasPorFecha", rutasPorFecha);
+            model.addAttribute("rutasPorFecha", rutasPorFecha);
+
+            // Mapa idRuta -> fecha formateada (para usar donde se muestra la fecha de cada ruta)
+            var rutaFechaMap = new HashMap<Integer, String>();
+            for (Ruta r : rutas) {
+                if (r != null && r.getId() != null) {
+                    rutaFechaMap.put(r.getId(), r.getFecha() == null ? "" : r.getFecha().format(fmt));
+                }
+            }
+            model.addAttribute("rutaFechaMap", rutaFechaMap);
             // Control de modo: 'fecha' o 'nombre'
             model.addAttribute("mode", (mode == null || mode.isBlank()) ? "fecha" : mode);
 
 
         } else if (usuario != null) {
             var rutas = historialRutaService.obtenerHistorialRepartidor(usuario);
-            Map<Integer, Integer> rutaEnviosCount = rutas.stream()
-                    .collect(Collectors.toMap(r -> r.getId(), r -> (r.getEnvios() == null ? 0 : r.getEnvios().size())));
+            var rutaEnviosCount = new HashMap<Integer, Integer>();
+            var rutaFechaMap = new HashMap<Integer, String>();
+            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            for (Ruta r : rutas) {
+                if (r != null && r.getId() != null) {
+                    var lista = envioService.obtenerEnviosPorRuta(r.getId());
+                    rutaEnviosCount.put(r.getId(), lista == null ? 0 : lista.size());
+                    rutaFechaMap.put(r.getId(), r.getFecha() == null ? "" : r.getFecha().format(fmt));
+                }
+            }
             model.addAttribute("rutaEnviosCount", rutaEnviosCount);
+            model.addAttribute("rutaFechaMap", rutaFechaMap);
             model.addAttribute("rutasUsuario", rutas);
         }
         model.addAttribute("esWebmaster", esWebmaster);

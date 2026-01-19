@@ -38,7 +38,7 @@
             <div th:if="${mode == 'fecha'}">
                 <div th:each="entry,iterStat : ${rutasPorFecha}">
                     <div class="repartidor-header" style="display:flex; justify-content:space-between; align-items:center;">
-                        <span th:text="${#temporals.format(entry.key, 'dd-MM-yyyy')}"></span>
+                        <span th:text="${entry.key}"></span>
                         <button type="button" class="ruta-btn" th:attr="onclick=${'toggleDetailsFecha(' + iterStat.index + ')'}">Detalles</button>
                     </div>
                     <div class="rutas-list" th:id="${'detailsFecha' + iterStat.index}" style="display:none;">
@@ -65,7 +65,7 @@
                     </div>
                     <div class="rutas-list" th:id="${'detailsRep' + iterStat.index}" style="display:none;">
                         <div th:each="ruta : ${entry.value}" class="ruta-row">
-                            <span class="ruta-fecha" th:text="${#temporals.format(ruta.fecha, 'dd-MM-yyyy')}"></span>
+                            <span class="ruta-fecha" th:text="${rutaFechaMap[ruta.id]}"></span>
                             <span class="ruta-pedidos">
                                 <span th:text="${rutaEnviosCount[ruta.id]} + ' pedidos'"></span>
                             </span>
@@ -82,7 +82,7 @@
             <div class="repartidor-header">Mis rutas</div>
             <div class="rutas-list">
                 <div th:each="ruta : ${rutasUsuario}" class="ruta-row">
-                    <span class="ruta-fecha" th:text="${#temporals.format(ruta.fecha, 'dd-MM-yyyy')}"></span>
+                    <span class="ruta-fecha" th:text="${rutaFechaMap[ruta.id]}"></span>
                     <span class="ruta-pedidos">
                         <span th:text="${rutaEnviosCount[ruta.id]} + ' pedidos'"></span>
                     </span>
