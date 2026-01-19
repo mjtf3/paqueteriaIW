@@ -364,9 +364,10 @@ body {
     align-items: center;
 }
 
-.col-name { width: 30%; }
-.col-date { width: 30%; }
-.col-deliveries { width: 20%; }
+.col-name { width: 25%; }
+.col-date { width: 25%; }
+.col-deliveries { width: 15%; }
+.col-status { width: 15%; }
 .col-actions { width: 20%; display: flex; justify-content: flex-end; gap: 10px; }
 
 .btn-details {

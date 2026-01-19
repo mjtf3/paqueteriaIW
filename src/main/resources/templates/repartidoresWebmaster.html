@@ -32,14 +32,17 @@
             <div class="col-name">Nombre ⌄</div>
             <div class="col-date">Fecha contratacion ⌄</div>
             <div class="col-deliveries">Repartos ⌄</div>
+            <div class="col-status">Estado ⌄</div>
             <div class="col-actions"></div>
         </div>
 
         <div id="repartidoresList">
-            <div th:each="repartidor : ${repartidores}" class="table-row" th:if="${repartidor.activa}">
+            <div th:each="repartidor : ${repartidores}" class="table-row">
                 <div class="col-name" th:text="${repartidor.nombre + ' ' + repartidor.apellidos}">Nombre</div>
                 <div class="col-date" th:text="${repartidor.fechaCreacion}">Fecha</div>
                 <div class="col-deliveries" th:text="${repartidor.envios}">0</div>
+                <div class="col-status" th:style="${repartidor.activa} ? 'color: green; font-weight: bold;' : 'color: red; font-weight: bold;'" 
+                     th:text="${repartidor.activa} ? 'Activo' : 'Inactivo'">Estado</div>
                 <div class="col-actions">
                     <button class="btn-details" th:onclick="'openDetailsModal(' + ${repartidor.id} + ')'">Detalles</button>
                     <button class="btn-delete" 

@@ -128,7 +128,7 @@ public class UsuarioService {
 
     @Transactional(readOnly = true)
     public List<RepartidorDTO> getAllRepartidores() {
-        List<Usuario> repartidores = usuarioRepository.findByTipo(TipoEnum.REPARTIDOR);
+        List<Usuario> repartidores = usuarioRepository.findByTipoOrderByActivaDesc(TipoEnum.REPARTIDOR);
         return repartidores.stream()
                 .map(rep -> new RepartidorDTO(
                         rep.getId(),
