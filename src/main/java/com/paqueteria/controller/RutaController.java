@@ -49,7 +49,6 @@ public class RutaController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuario = null;
         if (auth != null && auth.getName() != null) {
-            // auth.getPrincipal() is a UserDetails, so buscamos el Usuario por correo
             usuario = usuarioRepository.findByCorreo(auth.getName()).orElse(null);
         }
         boolean esWebmaster = usuario != null && usuario.getTipo() == TipoEnum.WEBMASTER;
@@ -61,13 +60,11 @@ public class RutaController {
                     .collect(Collectors.groupingBy(r -> r.getUsuario().getNombre() + " " + r.getUsuario().getApellidos()));
             model.addAttribute("rutasPorRepartidor", rutasPorRepartidor);
 
-            // Añadir lista de repartidores y sus envíos para la vista del webmaster
                 var repartidores = usuarioRepository.findAll().stream()
                     .filter(u -> u.getTipo() == com.paqueteria.model.TipoEnum.REPARTIDOR)
                     .toList();
                 model.addAttribute("repartidores", repartidores);
 
-                // Agrupar rutas por fecha (para la vista por fecha) y ordenar por fecha descendente
                 var rutasPorFechaTmp = rutas.stream()
                     .filter(r -> r.getFecha() != null)
                     .collect(Collectors.groupingBy(Ruta::getFecha));
@@ -83,22 +80,6 @@ public class RutaController {
             // Control de modo: 'fecha' o 'nombre'
             model.addAttribute("mode", (mode == null || mode.isBlank()) ? "fecha" : mode);
 
-            if (fechaStr != null && !fechaStr.isBlank()) {
-                try {
-                    java.time.LocalDate fecha = java.time.LocalDate.parse(fechaStr);
-                    var enviosPorFecha = envioService.obtenerEnviosPorFecha(fecha);
-                    model.addAttribute("enviosPorFecha", enviosPorFecha);
-                    model.addAttribute("fechaFiltro", fechaStr);
-                } catch (Exception ex) {
-                    // ignore parse errors
-                }
-            }
-
-            if (filtroRepartidorId != null) {
-                var enviosDelRep = envioService.obtenerEnviosPorRepartidorTodosEstados(filtroRepartidorId.longValue());
-                model.addAttribute("enviosPorRepartidorFiltro", enviosDelRep);
-                model.addAttribute("filtroRepartidorId", filtroRepartidorId);
-            }
 
         } else if (usuario != null) {
             var rutas = historialRutaService.obtenerHistorialRepartidor(usuario);

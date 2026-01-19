@@ -25,7 +25,7 @@ public class RepartidorController {
         String correo = authentication.getName();
         UsuarioData usuario = usuarioService.findByCorreo(correo);
         model.addAttribute("repartidorId", usuario.getId());
-        model.addAttribute("nombre", usuario.getNombre() != null ? usuario.getNombre() : "Base de Datos");
+        model.addAttribute("nombre", usuario.getNombre());
         model.addAttribute("numPaquetes", envioService.contarPaquetesPendientesRepartidor(usuario.getId()));
         return "inicioRepartidor";
     }
