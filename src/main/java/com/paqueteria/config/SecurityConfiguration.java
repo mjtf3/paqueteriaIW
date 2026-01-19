@@ -1,10 +1,12 @@
 package com.paqueteria.config;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 
 @Configuration
 public class SecurityConfiguration {
@@ -12,8 +14,11 @@ public class SecurityConfiguration {
     @Bean
     public static BCryptPasswordEncoder passwordEncoder() {return new BCryptPasswordEncoder();}
 
+    @Autowired
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
+
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, AccessDeniedHandler accessDeniedHandler) throws Exception {
         http
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/api/**")
@@ -25,6 +30,8 @@ public class SecurityConfiguration {
                         .requestMatchers("/", "/auth/**","/tarifas", "/seguimiento/**", "/css/**", "/js/**", "/api/**","/error").permitAll()
                         .anyRequest().authenticated()
                 )
+                .exceptionHandling(exception -> exception
+                        .accessDeniedHandler(customAccessDeniedHandler))
                 .formLogin(login -> login
                         .loginPage("/auth/login")
                         .loginProcessingUrl("/auth/login")
