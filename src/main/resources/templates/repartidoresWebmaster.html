@@ -23,6 +23,11 @@
             <p th:text="${error}"></p>
         </div>
 
+        <!-- Mensaje de exito -->
+        <div th:if="${success}" class="success">
+            <p th:text="${success}"></p>
+        </div>
+
         <div class="table-header">
             <div class="col-name">Nombre ⌄</div>
             <div class="col-date">Fecha contratacion ⌄</div>
