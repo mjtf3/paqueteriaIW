@@ -43,8 +43,6 @@ public class RutaController {
     private HistorialRutaService historialRutaService;
     @GetMapping({"/webmaster/historial", "/repartidor/historial"})
     public String mostrarHistorial(Model model,
-                                   @RequestParam(value = "fecha", required = false) String fechaStr,
-                                   @RequestParam(value = "repartidorId", required = false) Integer filtroRepartidorId,
                                    @RequestParam(value = "mode", required = false) String mode) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuario = null;
