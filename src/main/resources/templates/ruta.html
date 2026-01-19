@@ -8,7 +8,7 @@
     <div th:replace="~{fragments/header :: header('ruta')}"></div>
     <div class="main-content" style="display: flex; flex-direction: column; align-items: center; min-height: 80vh; background: #b0b0b0;">
         <h2 style="font-size: 2em; font-weight: bold; margin: 1em 0; color: #222;">Ruta</h2>
-        <div th:if="${envios != null and !envios.isEmpty()}">
+        <div th:if="${not #lists.isEmpty(envios)}">
             <div class="envio-card" style="background: #d1d3d6; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 2em; margin-bottom: 2em; min-width: 400px; max-width: 600px;">
                 <div style="display: flex; align-items: center; gap: 1em; margin-bottom: 1em;">
                     <div style="width: 60px; height: 60px; background: #f3f3f3; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2em;"></div>
@@ -48,7 +48,7 @@
                 </form>
             </div>
         </div>
-        <div th:if="${envios == null or envios.isEmpty()}">
+        <div th:if="${#lists.isEmpty(envios)}">
             <h3 style="color: #222;">No hay más envíos pendientes en la ruta.</h3>
         </div>
         <form th:action="@{/repartidor/ruta/finalizar}" method="get" style="margin-top: 2em;">
