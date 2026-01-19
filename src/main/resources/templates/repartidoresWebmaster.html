@@ -38,7 +38,7 @@
 
         <div id="repartidoresList">
             <div th:each="repartidor : ${repartidores}" class="table-row">
-                <div class="col-name" th:text="${repartidor.nombre + ' ' + repartidor.apellidos}">Nombre</div>
+                <div class="col-name" th:text="|${repartidor.nombre} '${repartidor.apodo}' ${repartidor.apellidos}|">Nombre</div>
                 <div class="col-date" th:text="${repartidor.fechaCreacion}">Fecha</div>
                 <div class="col-deliveries" th:text="${repartidor.envios}">0</div>
                 <div class="col-status" th:style="${repartidor.activa} ? 'color: green; font-weight: bold;' : 'color: red; font-weight: bold;'" 
@@ -128,10 +128,6 @@
                     <label>Contraseña (dejar en blanco para no cambiar)</label>
                     <input type="password" name="contrasena" placeholder="Nueva contraseña...">
                 </div>
-                <div class="modal-field" style="text-align: left;">
-                    <label style="display: inline;">Activo:</label>
-                    <input type="checkbox" name="activa" id="editActiva" style="width: auto;">
-                </div>
                 <div class="modal-actions">
                     <button type="button" class="btn-modal-cancel" onclick="closeModal('editModal')">Cancelar</button>
                     <button type="submit" class="btn-modal-confirm">Guardar</button>
@@ -206,10 +202,6 @@
             document.getElementById('editApellidos').value = document.getElementById('data-apellidos-' + id).value;
             document.getElementById('editTelefono').value = document.getElementById('data-telefono-' + id).value;
             document.getElementById('editPeso').value = document.getElementById('data-peso-' + id).value;
-            
-            // Checkbox activo
-            var isActive = document.getElementById('data-activa-' + id).value === 'true';
-            document.getElementById('editActiva').checked = isActive;
             
             document.getElementById('editModal').style.display = 'flex';
         }

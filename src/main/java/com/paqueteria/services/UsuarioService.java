@@ -182,9 +182,6 @@ public class UsuarioService {
         repartidor.setTelefono(dto.getTelefono());
         repartidor.setPesoMaximo(dto.getPesoMaximo());
         
-        // Manejar checkbox inactivo (null si no se marca)
-        repartidor.setActiva(dto.getActiva() != null ? dto.getActiva() : false);
-        
         // Si viene contraseña, actualizarla
         if (dto.getContrasena() != null && !dto.getContrasena().isEmpty()) {
             repartidor.setContrasena(passwordEncoder.encode(dto.getContrasena()));
