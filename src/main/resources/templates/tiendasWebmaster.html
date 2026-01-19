@@ -214,7 +214,7 @@
             color: #666;
         }
 
-        /* Modal de detalles - exactamente como tiendaInfoView.html */
+        /* Modal de detalles */
         .modal-detalles {
             background-color: #fff;
             margin: 40px auto;
@@ -267,16 +267,72 @@
             margin-bottom: 8px;
         }
 
-        .display-value-modal {
+        /* Estilos para campos editables */
+        .form-group-modal input[type="text"],
+        .form-group-modal input[type="email"],
+        .form-group-modal input[type="tel"] {
             padding: 10px 12px;
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 14px;
             background-color: #f9f9f9;
-            min-height: 40px;
-            display: flex;
-            align-items: center;
+            transition: border-color 0.3s;
             font-family: Arial, sans-serif;
+        }
+
+        .form-group-modal input[type="text"]:focus,
+        .form-group-modal input[type="email"]:focus,
+        .form-group-modal input[type="tel"]:focus {
+            outline: none;
+            border-color: #4a9eff;
+            background-color: #fff;
+            box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.1);
+        }
+
+        .form-group-modal input:disabled,
+        .form-group-modal input[readonly] {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+        }
+
+        /* Botones del modal de edición */
+        .modal-button-group {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .btn-save {
+            background-color: #4a9eff;
+            color: white;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-save:hover {
+            background-color: #3a8eef;
+        }
+
+        .btn-cancel-edit {
+            background-color: #ff6b6b;
+            color: white;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-cancel-edit:hover {
+            background-color: #ff5252;
         }
     </style>
 </head>
@@ -345,54 +401,67 @@
         </div>
     </div>
 
-    <!-- Modal de Detalles - Igual que tiendaInfoView.html -->
+    <!-- Modal de Detalles - Con campos editables -->
     <div id="detallesModal" class="modal">
         <div class="modal-content modal-detalles">
             <span class="close" onclick="cerrarDetalles()">&times;</span>
 
-            <div class="form-grid-modal">
-                <!-- Nombre -->
-                <div class="form-group-modal col-1">
-                    <label>Nombre</label>
-                    <div class="display-value-modal" id="detalle-nombre">-</div>
+            <form id="formEditarTienda">
+                <input type="hidden" id="tienda-id" name="id">
+
+                <div class="form-grid-modal">
+                    <!-- Nombre -->
+                    <div class="form-group-modal col-1">
+                        <label for="detalle-nombre">Nombre</label>
+                        <input type="text" id="detalle-nombre" name="nombre" placeholder="Nombre" required readonly>
+                    </div>
+
+                    <!-- Apellidos -->
+                    <div class="form-group-modal col-2">
+                        <label for="detalle-apellidos">Apellidos</label>
+                        <input type="text" id="detalle-apellidos" name="apellidos" placeholder="Apellidos" required readonly>
+                    </div>
+
+                    <!-- Nº teléfono -->
+                    <div class="form-group-modal col-1">
+                        <label for="detalle-telefono">Nº teléfono</label>
+                        <input type="tel" id="detalle-telefono" name="telefono" placeholder="Teléfono" required readonly>
+                    </div>
+
+                    <!-- Nombre de usuario (apodo) -->
+                    <div class="form-group-modal col-1">
+                        <label for="detalle-apodo">Nombre de usuario</label>
+                        <input type="text" id="detalle-apodo" name="apodo" placeholder="Usuario" required readonly>
+                    </div>
+
+                    <!-- Correo electrónico -->
+                    <div class="form-group-modal col-2">
+                        <label for="detalle-correo">Correo electrónico</label>
+                        <input type="email" id="detalle-correo" name="correo" placeholder="Correo" disabled>
+                    </div>
+
+                    <!-- Nombre de tienda -->
+                    <div class="form-group-modal col-1">
+                        <label for="detalle-nombreTienda">Nombre de tienda</label>
+                        <input type="text" id="detalle-nombreTienda" name="nombreTienda" placeholder="Nombre de tienda" readonly>
+                    </div>
                 </div>
 
-                <!-- Apellidos -->
-                <div class="form-group-modal col-2">
-                    <label>Apellidos</label>
-                    <div class="display-value-modal" id="detalle-apellidos">-</div>
+                <!-- Botones de editar/guardar/cancelar -->
+                <div class="modal-button-group">
+                    <button type="button" class="btn-save" id="btn-editar" onclick="activarEdicion()">Editar</button>
+                    <button type="button" class="btn-save" id="btn-guardar" onclick="guardarCambios()" style="display: none;">Guardar</button>
+                    <button type="button" class="btn-cancel-edit" id="btn-cancelar" onclick="cancelarEdicion()" style="display: none;">Cancelar</button>
+                    <button type="button" class="btn-cancel-edit" id="btn-cerrar" onclick="cerrarDetalles()">Cerrar</button>
                 </div>
-
-                <!-- Nº teléfono -->
-                <div class="form-group-modal col-1">
-                    <label>Nº teléfono</label>
-                    <div class="display-value-modal" id="detalle-telefono">-</div>
-                </div>
-
-                <!-- Nombre de usuario (apodo) -->
-                <div class="form-group-modal col-1">
-                    <label>Nombre de usuario</label>
-                    <div class="display-value-modal" id="detalle-apodo">-</div>
-                </div>
-
-                <!-- Correo electrónico -->
-                <div class="form-group-modal col-2">
-                    <label>Correo electrónico</label>
-                    <div class="display-value-modal" id="detalle-correo">-</div>
-                </div>
-
-                <!-- Nombre de tienda -->
-                <div class="form-group-modal col-1">
-                    <label>Nombre de tienda</label>
-                    <div class="display-value-modal" id="detalle-nombreTienda">-</div>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
 
     <script th:inline="javascript">
         let tiendaSeleccionada = null;
         let ordenAscendente = [true, true];
+        let datosOriginales = {};
 
         // Función para mostrar detalles de la tienda con AJAX
         function mostrarDetalles(button) {
@@ -407,13 +476,27 @@
                     return response.json();
                 })
                 .then(data => {
+                    // Guardar datos originales para restaurar si se cancela
+                    datosOriginales = {
+                        nombre: data.nombre || '',
+                        apellidos: data.apellidos || '',
+                        telefono: data.telefono || '',
+                        apodo: data.apodo || '',
+                        correo: data.correo || '',
+                        nombreTienda: data.nombreTienda || ''
+                    };
+
                     // Llenar el modal con los datos recibidos
-                    document.getElementById('detalle-nombre').textContent = data.nombre || '-';
-                    document.getElementById('detalle-apellidos').textContent = data.apellidos || '-';
-                    document.getElementById('detalle-telefono').textContent = data.telefono || '-';
-                    document.getElementById('detalle-apodo').textContent = data.apodo || '-';
-                    document.getElementById('detalle-correo').textContent = data.correo || '-';
-                    document.getElementById('detalle-nombreTienda').textContent = data.nombreTienda || '-';
+                    document.getElementById('detalle-nombre').value = datosOriginales.nombre;
+                    document.getElementById('detalle-apellidos').value = datosOriginales.apellidos;
+                    document.getElementById('detalle-telefono').value = datosOriginales.telefono;
+                    document.getElementById('detalle-apodo').value = datosOriginales.apodo;
+                    document.getElementById('detalle-correo').value = datosOriginales.correo;
+                    document.getElementById('detalle-nombreTienda').value = datosOriginales.nombreTienda;
+                    document.getElementById('tienda-id').value = tiendaId;
+
+                    // Asegurar que está en modo lectura
+                    resetearModoLectura();
 
                     // Mostrar el modal
                     document.getElementById('detallesModal').style.display = 'block';
@@ -424,8 +507,21 @@
                 });
         }
 
+        function resetearModoLectura() {
+            const campos = document.querySelectorAll('#formEditarTienda input:not([type="hidden"]):not([disabled])');
+            campos.forEach(campo => {
+                campo.setAttribute('readonly', 'readonly');
+            });
+
+            document.getElementById('btn-editar').style.display = 'inline-block';
+            document.getElementById('btn-guardar').style.display = 'none';
+            document.getElementById('btn-cancelar').style.display = 'none';
+            document.getElementById('btn-cerrar').style.display = 'inline-block';
+        }
+
         function cerrarDetalles() {
             document.getElementById('detallesModal').style.display = 'none';
+            resetearModoLectura();
         }
 
         function mostrarConfirmacionBtn(button) {
@@ -476,6 +572,76 @@
             .catch(function(error) {
                 cerrarModal();
                 alert('Error de conexión al eliminar tienda');
+                console.error('Error:', error);
+            });
+        }
+
+        // Función para activar el modo edición
+        function activarEdicion() {
+            const campos = document.querySelectorAll('#formEditarTienda input[readonly]');
+            campos.forEach(campo => {
+                campo.removeAttribute('readonly');
+            });
+
+            document.getElementById('btn-editar').style.display = 'none';
+            document.getElementById('btn-guardar').style.display = 'inline-block';
+            document.getElementById('btn-cancelar').style.display = 'inline-block';
+            document.getElementById('btn-cerrar').style.display = 'none';
+        }
+
+        // Función para cancelar la edición
+        function cancelarEdicion() {
+            // Restaurar valores originales
+            document.getElementById('detalle-nombre').value = datosOriginales.nombre;
+            document.getElementById('detalle-apellidos').value = datosOriginales.apellidos;
+            document.getElementById('detalle-telefono').value = datosOriginales.telefono;
+            document.getElementById('detalle-apodo').value = datosOriginales.apodo;
+            document.getElementById('detalle-nombreTienda').value = datosOriginales.nombreTienda;
+
+            // Volver a modo lectura
+            resetearModoLectura();
+        }
+
+        // Función para guardar cambios de la tienda
+        function guardarCambios() {
+            const form = document.getElementById('formEditarTienda');
+
+            // Validar el formulario
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const tiendaId = document.getElementById('tienda-id').value;
+            const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+            const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+            const formData = new FormData();
+            formData.append('nombre', document.getElementById('detalle-nombre').value);
+            formData.append('apellidos', document.getElementById('detalle-apellidos').value);
+            formData.append('telefono', document.getElementById('detalle-telefono').value);
+            formData.append('apodo', document.getElementById('detalle-apodo').value);
+            formData.append('nombreTienda', document.getElementById('detalle-nombreTienda').value);
+
+            fetch('/webmaster/tiendas/' + tiendaId + '/info/editar', {
+                method: 'POST',
+                headers: {
+                    [header]: token
+                },
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                if (data === 'OK') {
+                    alert('Tienda actualizada correctamente');
+                    cerrarDetalles();
+                    location.reload();
+                } else {
+                    alert(data);
+                }
+            })
+            .catch(function(error) {
+                alert('Error de conexión al guardar los cambios');
                 console.error('Error:', error);
             });
         }
@@ -569,3 +735,4 @@
     </script>
 </body>
 </html>
+

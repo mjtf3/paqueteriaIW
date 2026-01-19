@@ -8,9 +8,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,6 +84,30 @@ public class TiendasWebmasterWebController {
             return tienda;
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al obtener datos de la tienda");
+        }
+    }
+
+    @PostMapping("/{tiendaId}/info/editar")
+    @ResponseBody
+    public String editarTienda(@PathVariable Integer tiendaId, @Valid @ModelAttribute UsuarioData usuarioData, BindingResult result) {
+        try {
+            if (result.hasErrors()) {
+                return "ERROR: Datos inválidos";
+            }
+
+            UsuarioData tiendaExistente = usuarioService.findById(tiendaId);
+            if (tiendaExistente == null) {
+                return "ERROR: Tienda no encontrada";
+            }
+
+            // Mantener el correo original
+            usuarioData.setId(tiendaId);
+            usuarioData.setCorreo(tiendaExistente.getCorreo());
+
+            usuarioService.editUser(usuarioData);
+            return "OK";
+        } catch (Exception e) {
+            return "ERROR: " + e.getMessage();
         }
     }
 }
