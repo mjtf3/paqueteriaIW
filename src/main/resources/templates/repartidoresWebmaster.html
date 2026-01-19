@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repartidores - Sistema de Paquetería</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+    <div th:replace="~{fragments/header :: header('admin-repartidores')}"></div>
+
+    <div class="main-content">
+        <div class="repartidores-header">
+            <h1>Repartidores</h1>
+            <span class="btn-add" onclick="openCreateModal()">+</span>
+        </div>
+
+        <input type="text" class="search-bar" placeholder="Busqueda por nombre..." id="searchInput" onkeyup="filterTable()">
+
+        <div class="table-header">
+            <div class="col-name">Nombre ⌄</div>
+            <div class="col-date">Fecha contratacion ⌄</div>
+            <div class="col-deliveries">Repartos ⌄</div>
+            <div class="col-actions"></div>
+        </div>
+
+        <div id="repartidoresList">
+            <div th:each="repartidor : ${repartidores}" class="table-row" th:if="${repartidor.activa}">
+                <div class="col-name" th:text="${repartidor.nombre + ' ' + repartidor.apellidos}">Nombre</div>
+                <div class="col-date" th:text="${repartidor.fechaCreacion}">Fecha</div>
+                <div class="col-deliveries" th:text="${repartidor.envios}">0</div>
+                <div class="col-actions">
+                    <button class="btn-details" th:onclick="'openDetailsModal(' + ${repartidor.id} + ')'">Detalles</button>
+                    <button class="btn-delete" 
+                            th:data-id="${repartidor.id}" 
+                            th:data-nombre="${repartidor.nombre}" 
+                            onclick="openDeleteModal(this)">Eliminar</button>
+                </div>
+                <!-- Hidden data for details modal -->
+                <input type="hidden" th:id="'data-apodo-' + ${repartidor.id}" th:value="${repartidor.apodo}">
+                <input type="hidden" th:id="'data-nombre-' + ${repartidor.id}" th:value="${repartidor.nombre}">
+                <input type="hidden" th:id="'data-apellidos-' + ${repartidor.id}" th:value="${repartidor.apellidos}">
+                <input type="hidden" th:id="'data-fecha-' + ${repartidor.id}" th:value="${repartidor.fechaCreacion}">
+                <input type="hidden" th:id="'data-envios-' + ${repartidor.id}" th:value="${repartidor.envios}">
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Modal -->
+    <div id="createModal" class="modal-overlay">
+        <div class="modal">
+            <h2>Nuevo Repartidor</h2>
+            <form th:action="@{/webmaster/repartidores/crear}" method="post">
+                <div class="modal-field">
+                    <input type="text" name="nombre" placeholder="Nombre..." required>
+                </div>
+                 <div class="modal-field">
+                    <input type="text" name="apellidos" placeholder="Apellidos..." required>
+                </div>
+                <div class="modal-field">
+                    <label>Usuario</label>
+                    <input type="text" name="apodo" placeholder="Usuario..." required>
+                </div>
+                <div class="modal-field">
+                    <label>Fecha de contratación</label>
+                    <input type="date" name="fechaCreacion" th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+                </div>
+                <div class="modal-field">
+                    <label>Contraseña</label>
+                    <input type="password" name="contrasena" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-modal-cancel" onclick="closeModal('createModal')">Cancelar</button>
+                    <button type="submit" class="btn-modal-confirm">Crear</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Details Modal -->
+    <div id="detailsModal" class="modal-overlay">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('detailsModal')">×</button>
+            <div class="modal-icon">👤</div>
+            <h2 id="detailsName">Nombre</h2>
+            
+            <div style="text-align: left; margin-top: 20px;">
+                <p><strong>Usuario:</strong> <br> <span id="detailsApodo">User</span></p>
+                <p><strong>Fecha de contratacion:</strong> <br> <span id="detailsFecha">Date</span></p>
+                <p><strong>Número total de envíos:</strong> <br> <span id="detailsEnvios">0</span></p>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <button class="btn-modal-edit" onclick="alert('Funcionalidad de editar pendiente de implementación')">Editar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div id="deleteModal" class="modal-overlay">
+        <div class="modal">
+            <div class="warning-icon">⚠️</div>
+            <h3>¿Estás seguro que quieres desactivar la cuenta de <span id="deleteName">Nombre</span>?</h3>
+            
+            <p style="margin: 20px 0;">Escribe la palabra "CONFIRMAR"</p>
+            <input type="text" id="confirmInput" style="margin-bottom: 20px; padding: 5px;">
+            
+            <form th:action="@{/webmaster/repartidores/desactivar}" method="post" id="deleteForm">
+                <input type="hidden" name="id" id="deleteId">
+                <div class="modal-actions">
+                    <button type="button" style="background-color: white; border: 1px solid #ccc; padding: 10px 20px; cursor: pointer; border-radius: 4px;" onclick="closeModal('deleteModal')">Cancelar</button>
+                    <button type="button" class="btn-modal-cancel" onclick="confirmDelete()">Eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openCreateModal() {
+            document.getElementById('createModal').style.display = 'flex';
+        }
+
+        function openDetailsModal(id) {
+            document.getElementById('detailsName').innerText = document.getElementById('data-nombre-' + id).value + ' ' + document.getElementById('data-apellidos-' + id).value;
+            document.getElementById('detailsApodo').innerText = document.getElementById('data-apodo-' + id).value;
+            document.getElementById('detailsFecha').innerText = document.getElementById('data-fecha-' + id).value;
+            document.getElementById('detailsEnvios').innerText = document.getElementById('data-envios-' + id).value;
+            document.getElementById('detailsModal').style.display = 'flex';
+        }
+
+        function openDeleteModal(button) {
+            var id = button.getAttribute('data-id');
+            var name = button.getAttribute('data-nombre');
+            document.getElementById('deleteId').value = id;
+            document.getElementById('deleteName').innerText = name;
+            document.getElementById('confirmInput').value = '';
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        function confirmDelete() {
+            var input = document.getElementById('confirmInput').value;
+            if (input === 'CONFIRMAR') {
+                document.getElementById('deleteForm').submit();
+            } else {
+                alert('Por favor escribe "CONFIRMAR" para continuar.');
+            }
+        }
+
+        function filterTable() {
+            var input, filter, container, rows, name, i, txtValue;
+            input = document.getElementById("searchInput");
+            filter = input.value.toUpperCase();
+            container = document.getElementById("repartidoresList");
+            rows = container.getElementsByClassName("table-row");
+
+            for (i = 0; i < rows.length; i++) {
+                name = rows[i].getElementsByClassName("col-name")[0];
+                if (name) {
+                    txtValue = name.textContent || name.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        rows[i].style.display = "";
+                    } else {
+                        rows[i].style.display = "none";
+                    }
+                }       
+            }
+        }
+    </script>
+</body>
+</html>

@@ -13,4 +13,5 @@ import java.util.List;
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     Optional<Usuario> findByCorreo(String s);
     List<Usuario> findByTipoAndActivaTrue(TipoEnum tipo);
+    List<Usuario> findByTipo(TipoEnum tipo);
 }
