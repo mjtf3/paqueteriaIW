@@ -8,12 +8,10 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-
+import com.paqueteria.dto.GrupoHistorial;
 import com.paqueteria.dto.EnvioDTO;
 import com.paqueteria.services.EnvioService;
 import com.paqueteria.services.RutaService;
-import com.paqueteria.model.Ruta;
-import com.paqueteria.model.Usuario;
 import com.paqueteria.repository.UsuarioRepository;
 import com.paqueteria.model.TipoEnum;
 import java.time.LocalDate;
@@ -28,23 +26,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
-
 @Controller
 public class RutaController {
                 
-    public static class GrupoHistorial {
-        public String titulo;
-        public List<Ruta> rutas;
-
-        public GrupoHistorial(String titulo, List<Ruta> rutas) {
-            this.titulo = titulo;
-            this.rutas = rutas;
-        }
-        public String getTitulo() { return titulo; }
-        public List<Ruta> getRutas() { return rutas; }
-    }
-            
-
     @Autowired
     private EnvioService envioService;
 
