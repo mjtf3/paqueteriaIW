@@ -290,6 +290,7 @@ public class EnvioService {
 
         envio.setRuta(ruta);
         envio.setEstado(EstadoEnum.RUTA);
+        envio.setUsuario(repartidor);
         envioRepository.save(envio);
     }
 }
