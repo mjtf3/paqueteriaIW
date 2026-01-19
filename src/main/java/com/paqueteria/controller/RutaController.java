@@ -33,8 +33,8 @@ import java.util.List;
 public class RutaController {
                 
     public static class GrupoHistorial {
-        private String titulo;
-        private List<Ruta> rutas;
+        public String titulo;
+        public List<Ruta> rutas;
 
         public GrupoHistorial(String titulo, List<Ruta> rutas) {
             this.titulo = titulo;
