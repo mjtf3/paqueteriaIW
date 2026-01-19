@@ -66,8 +66,8 @@ public class LoginController {
         UsuarioData usuario = usuarioService.findByCorreo(correo);
         return switch (usuario.getTipo()) {
             case CLIENTE -> "redirect:/tienda/" + usuario.getId() + "/apikey";
-            case WEBMASTER -> "redirect:/";
-            case REPARTIDOR -> "redirect:/";
+            case WEBMASTER -> "redirect:/webmaster/pedidos";
+            case REPARTIDOR -> "redirect:/repartidor/" + usuario.getId() + "/apikey";
             default -> "redirect:/";
         };
     }

@@ -1,5 +1,6 @@
 package com.paqueteria.services;
 
+import com.paqueteria.model.TipoEnum;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,10 +20,12 @@ public class CustomUserDetailsService implements UserDetailsService {
         Usuario usuario = usuarioRepository.findByCorreo(correo)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + correo));
 
+        TipoEnum tipo = usuario.getTipo();
+
         return org.springframework.security.core.userdetails.User
                 .withUsername(usuario.getCorreo())
                 .password(usuario.getContrasena())
-                .authorities("ROLE_USER")
+                .authorities(tipo.toString())
                 .build();
     }
 }
