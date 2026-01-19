@@ -28,7 +28,7 @@ import java.util.List;
 
 
 @Controller
-@RequestMapping("/ruta")
+@RequestMapping("/repartidor/ruta")
 public class RutaController {
     private static final Logger logger = LoggerFactory.getLogger(RutaController.class);
                 

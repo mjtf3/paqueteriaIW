@@ -12,8 +12,8 @@
 
             <!-- Opciones para Repartidor -->
             <a th:if="${usuarioActual != null && usuarioActual.isRepartidor()}" th:href="@{/repartidor/inicio}" th:classappend="${currentPage == 'inicioRepartidor'} ? 'active' : ''">Repartidor</a>
-            <a th:if="${usuarioActual != null && usuarioActual.isRepartidor()}" th:href="@{/ruta/historial(repartidorId=${usuarioActual.id})}" th:classappend="${currentPage == 'historial'} ? 'active' : ''">Historial</a>
-            <a th:if="${usuarioActual != null && usuarioActual.isRepartidor()}" th:href="@{/ruta(repartidorId=${usuarioActual.id})}" th:classappend="${currentPage == 'ruta'} ? 'active' : ''">Ruta</a>
+            <a th:if="${usuarioActual != null && usuarioActual.isRepartidor()}" th:href="@{/repartidor/ruta/historial(repartidorId=${usuarioActual.id})}" th:classappend="${currentPage == 'historial'} ? 'active' : ''">Historial</a>
+            <a th:if="${usuarioActual != null && usuarioActual.isRepartidor()}" th:href="@{/repartidor/ruta(repartidorId=${usuarioActual.id})}" th:classappend="${currentPage == 'ruta'} ? 'active' : ''">Ruta</a>
 
             <!-- Opciones para Webmaster/Admin -->
             <a th:if="${usuarioActual != null && usuarioActual.isAdmin()}" th:href="@{/webmaster/repartidores}" th:classappend="${currentPage == 'admin-repartidores'} ? 'active' : ''">Repartidores</a>

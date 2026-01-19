@@ -14,7 +14,7 @@
             <h2 style="font-size: 2em; font-weight: bold; margin-bottom: 0.5em;">Buenos días <span th:text="${nombre}"></span>, ¿listo para otra jornada?</h2>
             <p style="font-size: 1.2em;">De momento tienes <span th:text="${numPaquetes}"></span> paquetes</p>
         </div>
-        <form th:action="@{/ruta}" method="get">
+        <form th:action="@{/repartidor/ruta}" method="get">
             <input type="hidden" name="repartidorId" th:value="${repartidorId}" />
             <button type="submit" style="background-color: #7faaff; color: #222; border: none; border-radius: 4px; padding: 1em 3em; font-size: 1.5em; margin-top: 2em; cursor: pointer; transition: background 0.2s;">Empezar ruta</button>
         </form>

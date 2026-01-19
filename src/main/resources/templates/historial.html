@@ -28,7 +28,7 @@
                         <span class="ruta-pedidos">
                             <span th:text="${ruta.envios.size()} + ' pedidos'"></span>
                         </span>
-                        <form th:action="@{/ruta/resumen}" method="get" style="margin:0;">
+                        <form th:action="@{/repartidor/ruta/resumen}" method="get" style="margin:0;">
                             <input type="hidden" name="rutaId" th:value="${ruta.id}" />
                             <button type="submit" class="ruta-btn">Ir al resumen</button>
                         </form>
@@ -44,7 +44,7 @@
                     <span class="ruta-pedidos">
                         <span th:text="${ruta.envios.size()} + ' pedidos'"></span>
                     </span>
-                    <form th:action="@{/ruta/resumen}" method="get" style="margin:0;">
+                    <form th:action="@{/repartidor/ruta/resumen}" method="get" style="margin:0;">
                         <input type="hidden" name="rutaId" th:value="${ruta.id}" />
                         <button type="submit" class="ruta-btn">Ir al resumen</button>
                     </form>
