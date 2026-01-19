@@ -123,6 +123,7 @@ public class RutaController {
         }
 
         model.addAttribute("envios", envios);
+        model.addAttribute("enviosCount", envios == null ? 0 : envios.size());
         model.addAttribute("repartidorId", repartidorId);
         return "ruta";
     }
@@ -189,6 +190,7 @@ public class RutaController {
         model.addAttribute("totalAusentes", totalAusentes);
         model.addAttribute("totalNoEntregados", totalNoEntregados);
         model.addAttribute("totalPaquetes", totalPaquetes);
+        model.addAttribute("enviosCount", envios == null ? 0 : envios.size());
         // Exponer si el usuario autenticado es webmaster para la plantilla
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean esWebmaster = false;
@@ -234,6 +236,7 @@ public class RutaController {
         model.addAttribute("totalAusentes", totalAusentes);
         model.addAttribute("totalNoEntregados", totalNoEntregados);
         model.addAttribute("totalPaquetes", totalPaquetes);
+        model.addAttribute("enviosCount", envios == null ? 0 : envios.size());
         // Exponer si el usuario autenticado es webmaster para la plantilla
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean esWebmaster = false;

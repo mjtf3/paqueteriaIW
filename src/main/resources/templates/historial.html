@@ -45,7 +45,7 @@
                         <div th:each="ruta : ${entry.value}" class="ruta-row">
                             <span class="ruta-fecha" th:text="${ruta.usuario.nombre + ' ' + ruta.usuario.apellidos}"></span>
                             <span class="ruta-pedidos">
-                                <span th:text="${ruta.envios.size()} + ' pedidos'"></span>
+                                <span th:text="${ruta.envios != null ? #lists.size(ruta.envios) : 0} + ' pedidos'"></span>
                             </span>
                             <form th:action="@{/webmaster/ruta/resumen}" method="get" style="margin:0;">
                                 <input type="hidden" name="rutaId" th:value="${ruta.id}" />
@@ -67,7 +67,7 @@
                         <div th:each="ruta : ${entry.value}" class="ruta-row">
                             <span class="ruta-fecha" th:text="${#temporals.format(ruta.fecha, 'dd-MM-yyyy')}"></span>
                             <span class="ruta-pedidos">
-                                <span th:text="${ruta.envios.size()} + ' pedidos'"></span>
+                                <span th:text="${ruta.envios != null ? #lists.size(ruta.envios) : 0} + ' pedidos'"></span>
                             </span>
                             <form th:action="@{/webmaster/ruta/resumen}" method="get" style="margin:0;">
                                 <input type="hidden" name="rutaId" th:value="${ruta.id}" />
@@ -84,7 +84,7 @@
                 <div th:each="ruta : ${rutasUsuario}" class="ruta-row">
                     <span class="ruta-fecha" th:text="${#temporals.format(ruta.fecha, 'dd-MM-yyyy')}"></span>
                     <span class="ruta-pedidos">
-                        <span th:text="${ruta.envios.size()} + ' pedidos'"></span>
+                        <span th:text="${ruta.envios != null ? #lists.size(ruta.envios) : 0} + ' pedidos'"></span>
                     </span>
                     <form th:action="@{/repartidor/ruta/resumen}" method="get" style="margin:0;">
                         <input type="hidden" name="rutaId" th:value="${ruta.id}" />
