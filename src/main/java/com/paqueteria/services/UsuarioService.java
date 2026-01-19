@@ -120,7 +120,8 @@ public class UsuarioService {
                         rep.getPesoMaximo(),
                         rep.getFechaCreacion().toString(),
                         rep.getEnvios(),
-                        rep.getActiva()
+                        rep.getActiva(),
+                        rep.getTelefono()
                 ))
                 .collect(Collectors.toList());
     }
@@ -137,32 +138,36 @@ public class UsuarioService {
                         rep.getPesoMaximo(),
                         rep.getFechaCreacion().toString(),
                         rep.getEnvios(),
-                        rep.getActiva()
+                        rep.getActiva(),
+                        rep.getTelefono()
                 ))
                 .collect(Collectors.toList());
     }
 
     @Transactional
     public void crearRepartidor(RepartidorDTO dto) {
+        // Sanear apodo: reemplazar espacios por guiones bajos
+        String apodoSaneado = dto.getApodo().trim().replace(" ", "_");
+        
         // Verificar duplicados por apodo (simulado comprobando correo generado)
-        String correoGenerado = dto.getApodo() + ".driver@paqueteria.com";
+        String correoGenerado = apodoSaneado + ".driver@paqueteria.com";
         if (usuarioRepository.findByCorreo(correoGenerado).isPresent()) {
             throw new UsuarioServiceException("El usuario (apodo) ya existe");
         }
 
         Usuario nuevoRepartidor = new Usuario();
         nuevoRepartidor.setNombre(dto.getNombre());
-        nuevoRepartidor.setApellidos(dto.getApellidos() != null ? dto.getApellidos() : ""); // Manejar nulos si es necesario
-        nuevoRepartidor.setApodo(dto.getApodo());
+        nuevoRepartidor.setApellidos(dto.getApellidos() != null ? dto.getApellidos() : "");
+        nuevoRepartidor.setApodo(apodoSaneado); // Usar apodo saneado
         nuevoRepartidor.setCorreo(correoGenerado);
         nuevoRepartidor.setContrasena(passwordEncoder.encode(dto.getContrasena()));
         nuevoRepartidor.setTipo(TipoEnum.REPARTIDOR);
         nuevoRepartidor.setActiva(true);
         nuevoRepartidor.setFechaCreacion(LocalDate.now());
-        nuevoRepartidor.setPesoMaximo(new BigDecimal("100.00")); // Valor por defecto o parametrizable
         
-        // Campos obligatorios que no vienen del form
-        nuevoRepartidor.setTelefono(""); 
+        // Asignar peso máximo y teléfono si vienen en el DTO
+        nuevoRepartidor.setPesoMaximo(dto.getPesoMaximo() != null ? dto.getPesoMaximo() : new BigDecimal("100.00"));
+        nuevoRepartidor.setTelefono(dto.getTelefono() != null ? dto.getTelefono() : ""); 
         
         usuarioRepository.save(nuevoRepartidor);
     }

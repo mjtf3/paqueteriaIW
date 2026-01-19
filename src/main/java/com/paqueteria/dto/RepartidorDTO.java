@@ -12,12 +12,13 @@ public class RepartidorDTO {
     private Integer envios;
     private Boolean activa;
     private String contrasena; // Solo para creación/edición
+    private String telefono;
 
     // Constructor vacío
     public RepartidorDTO() {}
 
     // Constructor con parámetros
-    public RepartidorDTO(Integer id, String apodo, String nombre, String apellidos, BigDecimal pesoMaximo, String fechaCreacion, Integer envios, Boolean activa) {
+    public RepartidorDTO(Integer id, String apodo, String nombre, String apellidos, BigDecimal pesoMaximo, String fechaCreacion, Integer envios, Boolean activa, String telefono) {
         this.id = id;
         this.apodo = apodo;
         this.nombre = nombre;
@@ -26,6 +27,7 @@ public class RepartidorDTO {
         this.fechaCreacion = fechaCreacion;
         this.envios = envios;
         this.activa = activa;
+        this.telefono = telefono;
     }
 
     // Getters y Setters
@@ -99,6 +101,14 @@ public class RepartidorDTO {
 
     public void setContrasena(String contrasena) {
         this.contrasena = contrasena;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 }
 
