@@ -17,9 +17,10 @@
                     <div>Ausentes : <span style="color: #ffe25c; font-weight: bold;" th:text="${totalAusentes}"></span></div>
                     <div>No entregados : <span style="color: #222; font-weight: bold;" th:text="${totalNoEntregados}"></span></div>
                 </div>
-                <form th:action="@{/repartidor/inicio}" method="get" style="text-align: right;">
-                    <button type="submit" style="background-color:#2d5be3; color:#fff; border:none; border-radius:8px; padding:0.8em 2em; font-size:1.1em;">Correcto</button>
-                </form>
+                <div style="text-align: right;">
+                    <a th:if="${esWebmaster}" th:href="@{/webmaster/historial}" class="ruta-btn" style="background-color:#2d5be3; color:#fff; border:none; border-radius:8px; padding:0.8em 2em; font-size:1.1em; text-decoration:none;">Correcto</a>
+                    <a th:if="${!esWebmaster}" th:href="@{/repartidor/historial}" class="ruta-btn" style="background-color:#2d5be3; color:#fff; border:none; border-radius:8px; padding:0.8em 2em; font-size:1.1em; text-decoration:none;">Correcto</a>
+                </div>
             </div>
         </div>
     </div>

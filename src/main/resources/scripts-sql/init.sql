@@ -154,6 +154,94 @@ ON CONFLICT (localizador) DO UPDATE SET
     tarifa_rango_peso_id = EXCLUDED.tarifa_rango_peso_id,
     nota = EXCLUDED.nota;
 
+-- Crear un repartidor adicional para pruebas (si no existe, actualizará por correo)
+INSERT INTO usuario (apodo, nombre, apellidos, tipo, correo, telefono, contrasena, fecha_creacion, activa, nombre_tienda, peso_maximo)
+VALUES (
+           'Runner2',
+           'Luis',
+           'Hernández Pérez',
+           'REPARTIDOR',
+           'repartidor2@paqueteria.com',
+           '600444555',
+           '$2a$10$eTKikObpwecAKYRGzO1ile6kZcS6HTo2P67BRPpBr10WlURZBWRWq', -- 123
+           '2025-01-12',
+           true,
+           NULL,
+           60.00
+       )
+ON CONFLICT (correo) DO UPDATE SET
+    apodo = EXCLUDED.apodo,
+    nombre = EXCLUDED.nombre,
+    apellidos = EXCLUDED.apellidos,
+    tipo = EXCLUDED.tipo,
+    telefono = EXCLUDED.telefono,
+    contrasena = EXCLUDED.contrasena,
+    fecha_creacion = EXCLUDED.fecha_creacion,
+    activa = EXCLUDED.activa,
+    nombre_tienda = EXCLUDED.nombre_tienda,
+    peso_maximo = EXCLUDED.peso_maximo;
+
+-- Rutas finalizadas para otros repartidores
+-- Ruta 200 para el repartidor con correo 'repartidor@paqueteria.com'
+INSERT INTO ruta (id, fecha, usuario_id) VALUES
+    (200, '2025-01-12', (SELECT id FROM usuario WHERE correo = 'repartidor@paqueteria.com'))
+ON CONFLICT (id) DO UPDATE SET
+    fecha = EXCLUDED.fecha,
+    usuario_id = EXCLUDED.usuario_id;
+
+-- Ruta 201 para el repartidor con correo 'repartidor2@paqueteria.com'
+INSERT INTO ruta (id, fecha, usuario_id) VALUES
+    (201, '2025-01-12', (SELECT id FROM usuario WHERE correo = 'repartidor2@paqueteria.com'))
+ON CONFLICT (id) DO UPDATE SET
+    fecha = EXCLUDED.fecha,
+    usuario_id = EXCLUDED.usuario_id;
+
+-- Envíos entregados para la ruta 200 (más envíos)
+INSERT INTO envio (localizador, direccion_origen, direccion_destino, estado, nombre_comprador, peso, distancia, fragil, numero_paquetes, coste_total, fecha, usuario_id, tarifa_distancia_id, tarifa_rango_peso_id, ruta_id, nota) VALUES
+    ('ENV-2025-101', 'Calle Comercio 1, Madrid', 'Calle Alcalá 10, Madrid', 'ENTREGADO', 'Cliente G', 1.0, 'CIUDAD', false, 1, 9.00, '2025-01-12', (SELECT id FROM usuario WHERE correo = 'repartidor@paqueteria.com'), 1, 1, 200, 'Entregado tienda'),
+    ('ENV-2025-102', 'Calle Comercio 2, Madrid', 'Calle Luna 4, Madrid', 'ENTREGADO', 'Cliente H', 2.5, 'CIUDAD', false, 1, 12.00, '2025-01-12', (SELECT id FROM usuario WHERE correo = 'repartidor@paqueteria.com'), 1, 2, 200, NULL),
+    ('ENV-2025-103', 'Calle Comercio 3, Madrid', 'Avenida Sol 7, Madrid', 'ENTREGADO', 'Cliente I', 3.2, 'CIUDAD', false, 2, 18.00, '2025-01-12', (SELECT id FROM usuario WHERE correo = 'repartidor@paqueteria.com'), 1, 2, 200, 'Dejado en conserjería'),
+    ('ENV-2025-104', 'Calle Comercio 4, Madrid', 'Calle Norte 9, Madrid', 'ENTREGADO', 'Cliente J', 0.7, 'CIUDAD', false, 1, 8.00, '2025-01-12', (SELECT id FROM usuario WHERE correo = 'repartidor@paqueteria.com'), 1, 1, 200, NULL),
+    ('ENV-2025-105', 'Calle Comercio 5, Madrid', 'Calle Sur 11, Madrid', 'ENTREGADO', 'Cliente K', 4.0, 'PROVINCIAL', false, 2, 22.00, '2025-01-12', (SELECT id FROM usuario WHERE correo = 'repartidor@paqueteria.com'), 2, 3, 200, 'Firma recibida')
+ON CONFLICT (localizador) DO UPDATE SET
+    direccion_origen = EXCLUDED.direccion_origen,
+    direccion_destino = EXCLUDED.direccion_destino,
+    estado = EXCLUDED.estado,
+    nombre_comprador = EXCLUDED.nombre_comprador,
+    peso = EXCLUDED.peso,
+    distancia = EXCLUDED.distancia,
+    fragil = EXCLUDED.fragil,
+    numero_paquetes = EXCLUDED.numero_paquetes,
+    coste_total = EXCLUDED.coste_total,
+    fecha = EXCLUDED.fecha,
+    usuario_id = EXCLUDED.usuario_id,
+    tarifa_distancia_id = EXCLUDED.tarifa_distancia_id,
+    tarifa_rango_peso_id = EXCLUDED.tarifa_rango_peso_id,
+    ruta_id = EXCLUDED.ruta_id,
+    nota = EXCLUDED.nota;
+
+-- Envíos entregados para la ruta 201 (repartidor2)
+INSERT INTO envio (localizador, direccion_origen, direccion_destino, estado, nombre_comprador, peso, distancia, fragil, numero_paquetes, coste_total, fecha, usuario_id, tarifa_distancia_id, tarifa_rango_peso_id, ruta_id, nota) VALUES
+    ('ENV-2025-106', 'Camino Viejo 1, Toledo', 'Plaza Mayor 2, Toledo', 'ENTREGADO', 'Cliente L', 1.5, 'CIUDAD', false, 1, 10.00, '2025-01-12', (SELECT id FROM usuario WHERE correo = 'repartidor2@paqueteria.com'), 1, 1, 201, NULL),
+    ('ENV-2025-107', 'Camino Viejo 2, Toledo', 'Calle Portal 3, Toledo', 'ENTREGADO', 'Cliente M', 2.2, 'CIUDAD', false, 1, 11.00, '2025-01-12', (SELECT id FROM usuario WHERE correo = 'repartidor2@paqueteria.com'), 1, 1, 201, 'Recibido por vecino'),
+    ('ENV-2025-108', 'Camino Viejo 3, Toledo', 'Calle Mayor 5, Toledo', 'ENTREGADO', 'Cliente N', 3.8, 'PROVINCIAL', false, 2, 20.00, '2025-01-12', (SELECT id FROM usuario WHERE correo = 'repartidor2@paqueteria.com'), 2, 3, 201, NULL)
+ON CONFLICT (localizador) DO UPDATE SET
+    direccion_origen = EXCLUDED.direccion_origen,
+    direccion_destino = EXCLUDED.direccion_destino,
+    estado = EXCLUDED.estado,
+    nombre_comprador = EXCLUDED.nombre_comprador,
+    peso = EXCLUDED.peso,
+    distancia = EXCLUDED.distancia,
+    fragil = EXCLUDED.fragil,
+    numero_paquetes = EXCLUDED.numero_paquetes,
+    coste_total = EXCLUDED.coste_total,
+    fecha = EXCLUDED.fecha,
+    usuario_id = EXCLUDED.usuario_id,
+    tarifa_distancia_id = EXCLUDED.tarifa_distancia_id,
+    tarifa_rango_peso_id = EXCLUDED.tarifa_rango_peso_id,
+    ruta_id = EXCLUDED.ruta_id,
+    nota = EXCLUDED.nota;
+
 -- Rutas nuevas para el usuario con id = 3
 -- Usamos ids fijos (100 y 101) para evitar colisiones y mantener idempotencia
 INSERT INTO ruta (id, fecha, usuario_id) VALUES

@@ -13,6 +13,12 @@
         .ruta-pedidos { color: #333; }
         .ruta-btn { background: #d1d3d6; border: none; border-radius: 6px; padding: 0.5em 1.5em; font-size: 1em; cursor: pointer; }
         .ruta-btn:hover { background: #b0b0b0; }
+        /* Toggle (Nombre/Fecha) styles */
+        .toggle-group { display:flex; gap:0.5em; align-items:center; }
+        .toggle-btn { background:#f5f5f5; border:1px solid #d0d0d0; padding:0.45em 0.9em; border-radius:8px; cursor:pointer; font-weight:600; color:#333; text-decoration:none; display:inline-block; transition: all .15s ease; }
+        .toggle-btn:hover { background:#efefef; transform: translateY(-1px); box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+        .toggle-btn.selected { background: linear-gradient(180deg,#4f83ff,#2f5fd6); color:#fff; border-color: #2f5fd6; box-shadow: 0 6px 14px rgba(47,95,214,0.18); }
+        /* removed name search styles */
     </style>
 </head>
 <body>
@@ -20,18 +26,54 @@
     <div class="historial-box">
         <h2 style="text-align:center; font-size:2em; margin-bottom:1em;">Historial</h2>
         <div th:if="${esWebmaster}">
-            <div th:each="entry : ${rutasPorRepartidor}">
-                <div class="repartidor-header" th:text="${entry.key}"></div>
-                <div class="rutas-list">
-                    <div th:each="ruta : ${entry.value}" class="ruta-row">
-                        <span class="ruta-fecha" th:text="${#temporals.format(ruta.fecha, 'dd-MM-yyyy')}"></span>
-                        <span class="ruta-pedidos">
-                            <span th:text="${ruta.envios.size()} + ' pedidos'"></span>
-                        </span>
-                        <form th:action="@{/repartidor/ruta/resumen}" method="get" style="margin:0;">
-                            <input type="hidden" name="rutaId" th:value="${ruta.id}" />
-                            <button type="submit" class="ruta-btn">Ir al resumen</button>
-                        </form>
+            <div class="toggle-group" style="margin-bottom:1em; width:100%;">
+                <div>
+                    <a th:href="@{/webmaster/historial(mode='nombre')}" th:classappend="${mode=='nombre'}? ' toggle-btn selected' : ' toggle-btn'">Nombre</a>
+                    <a th:href="@{/webmaster/historial(mode='fecha')}" th:classappend="${mode=='fecha'}? ' toggle-btn selected' : ' toggle-btn'">Fecha</a>
+                </div>
+                
+            </div>
+
+            <!-- Vista POR FECHA -->
+            <div th:if="${mode == 'fecha'}">
+                <div th:each="entry,iterStat : ${rutasPorFecha}">
+                    <div class="repartidor-header" style="display:flex; justify-content:space-between; align-items:center;">
+                        <span th:text="${#temporals.format(entry.key, 'dd-MM-yyyy')}"></span>
+                        <button type="button" class="ruta-btn" th:attr="onclick=${'toggleDetailsFecha(' + iterStat.index + ')'}">Detalles</button>
+                    </div>
+                    <div class="rutas-list" th:id="${'detailsFecha' + iterStat.index}" style="display:none;">
+                        <div th:each="ruta : ${entry.value}" class="ruta-row">
+                            <span class="ruta-fecha" th:text="${ruta.usuario.nombre + ' ' + ruta.usuario.apellidos}"></span>
+                            <span class="ruta-pedidos">
+                                <span th:text="${ruta.envios.size()} + ' pedidos'"></span>
+                            </span>
+                            <form th:action="@{/webmaster/ruta/resumen}" method="get" style="margin:0;">
+                                <input type="hidden" name="rutaId" th:value="${ruta.id}" />
+                                <button type="submit" class="ruta-btn">Ir al resumen</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vista POR NOMBRE -->
+            <div th:if="${mode == 'nombre'}">
+                <div th:each="entry,iterStat : ${rutasPorRepartidor}">
+                    <div class="repartidor-header" style="display:flex; justify-content:space-between; align-items:center;">
+                        <span th:text="${entry.key}"></span>
+                        <button type="button" class="ruta-btn" th:attr="onclick=${'toggleDetailsRep(' + iterStat.index + ')'}">Detalles</button>
+                    </div>
+                    <div class="rutas-list" th:id="${'detailsRep' + iterStat.index}" style="display:none;">
+                        <div th:each="ruta : ${entry.value}" class="ruta-row">
+                            <span class="ruta-fecha" th:text="${#temporals.format(ruta.fecha, 'dd-MM-yyyy')}"></span>
+                            <span class="ruta-pedidos">
+                                <span th:text="${ruta.envios.size()} + ' pedidos'"></span>
+                            </span>
+                            <form th:action="@{/webmaster/ruta/resumen}" method="get" style="margin:0;">
+                                <input type="hidden" name="rutaId" th:value="${ruta.id}" />
+                                <button type="submit" class="ruta-btn">Ir al resumen</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -52,5 +94,19 @@
             </div>
         </div>
     </div>
+    <script>
+        function toggleDetailsFecha(i) {
+            var id = 'detailsFecha' + i;
+            var el = document.getElementById(id);
+            if (!el) return;
+            el.style.display = (el.style.display === 'none' || el.style.display === '') ? 'block' : 'none';
+        }
+        function toggleDetailsRep(i) {
+            var id = 'detailsRep' + i;
+            var el = document.getElementById(id);
+            if (!el) return;
+            el.style.display = (el.style.display === 'none' || el.style.display === '') ? 'block' : 'none';
+        }
+    </script>
 </body>
 </html>

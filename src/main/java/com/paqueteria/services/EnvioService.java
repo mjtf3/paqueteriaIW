@@ -11,6 +11,7 @@ import com.paqueteria.model.Envio;
 import com.paqueteria.model.EstadoEnum;
 import com.paqueteria.repository.EnvioRepository;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import com.paqueteria.utils.generadorCadenas;
 
 import org.modelmapper.ModelMapper;
@@ -200,6 +201,21 @@ public class EnvioService {
         List<EnvioDTO> resultado = new ArrayList<>();
         for (Envio envio : envios) {
             if (envio.getRuta() != null && envio.getRuta().getId() != null && envio.getRuta().getId().equals(rutaId)) {
+                resultado.add(new EnvioDTO(envio));
+            }
+        }
+        return resultado;
+    }
+
+    /**
+     * Devuelve todos los envíos cuya fecha coincide con la fecha dada.
+     */
+    public List<EnvioDTO> obtenerEnviosPorFecha(LocalDate fecha) {
+        List<Envio> envios = envioRepository.findAll();
+        List<EnvioDTO> resultado = new ArrayList<>();
+        if (fecha == null) return resultado;
+        for (Envio envio : envios) {
+            if (envio.getFecha() != null && fecha.equals(envio.getFecha())) {
                 resultado.add(new EnvioDTO(envio));
             }
         }

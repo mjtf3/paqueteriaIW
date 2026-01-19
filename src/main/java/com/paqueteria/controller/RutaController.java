@@ -28,7 +28,6 @@ import java.util.List;
 
 
 @Controller
-@RequestMapping("/repartidor/ruta")
 public class RutaController {
     private static final Logger logger = LoggerFactory.getLogger(RutaController.class);
                 
@@ -45,16 +44,19 @@ public class RutaController {
 
         @Autowired
     private HistorialRutaService historialRutaService;
-    @GetMapping("/historial")
-    public String mostrarHistorial(Model model) {
+    @GetMapping({"/webmaster/historial", "/repartidor/historial"})
+    public String mostrarHistorial(Model model,
+                                   @RequestParam(value = "fecha", required = false) String fechaStr,
+                                   @RequestParam(value = "repartidorId", required = false) Integer filtroRepartidorId,
+                                   @RequestParam(value = "mode", required = false) String mode) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuario = null;
-            if (auth != null && auth.getName() != null) {
-                // auth.getPrincipal() is a UserDetails, so buscamos el Usuario por correo
+        if (auth != null && auth.getName() != null) {
+            // auth.getPrincipal() is a UserDetails, so buscamos el Usuario por correo
             usuario = usuarioRepository.findByCorreo(auth.getName()).orElse(null);
             logger.info("Historial: principal={} -> usuarioFound={}", auth.getName(), usuario != null);
         }
-            boolean esWebmaster = usuario != null && usuario.getTipo() == TipoEnum.WEBMASTER;
+        boolean esWebmaster = usuario != null && usuario.getTipo() == TipoEnum.WEBMASTER;
         if (esWebmaster) {
             // Agrupar rutas por repartidor
             var rutas = historialRutaService.obtenerHistorialWebmaster();
@@ -63,6 +65,47 @@ public class RutaController {
                     .filter(r -> r.getUsuario() != null)
                     .collect(Collectors.groupingBy(r -> r.getUsuario().getNombre() + " " + r.getUsuario().getApellidos()));
             model.addAttribute("rutasPorRepartidor", rutasPorRepartidor);
+
+            // Añadir lista de repartidores y sus envíos para la vista del webmaster
+                var repartidores = usuarioRepository.findAll().stream()
+                    .filter(u -> u.getTipo() == com.paqueteria.model.TipoEnum.REPARTIDOR)
+                    .toList();
+                model.addAttribute("repartidores", repartidores);
+
+                // Agrupar rutas por fecha (para la vista por fecha) y ordenar por fecha descendente
+                var rutasPorFechaTmp = rutas.stream()
+                    .filter(r -> r.getFecha() != null)
+                    .collect(Collectors.groupingBy(Ruta::getFecha));
+                var rutasPorFecha = rutasPorFechaTmp.entrySet().stream()
+                    .sorted(Map.Entry.<java.time.LocalDate, List<Ruta>>comparingByKey(java.util.Comparator.reverseOrder()) )
+                    .collect(java.util.stream.Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        java.util.LinkedHashMap::new
+                    ));
+                model.addAttribute("rutasPorFecha", rutasPorFecha);
+            // Control de modo: 'fecha' o 'nombre'
+            model.addAttribute("mode", (mode == null || mode.isBlank()) ? "fecha" : mode);
+
+            if (fechaStr != null && !fechaStr.isBlank()) {
+                try {
+                    java.time.LocalDate fecha = java.time.LocalDate.parse(fechaStr);
+                    var enviosPorFecha = envioService.obtenerEnviosPorFecha(fecha);
+                    model.addAttribute("enviosPorFecha", enviosPorFecha);
+                    model.addAttribute("fechaFiltro", fechaStr);
+                } catch (Exception ex) {
+                    // ignore parse errors
+                    logger.warn("Fecha de filtro inválida: {}", fechaStr);
+                }
+            }
+
+            if (filtroRepartidorId != null) {
+                var enviosDelRep = envioService.obtenerEnviosPorRepartidorTodosEstados(filtroRepartidorId.longValue());
+                model.addAttribute("enviosPorRepartidorFiltro", enviosDelRep);
+                model.addAttribute("filtroRepartidorId", filtroRepartidorId);
+            }
+
         } else if (usuario != null) {
             var rutas = historialRutaService.obtenerHistorialRepartidor(usuario);
             logger.info("Historial: rutas del usuario {}: {}", usuario.getCorreo(), rutas == null ? 0 : rutas.size());
@@ -72,7 +115,7 @@ public class RutaController {
         return "historial";
     }
 
-    @GetMapping
+    @GetMapping("/repartidor/ruta")
     public String mostrarRuta(@RequestParam("repartidorId") Long repartidorId, Model model) {
         List<EnvioDTO> envios = envioService.obtenerEnviosPorRepartidor(repartidorId);
 
@@ -97,7 +140,7 @@ public class RutaController {
         return "ruta";
     }
 
-    @GetMapping("/finalizar")
+    @GetMapping("/repartidor/ruta/finalizar")
     public String mostrarResumenGet(@RequestParam("repartidorId") Long repartidorId, Model model) {
         // Intentar obtener la ruta del día para este repartidor
         Usuario usuario = usuarioRepository.findById(repartidorId.intValue()).orElse(null);
@@ -145,10 +188,18 @@ public class RutaController {
         model.addAttribute("totalAusentes", totalAusentes);
         model.addAttribute("totalNoEntregados", totalNoEntregados);
         model.addAttribute("totalPaquetes", totalPaquetes);
+        // Exponer si el usuario autenticado es webmaster para la plantilla
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean esWebmaster = false;
+        if (auth != null && auth.getName() != null) {
+            var userOpt = usuarioRepository.findByCorreo(auth.getName());
+            esWebmaster = userOpt.map(u -> u.getTipo() == TipoEnum.WEBMASTER).orElse(false);
+        }
+        model.addAttribute("esWebmaster", esWebmaster);
         return "resumenRuta";
     }
 
-    @GetMapping("/resumen")
+    @GetMapping({"/repartidor/ruta/resumen", "/ruta/resumen", "/webmaster/ruta/resumen"})
     public String mostrarResumenPorRutaId(@RequestParam("rutaId") Integer rutaId, Model model) {
         List<EnvioDTO> envios = envioService.obtenerEnviosPorRuta(rutaId);
 
@@ -182,6 +233,14 @@ public class RutaController {
         model.addAttribute("totalAusentes", totalAusentes);
         model.addAttribute("totalNoEntregados", totalNoEntregados);
         model.addAttribute("totalPaquetes", totalPaquetes);
+        // Exponer si el usuario autenticado es webmaster para la plantilla
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean esWebmaster = false;
+        if (auth != null && auth.getName() != null) {
+            var userOpt = usuarioRepository.findByCorreo(auth.getName());
+            esWebmaster = userOpt.map(u -> u.getTipo() == TipoEnum.WEBMASTER).orElse(false);
+        }
+        model.addAttribute("esWebmaster", esWebmaster);
         return "resumenRuta";
     }
 }
