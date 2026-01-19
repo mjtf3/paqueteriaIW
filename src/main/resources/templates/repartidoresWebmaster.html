@@ -46,6 +46,7 @@
                 <div class="col-actions">
                     <button class="btn-details" th:onclick="'openDetailsModal(' + ${repartidor.id} + ')'">Detalles</button>
                     <button class="btn-delete" 
+                            th:if="${repartidor.activa}"
                             th:data-id="${repartidor.id}" 
                             th:data-nombre="${repartidor.nombre}" 
                             onclick="openDeleteModal(this)">Eliminar</button>
