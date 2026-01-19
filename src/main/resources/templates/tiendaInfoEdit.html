@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información de la tienda formulario</title>
+    <style>
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.col-1 {
+            grid-column: span 1;
+        }
+
+        .form-group.col-2 {
+            grid-column: span 2;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"] {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: #f9f9f9;
+            transition: border-color 0.3s;
+            font-family: Arial, sans-serif;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus {
+            outline: none;
+            border-color: #4a9eff;
+            background-color: #fff;
+            box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-cancel {
+            background-color: #ff6b6b;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background-color: #ff5252;
+        }
+
+        .btn-submit {
+            background-color: #4a9eff;
+            color: white;
+        }
+
+        .btn-submit:hover {
+            background-color: #3a8eef;
+        }
+
+        .error {
+            color: #ff6b6b;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .success {
+            color: #51cf66;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.col-1,
+            .form-group.col-2 {
+                grid-column: span 1;
+            }
+
+            .container {
+                margin: 20px;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: header('infoTienda')}"></div>
+
+<div class="container">
+    <form th:action="@{/tienda/{id}/info/editar(id=${tienda})}" th:object="${usuarioData}" method="post">
+        <div class="form-grid">
+            <!-- Nombre -->
+            <div class="form-group col-1">
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" th:field="*{nombre}" placeholder="Pepito" required>
+                <span class="error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></span>
+            </div>
+
+            <!-- Apellidos -->
+            <div class="form-group col-2">
+                <label for="apellidos">Apellidos</label>
+                <input type="text" id="apellidos" th:field="*{apellidos}" placeholder="Sanchez" required>
+                <span class="error" th:if="${#fields.hasErrors('apellidos')}" th:errors="*{apellidos}"></span>
+            </div>
+
+            <!-- Nº teléfono -->
+            <div class="form-group col-1">
+                <label for="telefono">Nº teléfono</label>
+                <input type="tel" id="telefono" th:field="*{telefono}" placeholder="612032943" required>
+                <span class="error" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></span>
+            </div>
+
+            <!-- Nombre de usuario (apodo) -->
+            <div class="form-group col-1">
+                <label for="apodo">Nombre de usuario</label>
+                <input type="text" id="apodo" th:field="*{apodo}" placeholder="Pepe123" required>
+                <span class="error" th:if="${#fields.hasErrors('apodo')}" th:errors="*{apodo}"></span>
+            </div>
+
+            <!-- Correo electrónico -->
+            <div class="form-group col-2">
+                <label for="correo">Correo electrónico</label>
+                <input type="email" id="correo" th:value="${usuarioData.correo}" placeholder="pepe@gmail.com" disabled>
+            </div>
+
+            <!-- Nombre de tienda -->
+            <div class="form-group col-1">
+                <label for="nombreTienda">Nombre de tienda</label>
+                <input type="text" id="nombreTienda" th:field="*{nombreTienda}" placeholder="">
+                <span class="error" th:if="${#fields.hasErrors('nombreTienda')}" th:errors="*{nombreTienda}"></span>
+            </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="button-group">
+            <a th:href="@{/tienda/{id}/info(id=${tienda})}">
+                <button type="button" class="btn-cancel">Cancelar</button>
+            </a>
+            <button type="submit" class="btn-submit">Actualizar</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

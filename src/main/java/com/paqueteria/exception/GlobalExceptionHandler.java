@@ -58,7 +58,7 @@ public class GlobalExceptionHandler {
         if (path.contains("/api/envio")) {
             body.put(
                 "campos necesarios",
-                "direccionOrigen, direccionDestino, nombreComprador, numeroPaquetes, peso, distancia"
+                "direccionOrigen, direccionDestino, nombreComprador, numeroPaquetes, peso, distancia, fecha"
             );
         }
         body.put("errors", errors);

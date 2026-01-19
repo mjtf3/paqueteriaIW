@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Pedidos - Sistema de Paquetería</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #b0b0b0;
+        }
+
+        /* Navegación - sobrescribir estilos del header */
+        .pedidos-nav {
+            background-color: #5a5a5a !important;
+            padding: 15px 30px !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+        }
+
+        .pedidos-nav ul {
+            list-style: none !important;
+            display: flex !important;
+            gap: 30px !important;
+        }
+
+        .pedidos-nav a {
+            color: white !important;
+            text-decoration: none !important;
+            font-size: 18px !important;
+            font-weight: normal !important;
+            padding: 5px 10px !important;
+        }
+
+        .pedidos-nav a.active {
+            color: #6b9bd1 !important;
+            font-weight: bold !important;
+        }
+
+        .pedidos-nav a:hover {
+            background-color: transparent !important;
+        }
+
+        .pedidos-user-icon {
+            width: 40px !important;
+            height: 40px !important;
+            background-color: white !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        /* Contenedor principal */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 30px;
+        }
+
+        /* Secciones */
+        .section {
+            background-color: #a8a8a8;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .section h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        /* Tabla */
+        .table-container {
+            background-color: #d3d3d3;
+            padding: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: #c0c0c0;
+            padding: 10px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #a8a8a8;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Inputs y selects */
+        input[type="text"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #999;
+            background-color: white;
+        }
+
+        /* Botones */
+        .btn-asignar {
+            background-color: #6b9bd1;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            cursor: pointer;
+        }
+
+        .btn-asignar:hover {
+            background-color: #5a8bc0;
+        }
+
+        /* Paginación */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .pagination a,
+        .pagination span {
+            padding: 8px 12px;
+            background-color: #c0c0c0;
+            text-decoration: none;
+            color: black;
+        }
+
+        .pagination a:hover {
+            background-color: #a8a8a8;
+        }
+
+        .pagination .active {
+            background-color: #6b9bd1;
+            color: white;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #d3e8f5;
+            margin: 15% auto;
+            padding: 30px;
+            width: 400px;
+            text-align: center;
+        }
+
+        .modal-content p {
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .btn-confirmar,
+        .btn-cancelar {
+            padding: 10px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-confirmar {
+            background-color: #6b9bd1;
+            color: white;
+        }
+
+        .btn-cancelar {
+            background-color: #c0c0c0;
+            color: black;
+        }
+
+        /* Clase urgente */
+        .urgente {
+            background-color: #f8d7da;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navegación -->
+    <div th:replace="~{fragments/header :: header('admin-pedidos')}"></div>
+
+    <!-- Contenido principal -->
+    <div class="container">
+        <h1>Pedidos</h1>
+
+        <!-- Sección Ausentes -->
+        <div class="section">
+            <h2>Ausentes</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Localizador</th>
+                            <th>Fecha</th>
+                            <th>Destino</th>
+                            <th>Peso total</th>
+                            <th>Repartidor</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="envio : ${ausentesContent}"
+                            th:classappend="${envio.esUrgente} ? 'urgente' : ''">
+                            <td th:text="${envio.localizador}">1</td>
+                            <td th:text="${envio.fecha != null ? #temporals.format(envio.fecha, 'dd/MM/yyyy') : '-'}">01/12/2025</td>
+                            <td th:text="${envio.direccionDestino ?: '-'}">Mi casa</td>
+                            <td th:text="${envio.peso}">27</td>
+                            <td>
+                                <select th:id="'repartidor-ausente-' + ${envio.id}" class="repartidor-select">
+                                    <option value="">Seleccionar</option>
+                                    <option th:each="rep : ${repartidores}"
+                                            th:value="${rep.id}"
+                                            th:text="${rep.apodo}">
+                                    </option>
+                                </select>
+                            </td>
+                            <td>
+                                <button class="btn-asignar"
+                                        th:onclick="|mostrarConfirmacion(${envio.id}, 'ausente')|">
+                                    Asignar
+                                </button>
+                            </td>
+                        </tr>
+                        <tr th:if="${ausentesVacio}">
+                            <td colspan="6" style="text-align: center;">No hay envíos ausentes</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Paginación Ausentes -->
+                <div class="pagination" th:if="${ausentesTienePaginacion}">
+                    <a th:if="${ausentesTienePrevio}"
+                       th:href="@{/webmaster/pedidos(pageAusentes=${ausentesPaginaPrevia}, pageRechazados=${pageRechazados}, pagePendientes=${pagePendientes})}">Anterior</a>
+                    <span th:each="i : ${ausentesPaginas}">
+                        <a th:href="@{/webmaster/pedidos(pageAusentes=${i}, pageRechazados=${pageRechazados}, pagePendientes=${pagePendientes})}"
+                           th:text="${i + 1}"
+                           th:class="${i == ausentesPaginaActual} ? 'active' : ''">1</a>
+                    </span>
+                    <a th:if="${ausentesTieneSiguiente}"
+                       th:href="@{/webmaster/pedidos(pageAusentes=${ausentesPaginaSiguiente}, pageRechazados=${pageRechazados}, pagePendientes=${pagePendientes})}">Siguiente</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección Rechazados -->
+        <div class="section">
+            <h2>Rechazados</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Localizador</th>
+                            <th>Fecha</th>
+                            <th>Destino</th>
+                            <th>Peso total</th>
+                            <th>Repartidor</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="envio : ${rechazadosContent}"
+                            th:classappend="${envio.esUrgente} ? 'urgente' : ''">
+                            <td th:text="${envio.localizador}">1</td>
+                            <td th:text="${envio.fecha != null ? #temporals.format(envio.fecha, 'dd/MM/yyyy') : '-'}">01/12/2025</td>
+                            <td th:text="${envio.direccionDestino ?: '-'}">Mi casa</td>
+                            <td th:text="${envio.peso}">27</td>
+                            <td>
+                                <select th:id="'repartidor-rechazado-' + ${envio.id}" class="repartidor-select">
+                                    <option value="">Seleccionar</option>
+                                    <option th:each="rep : ${repartidores}"
+                                            th:value="${rep.id}"
+                                            th:text="${rep.apodo}">
+                                    </option>
+                                </select>
+                            </td>
+                            <td>
+                                <button class="btn-asignar"
+                                        th:onclick="|mostrarConfirmacion(${envio.id}, 'rechazado')|">
+                                    Asignar
+                                </button>
+                            </td>
+                        </tr>
+                        <tr th:if="${rechazadosVacio}">
+                            <td colspan="6" style="text-align: center;">No hay envíos rechazados</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Paginación Rechazados -->
+                <div class="pagination" th:if="${rechazadosTienePaginacion}">
+                    <a th:if="${rechazadosTienePrevio}"
+                       th:href="@{/webmaster/pedidos(pageAusentes=${pageAusentes}, pageRechazados=${rechazadosPaginaPrevia}, pagePendientes=${pagePendientes})}">Anterior</a>
+                    <span th:each="i : ${rechazadosPaginas}">
+                        <a th:href="@{/webmaster/pedidos(pageAusentes=${pageAusentes}, pageRechazados=${i}, pagePendientes=${pagePendientes})}"
+                           th:text="${i + 1}"
+                           th:class="${i == rechazadosPaginaActual} ? 'active' : ''">1</a>
+                    </span>
+                    <a th:if="${rechazadosTieneSiguiente}"
+                       th:href="@{/webmaster/pedidos(pageAusentes=${pageAusentes}, pageRechazados=${rechazadosPaginaSiguiente}, pagePendientes=${pagePendientes})}">Siguiente</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección Pendientes -->
+        <div class="section">
+            <h2>Pendientes</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Localizador</th>
+                            <th>Fecha</th>
+                            <th>Destino</th>
+                            <th>Peso total</th>
+                            <th>Repartidor</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="envio : ${pendientesContent}"
+                            th:classappend="${envio.esUrgente} ? 'urgente' : ''">
+                            <td th:text="${envio.localizador}">1</td>
+                            <td th:text="${envio.fecha != null ? #temporals.format(envio.fecha, 'dd/MM/yyyy') : '-'}">01/12/2025</td>
+                            <td th:text="${envio.direccionDestino ?: '-'}">Mi casa</td>
+                            <td th:text="${envio.peso}">27</td>
+                            <td>
+                                <select th:id="'repartidor-pendiente-' + ${envio.id}" class="repartidor-select">
+                                    <option value="">Seleccionar</option>
+                                    <option th:each="rep : ${repartidores}"
+                                            th:value="${rep.id}"
+                                            th:text="${rep.apodo}">
+                                    </option>
+                                </select>
+                            </td>
+                            <td>
+                                <button class="btn-asignar"
+                                        th:onclick="|mostrarConfirmacion(${envio.id}, 'pendiente')|">
+                                    Asignar
+                                </button>
+                            </td>
+                        </tr>
+                        <tr th:if="${pendientesVacio}">
+                            <td colspan="6" style="text-align: center;">No hay envíos pendientes</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Paginación Pendientes -->
+                <div class="pagination" th:if="${pendientesTienePaginacion}">
+                    <a th:if="${pendientesTienePrevio}"
+                       th:href="@{/webmaster/pedidos(pageAusentes=${pageAusentes}, pageRechazados=${pageRechazados}, pagePendientes=${pendientesPaginaPrevia})}">Anterior</a>
+                    <span th:each="i : ${pendientesPaginas}">
+                        <a th:href="@{/webmaster/pedidos(pageAusentes=${pageAusentes}, pageRechazados=${pageRechazados}, pagePendientes=${i})}"
+                           th:text="${i + 1}"
+                           th:class="${i == pendientesPaginaActual} ? 'active' : ''">1</a>
+                    </span>
+                    <a th:if="${pendientesTieneSiguiente}"
+                       th:href="@{/webmaster/pedidos(pageAusentes=${pageAusentes}, pageRechazados=${pageRechazados}, pagePendientes=${pendientesPaginaSiguiente})}">Siguiente</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <p>Seguro que quiere confirmar a Pepe como repartidor</p>
+            <div class="modal-buttons">
+                <button class="btn-confirmar" onclick="confirmarAsignacion()">CONFIRMAR</button>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        let envioSeleccionado = null;
+
+        function mostrarConfirmacion(envioId, tipo) {
+            const selectId = 'repartidor-' + tipo + '-' + envioId;
+            const select = document.getElementById(selectId);
+
+            if (!select) {
+                alert('Error: No se encontró el selector de repartidor');
+                return;
+            }
+
+            const repartidorId = select.value;
+
+            if (!repartidorId) {
+                alert('Por favor, seleccione un repartidor');
+                return;
+            }
+
+            const repartidorNombre = select.options[select.selectedIndex].text;
+
+            envioSeleccionado = { envioId: envioId, repartidorId: repartidorId };
+
+            const modal = document.getElementById('confirmModal');
+            const mensaje = modal.querySelector('p');
+            mensaje.textContent = 'Seguro que quiere confirmar a ' + repartidorNombre + ' como repartidor';
+
+            modal.style.display = 'block';
+        }
+
+        function cerrarModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+            envioSeleccionado = null;
+        }
+
+        function confirmarAsignacion() {
+            if (!envioSeleccionado) return;
+
+            // Obtener token CSRF
+            const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+            const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+            const formData = new FormData();
+            formData.append('envioId', envioSeleccionado.envioId);
+            formData.append('repartidorId', envioSeleccionado.repartidorId);
+
+            fetch('/webmaster/pedidos/asignar', {
+                method: 'POST',
+                headers: {
+                    [header]: token
+                },
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                cerrarModal();
+                if (data === 'OK') {
+                    alert('Repartidor asignado correctamente');
+                    location.reload();
+                } else {
+                    alert(data);
+                }
+            })
+            .catch(function(error) {
+                cerrarModal();
+                alert('Error de conexión al asignar repartidor');
+                console.error('Error:', error);
+            });
+        }
+
+        // Cerrar modal al hacer clic fuera de él
+        window.onclick = function(event) {
+            const modal = document.getElementById('confirmModal');
+            if (event.target === modal) {
+                cerrarModal();
+            }
+        }
+    </script>
+</body>
+</html>

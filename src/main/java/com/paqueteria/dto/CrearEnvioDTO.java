@@ -1,10 +1,12 @@
 package com.paqueteria.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.paqueteria.model.DistanciaEnum;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class CrearEnvioDTO {
 
@@ -31,6 +33,18 @@ public class CrearEnvioDTO {
     @NotNull(message = "El número de paquetes no puede ser nulo")
     @Min(value = 1, message = "Debe haber al menos un paquete")
     private Integer numeroPaquetes;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @NotNull(message = "La fecha no puede ser nula")
+    private LocalDate fecha;
+
+    public LocalDate getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
+    }
 
     // Getters y Setters
     public String getDireccionOrigen() {

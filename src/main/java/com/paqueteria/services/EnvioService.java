@@ -15,6 +15,11 @@ import java.time.LocalDate;
 import com.paqueteria.utils.generadorCadenas;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
@@ -22,9 +27,14 @@ import java.util.ArrayList;
 
 import com.paqueteria.dto.CrearEnvioDTO;
 import com.paqueteria.model.DistanciaEnum;
+import com.paqueteria.model.Envio;
+import com.paqueteria.model.EstadoEnum;
+import com.paqueteria.model.Ruta;
 import com.paqueteria.model.TarifaDistancia;
 import com.paqueteria.model.TarifaRangoPeso;
 import com.paqueteria.model.Usuario;
+import com.paqueteria.repository.EnvioRepository;
+import com.paqueteria.repository.RutaRepository;
 import com.paqueteria.repository.TarifaDistanciaRepository;
 import com.paqueteria.repository.TarifaRangoPesoRepository;
 import com.paqueteria.repository.UsuarioRepository;
@@ -43,6 +53,9 @@ public class EnvioService {
 
     @Autowired
     private TarifaRangoPesoRepository tarifaRangoPesoRepository;
+
+    @Autowired
+    private RutaRepository rutaRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -181,7 +194,8 @@ public class EnvioService {
                 costeTotal,
                 usuario,
                 tarifaDistancia,
-                tarifaRangoPeso
+                tarifaRangoPeso,
+                dto.getFecha()
         );
 
         envio.setFragil(dto.getFragil());
@@ -193,9 +207,6 @@ public class EnvioService {
         return modelMapper.map(envioGuardado, EnvioDTO.class);
     }
 
-    /**
-     * Devuelve todos los envíos asociados a una ruta (por ruta_id).
-     */
     public List<EnvioDTO> obtenerEnviosPorRuta(Integer rutaId) {
         List<Envio> envios = envioRepository.findAll();
         List<EnvioDTO> resultado = new ArrayList<>();
@@ -207,9 +218,6 @@ public class EnvioService {
         return resultado;
     }
 
-    /**
-     * Devuelve todos los envíos cuya fecha coincide con la fecha dada.
-     */
     public List<EnvioDTO> obtenerEnviosPorFecha(LocalDate fecha) {
         List<Envio> envios = envioRepository.findAll();
         List<EnvioDTO> resultado = new ArrayList<>();
@@ -220,5 +228,68 @@ public class EnvioService {
             }
         }
         return resultado;
+    }
+  
+    public Page<EnvioDTO> getEnviosPorEstado(EstadoEnum estado, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("fecha").ascending());
+        Page<Envio> envios = envioRepository.findByEstado(estado, pageable);
+
+        LocalDate fechaActual = LocalDate.now();
+
+        return envios.map(envio -> {
+            EnvioDTO dto = modelMapper.map(envio, EnvioDTO.class);
+            // Calcular si es urgente (más de 4 días desde la fecha del envío)
+            if (envio.getFecha() != null) {
+                LocalDate fechaLimite = envio.getFecha().plusDays(4);
+                dto.setEsUrgente(fechaLimite.isBefore(fechaActual));
+            } else {
+                dto.setEsUrgente(false);
+            }
+            return dto;
+        });
+    }
+
+    public void asignarRepartidor(Integer envioId, Integer repartidorId) {
+        Envio envio = envioRepository.findById(envioId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Envío no encontrado"));
+
+        Usuario repartidor = usuarioRepository.findById(repartidorId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Repartidor no encontrado"));
+
+        LocalDate fechaRuta = LocalDate.now(); // Usar la fecha actual para la ruta
+
+
+        boolean esEnvioUrgente = envio.getFecha().plusDays(4).isBefore(LocalDate.now());
+
+        if (!esEnvioUrgente) {
+            boolean hayEnviosUrgentes = envioRepository.existeEnviosUrgentes(LocalDate.now().minusDays(4));
+
+            if (hayEnviosUrgentes) {
+                throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "No se pueden asignar pedidos no urgentes mientras existan pedidos urgentes pendientes. Por favor, procese primero los pedidos urgentes."
+                );
+            }
+        }
+
+        BigDecimal pesoAsignado = envioRepository.calcularPesoAsignadoPorRepartidorYFecha(repartidorId, fechaRuta);
+        BigDecimal pesoDisponible = repartidor.getPesoMaximo().subtract(pesoAsignado);
+
+        if (envio.getPeso().compareTo(pesoDisponible) > 0) {
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "No se puede asignar. El repartidor solo puede cargar " + pesoDisponible + " kg más hoy. Este envío pesa " + envio.getPeso() + " kg."
+            );
+        }
+
+        Ruta ruta = rutaRepository.findByUsuarioAndFecha(repartidor, fechaRuta)
+                .orElseGet(() -> {
+                    Ruta nuevaRuta = new Ruta(fechaRuta, repartidor);
+                    return rutaRepository.save(nuevaRuta);
+                });
+
+        envio.setRuta(ruta);
+        envio.setEstado(EstadoEnum.RUTA);
+        envioRepository.save(envio);
     }
 }
