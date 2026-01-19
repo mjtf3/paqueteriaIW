@@ -56,6 +56,9 @@
                 <input type="hidden" th:id="'data-apellidos-' + ${repartidor.id}" th:value="${repartidor.apellidos}">
                 <input type="hidden" th:id="'data-fecha-' + ${repartidor.id}" th:value="${repartidor.fechaCreacion}">
                 <input type="hidden" th:id="'data-envios-' + ${repartidor.id}" th:value="${repartidor.envios}">
+                <input type="hidden" th:id="'data-telefono-' + ${repartidor.id}" th:value="${repartidor.telefono}">
+                <input type="hidden" th:id="'data-peso-' + ${repartidor.id}" th:value="${repartidor.pesoMaximo}">
+                <input type="hidden" th:id="'data-activa-' + ${repartidor.id}" th:value="${repartidor.activa}">
             </div>
         </div>
     </div>
@@ -99,6 +102,44 @@
         </div>
     </div>
 
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal-overlay">
+        <div class="modal">
+            <h2>Editar Repartidor</h2>
+            <form th:action="@{/webmaster/repartidores/editar}" method="post">
+                <input type="hidden" name="id" id="editId">
+                <div class="modal-field">
+                    <label>Nombre</label>
+                    <input type="text" name="nombre" id="editNombre" required>
+                </div>
+                 <div class="modal-field">
+                    <label>Apellidos</label>
+                    <input type="text" name="apellidos" id="editApellidos" required>
+                </div>
+                <div class="modal-field">
+                    <label>Teléfono</label>
+                    <input type="text" name="telefono" id="editTelefono" required>
+                </div>
+                <div class="modal-field">
+                    <label>Peso Máximo (kg)</label>
+                    <input type="number" step="0.01" name="pesoMaximo" id="editPeso" required>
+                </div>
+                <div class="modal-field">
+                    <label>Contraseña (dejar en blanco para no cambiar)</label>
+                    <input type="password" name="contrasena" placeholder="Nueva contraseña...">
+                </div>
+                <div class="modal-field" style="text-align: left;">
+                    <label style="display: inline;">Activo:</label>
+                    <input type="checkbox" name="activa" id="editActiva" style="width: auto;">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-modal-cancel" onclick="closeModal('editModal')">Cancelar</button>
+                    <button type="submit" class="btn-modal-confirm">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Details Modal -->
     <div id="detailsModal" class="modal-overlay">
         <div class="modal">
@@ -113,7 +154,7 @@
             </div>
             
             <div style="margin-top: 20px;">
-                <button class="btn-modal-edit" onclick="alert('Funcionalidad de editar pendiente de implementación')">Editar</button>
+                <button class="btn-modal-edit" id="btnEditDetails" onclick="">Editar</button>
             </div>
         </div>
     </div>
@@ -147,7 +188,30 @@
             document.getElementById('detailsApodo').innerText = document.getElementById('data-apodo-' + id).value;
             document.getElementById('detailsFecha').innerText = document.getElementById('data-fecha-' + id).value;
             document.getElementById('detailsEnvios').innerText = document.getElementById('data-envios-' + id).value;
+            
+            // Configurar el botón de editar
+            document.getElementById('btnEditDetails').onclick = function() {
+                openEditModal(id);
+            };
+            
             document.getElementById('detailsModal').style.display = 'flex';
+        }
+
+        function openEditModal(id) {
+            closeModal('detailsModal'); // Cerrar detalles si está abierto
+            
+            // Rellenar formulario
+            document.getElementById('editId').value = id;
+            document.getElementById('editNombre').value = document.getElementById('data-nombre-' + id).value;
+            document.getElementById('editApellidos').value = document.getElementById('data-apellidos-' + id).value;
+            document.getElementById('editTelefono').value = document.getElementById('data-telefono-' + id).value;
+            document.getElementById('editPeso').value = document.getElementById('data-peso-' + id).value;
+            
+            // Checkbox activo
+            var isActive = document.getElementById('data-activa-' + id).value === 'true';
+            document.getElementById('editActiva').checked = isActive;
+            
+            document.getElementById('editModal').style.display = 'flex';
         }
 
         function openDeleteModal(button) {

@@ -178,8 +178,12 @@ public class UsuarioService {
                 .orElseThrow(() -> new UsuarioServiceException("Repartidor no encontrado"));
                 
         repartidor.setNombre(dto.getNombre());
-        // El apodo no se suele cambiar si es parte del login/correo, pero si se permite:
-        // repartidor.setApodo(dto.getApodo()); 
+        repartidor.setApellidos(dto.getApellidos());
+        repartidor.setTelefono(dto.getTelefono());
+        repartidor.setPesoMaximo(dto.getPesoMaximo());
+        
+        // Manejar checkbox inactivo (null si no se marca)
+        repartidor.setActiva(dto.getActiva() != null ? dto.getActiva() : false);
         
         // Si viene contraseña, actualizarla
         if (dto.getContrasena() != null && !dto.getContrasena().isEmpty()) {
