@@ -364,9 +364,9 @@ body {
     align-items: center;
 }
 
-.col-name { width: 25%; }
-.col-date { width: 25%; }
-.col-deliveries { width: 15%; }
+.col-name { width: 33%; }
+.col-date { width: 20%; }
+.col-deliveries { width: 12%; }
 .col-status { width: 15%; }
 .col-actions { width: 20%; display: flex; justify-content: flex-end; gap: 10px; }
 
