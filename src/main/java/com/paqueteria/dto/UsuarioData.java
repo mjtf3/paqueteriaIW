@@ -4,148 +4,174 @@ import com.paqueteria.model.TipoEnum;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
-
-import java.util.Objects;
-
-
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class UsuarioData {
-    private Integer id;
-    private String apodo;
-    private String nombre;
-    private String nombreTienda;
-    private String apellidos;
-    @Enumerated(EnumType.STRING)
-    private TipoEnum tipo;
-    @Email
-    private String correo;
-    private String telefono;
-    private String contrasena;
-    private LocalDate fechaCreacion;
-    private BigDecimal pesoMaximo;
-    private Boolean activa = true;
 
-    public Integer getId() {
-        return id;
-    }
+	private Integer id;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	@NotBlank(message = "El nombre de usuario es obligatorio")
+	@Size(min = 3, max = 50, message = "El nombre de usuario debe tener entre 3 y 50 caracteres")
+	private String apodo;
 
-    public String getApodo() {
-        return apodo;
-    }
+	@NotBlank(message = "El nombre es obligatorio")
+	@Size(min = 2, max = 100, message = "El nombre debe tener entre 2 y 100 caracteres")
+	private String nombre;
 
-    public void setApodo(String apodo) {
-        this.apodo = apodo;
-    }
+	@NotBlank(message = "El nombre de tienda es obligatorio")
+	@Size(min = 2, max = 100, message = "El nombre de tienda debe tener entre 2 y 100 caracteres")
+	private String nombreTienda;
 
-    public String getNombre() {
-        return nombre;
-    }
+	@NotBlank(message = "Los apellidos son obligatorios")
+	@Size(min = 2, max = 150, message = "Los apellidos deben tener entre 2 y 150 caracteres")
+	private String apellidos;
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+	@Enumerated(EnumType.STRING)
+	private TipoEnum tipo;
 
-    public String getNombreTienda() {
-        return nombreTienda;
-    }
+	@NotBlank(message = "El correo electrónico es obligatorio")
+	@Email(message = "El formato del correo electrónico no es válido")
+	private String correo;
 
-    public void setNombreTienda(String nombreTienda) {
-        this.nombreTienda = nombreTienda;
-    }
+	@NotBlank(message = "El teléfono es obligatorio")
+	@Pattern(regexp = "^[0-9]{9,15}$", message = "El teléfono debe contener entre 9 y 15 dígitos")
+	private String telefono;
 
-    public String getApellidos() {
-        return apellidos;
-    }
+	@NotBlank(message = "La contraseña es obligatoria")
+	@Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres")
+	@Pattern(
+		regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$",
+		message = "La contraseña debe contener al menos una mayúscula, una minúscula y un número"
+	)
+	private String contrasena;
 
-    public void setApellidos(String apellidos) {
-        this.apellidos = apellidos;
-    }
+	private LocalDate fechaCreacion;
+	private BigDecimal pesoMaximo;
+	private Boolean activa = true;
 
-    public TipoEnum getTipo() {
-        return tipo;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public void setTipo(TipoEnum tipo) {
-        this.tipo = tipo;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public String getCorreo() {
-        return correo;
-    }
+	public String getApodo() {
+		return apodo;
+	}
 
-    public void setCorreo(String correo) {
-        this.correo = correo;
-    }
+	public void setApodo(String apodo) {
+		this.apodo = apodo;
+	}
 
-    public String getTelefono() {
-        return telefono;
-    }
+	public String getNombre() {
+		return nombre;
+	}
 
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
 
-    public String getContrasena() {
-        return contrasena;
-    }
+	public String getNombreTienda() {
+		return nombreTienda;
+	}
 
-    public void setContrasena(String contrasena) {
-        this.contrasena = contrasena;
-    }
+	public void setNombreTienda(String nombreTienda) {
+		this.nombreTienda = nombreTienda;
+	}
 
-    public LocalDate getFechaCreacion() {
-        return fechaCreacion;
-    }
+	public String getApellidos() {
+		return apellidos;
+	}
 
-    public void setFechaCreacion(LocalDate fechaCreacion) {
-        this.fechaCreacion = fechaCreacion;
-    }
+	public void setApellidos(String apellidos) {
+		this.apellidos = apellidos;
+	}
 
-    public BigDecimal getPesoMaximo() {
-        return pesoMaximo;
-    }
+	public TipoEnum getTipo() {
+		return tipo;
+	}
 
-    public void setPesoMaximo(BigDecimal pesoMaximo) {
-        this.pesoMaximo = pesoMaximo;
-    }
+	public void setTipo(TipoEnum tipo) {
+		this.tipo = tipo;
+	}
 
-    public Boolean getActiva() {
-        return activa;
-    }
+	public String getCorreo() {
+		return correo;
+	}
 
-    public void setActiva(Boolean activa) {
-        this.activa = activa;
-    }
+	public void setCorreo(String correo) {
+		this.correo = correo;
+	}
 
-    public Boolean isAdmin() {
-        return this.tipo == TipoEnum.WEBMASTER;
-    }
+	public String getTelefono() {
+		return telefono;
+	}
 
-    public Boolean isTienda() {
-        return this.tipo == TipoEnum.CLIENTE;
-    }
+	public void setTelefono(String telefono) {
+		this.telefono = telefono;
+	}
 
-    public Boolean isRepartidor() {
-        return this.tipo == TipoEnum.REPARTIDOR;
-    }
+	public String getContrasena() {
+		return contrasena;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof UsuarioData)) return false;
-        UsuarioData that = (UsuarioData) o;
-        return Objects.equals(getId(), that.getId());
-    }
+	public void setContrasena(String contrasena) {
+		this.contrasena = contrasena;
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId());
-    }
+	public LocalDate getFechaCreacion() {
+		return fechaCreacion;
+	}
 
+	public void setFechaCreacion(LocalDate fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+
+	public BigDecimal getPesoMaximo() {
+		return pesoMaximo;
+	}
+
+	public void setPesoMaximo(BigDecimal pesoMaximo) {
+		this.pesoMaximo = pesoMaximo;
+	}
+
+	public Boolean getActiva() {
+		return activa;
+	}
+
+	public void setActiva(Boolean activa) {
+		this.activa = activa;
+	}
+
+	public Boolean isAdmin() {
+		return this.tipo == TipoEnum.WEBMASTER;
+	}
+
+	public Boolean isTienda() {
+		return this.tipo == TipoEnum.CLIENTE;
+	}
+
+	public Boolean isRepartidor() {
+		return this.tipo == TipoEnum.REPARTIDOR;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof UsuarioData)) return false;
+		UsuarioData that = (UsuarioData) o;
+		return Objects.equals(getId(), that.getId());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(getId());
+	}
 }
