@@ -115,10 +115,27 @@
         .btn-eliminar {
             background-color: #d9534f;
             color: white;
+            width: 110px;
         }
 
         .btn-eliminar:hover {
             background-color: #c9302c;
+        }
+
+        .btn-activar {
+            background-color: #5cb85c;
+            color: white;
+            width: 110px;
+        }
+
+        .btn-activar:hover {
+            background-color: #4cae4c;
+        }
+
+        /* Asegurar que ambos botones tengan el mismo ancho */
+        .btn-eliminar,
+        .btn-activar {
+            min-width: 100px;
         }
 
         /* Paginación */
@@ -370,10 +387,18 @@
                                 Detalles
                             </button>
                             <button class="btn btn-eliminar"
+                                    th:if="${tienda.activa}"
                                     th:data-tienda-id="${tienda.id}"
                                     th:data-nombre="${tienda.nombreTienda ?: tienda.nombre}"
-                                    onclick="mostrarConfirmacionBtn(this)">
-                                Eliminar
+                                    th:onclick="'desactivarTienda(' + ${tienda.id} + ')'">
+                                Desactivar
+                            </button>
+                            <button class="btn btn-activar"
+                                    th:if="${!tienda.activa}"
+                                    th:data-tienda-id="${tienda.id}"
+                                    th:data-nombre="${tienda.nombreTienda ?: tienda.nombre}"
+                                    th:onclick="'activarTienda(' + ${tienda.id} + ')'">
+                                Activar
                             </button>
                         </td>
                     </tr>
@@ -506,6 +531,42 @@
                 });
         }
 
+        function activarTienda(tiendaId) {
+            const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+            const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+            fetch('/webmaster/tiendas/'+tiendaId+'/activar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    [header]: token
+                }
+            })
+                .then(response => response.text())
+                .then(data => {
+                    location.reload()
+                })
+                .catch(error => console.error(error));
+        }
+
+        function desactivarTienda(tiendaId) {
+            const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+            const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+            fetch('/webmaster/tiendas/'+tiendaId+'/desactivar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    [header]: token
+                }
+            })
+                .then(response => response.text())
+                .then(data => {
+                    location.reload()
+                })
+                .catch(error => console.error(error));
+        }
+
         function resetearModoLectura() {
             const campos = document.querySelectorAll('#formEditarTienda input:not([type="hidden"]):not([disabled])');
             campos.forEach(campo => {
@@ -522,19 +583,6 @@
             resetearModoLectura();
         }
 
-        function mostrarConfirmacionBtn(button) {
-            const tiendaId = button.getAttribute('data-tienda-id');
-            const nombreTienda = button.getAttribute('data-nombre');
-            mostrarConfirmacion(tiendaId, nombreTienda);
-        }
-
-        function mostrarConfirmacion(tiendaId, nombreTienda) {
-            tiendaSeleccionada = tiendaId;
-            const modal = document.getElementById('confirmModal');
-            const mensaje = document.getElementById('confirmMessage');
-            mensaje.textContent = '¿Está seguro que desea eliminar la tienda "' + nombreTienda + '"?';
-            modal.style.display = 'block';
-        }
 
         function cerrarModal() {
             document.getElementById('confirmModal').style.display = 'none';
@@ -630,8 +678,6 @@
             .then(response => response.text())
             .then(data => {
                 if (data === 'OK') {
-                    alert('Tienda actualizada correctamente');
-                    cerrarDetalles();
                     location.reload();
                 } else {
                     alert(data);
@@ -732,4 +778,3 @@
     </script>
 </body>
 </html>
-

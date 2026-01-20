@@ -163,22 +163,4 @@ public class UsuarioService {
             return data;
         });
     }
-
-    @Transactional
-    public void eliminarTienda(Integer tiendaId) {
-        Usuario tienda = usuarioRepository.findById(tiendaId)
-                .orElseThrow(() -> new UsuarioServiceException("Tienda no encontrada"));
-
-        if (tienda.getTipo() != TipoEnum.CLIENTE) {
-            throw new UsuarioServiceException("El usuario no es una tienda");
-        }
-
-        // Verificar si tiene envíos asociados
-        long enviosCount = envioRepository.countByUsuarioId(tiendaId);
-        if (enviosCount > 0) {
-            throw new UsuarioServiceException("No se puede eliminar la tienda porque tiene " + enviosCount + " envíos asociados");
-        }
-
-        usuarioRepository.delete(tienda);
-    }
 }

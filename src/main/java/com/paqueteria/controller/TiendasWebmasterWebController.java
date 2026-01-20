@@ -62,16 +62,38 @@ public class TiendasWebmasterWebController {
         return "tiendasWebmaster";
     }
 
-    @PostMapping("/eliminar")
+    @PostMapping("{tiendaId}/desactivar")
     @ResponseBody
-    public String eliminarTienda(@RequestParam Integer tiendaId) {
+    public String desactivarTienda(@PathVariable Integer tiendaId) {
         try {
-            usuarioService.eliminarTienda(tiendaId);
+            UsuarioData tienda = usuarioService.findById(tiendaId);
+            if (tienda == null) {
+                return "ERROR: Tienda no encontrada";
+            }
+            tienda.setActiva(Boolean.FALSE);
+            usuarioService.editUser(tienda);
             return "OK";
         } catch (Exception e) {
             return "ERROR: " + e.getMessage();
         }
     }
+
+    @PostMapping("{tiendaId}/activar")
+    @ResponseBody
+    public String activarTienda(@PathVariable Integer tiendaId) {
+        try {
+            UsuarioData tienda = usuarioService.findById(tiendaId);
+            if (tienda == null) {
+                return "ERROR: Tienda no encontrada";
+            }
+            tienda.setActiva(Boolean.TRUE);
+            usuarioService.editUser(tienda);
+            return "OK";
+        } catch (Exception e) {
+            return "ERROR: " + e.getMessage();
+        }
+    }
+
 
     @GetMapping("/{tiendaId}/info/data")
     @ResponseBody
