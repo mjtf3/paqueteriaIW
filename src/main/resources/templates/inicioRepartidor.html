@@ -1,0 +1,23 @@
+<!-- src/main/resources/templates/inicioRepartidor.html -->
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Inicio Repartidor</title>
+    <th:block th:replace="fragments/head :: head"></th:block>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header('inicioRepartidor')}"></div>
+    <div class="main-content" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 70vh;">
+        <div style="margin-bottom: 2em; text-align: center;">
+            <h2 style="font-size: 2em; font-weight: bold; margin-bottom: 0.5em;">Buenos días <span th:text="${nombre}"></span>, ¿listo para otra jornada?</h2>
+            <p style="font-size: 1.2em;">De momento tienes <span th:text="${numPaquetes}"></span> paquetes</p>
+        </div>
+        <form th:action="@{/repartidor/ruta}" method="get">
+            <input type="hidden" name="repartidorId" th:value="${repartidorId}" />
+            <button type="submit" style="background-color: #7faaff; color: #222; border: none; border-radius: 4px; padding: 1em 3em; font-size: 1.5em; margin-top: 2em; cursor: pointer; transition: background 0.2s;">Empezar ruta</button>
+        </form>
+    </div>
+</body>
+</html>

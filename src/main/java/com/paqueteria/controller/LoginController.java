@@ -63,6 +63,17 @@ public class LoginController {
 		return "redirect:/auth/login?registroExitoso=true";
 	}
 
+    @GetMapping("/dashboard")
+    public String redirectUser(Authentication authentication, Model model) {
+        String correo = authentication.getName();
+        UsuarioData usuario = usuarioService.findByCorreo(correo);
+        return switch (usuario.getTipo()) {
+            case CLIENTE -> "redirect:/tienda/" + usuario.getId() + "/apikey";
+            case WEBMASTER -> "redirect:/";
+            case REPARTIDOR -> "redirect:/repartidor/inicio";
+            default -> "redirect:/";
+        };
+    }
 	@GetMapping("/login")
 	public String loginForm(
 		@RequestParam(value = "error", required = false) String error,
@@ -76,17 +87,5 @@ public class LoginController {
 			model.addAttribute("mensaje", "Registro exitoso. Ya puedes iniciar sesión.");
 		}
 		return "loginForm";
-	}
-
-	@GetMapping("/dashboard")
-	public String redirectUser(Authentication authentication, Model model) {
-		String correo = authentication.getName();
-		UsuarioData usuario = usuarioService.findByCorreo(correo);
-		return switch (usuario.getTipo()) {
-			case CLIENTE -> "redirect:/tienda/" + usuario.getId() + "/apikey";
-			case WEBMASTER -> "redirect:/";
-			case REPARTIDOR -> "redirect:/";
-			default -> "redirect:/";
-		};
 	}
 }

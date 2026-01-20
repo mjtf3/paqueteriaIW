@@ -1,0 +1,15 @@
+{
+  "reflection": [
+    {
+      "type": "org.thymeleaf.expression.Lists",
+      "methods": [
+        {
+          "name": "isEmpty",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        }
+      ]
+    }
+  ]
+}

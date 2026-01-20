@@ -9,7 +9,12 @@ import com.paqueteria.model.Usuario;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import com.paqueteria.model.Usuario;
+import java.util.List;
 @Repository
+
 public interface RutaRepository extends JpaRepository<Ruta, Integer> {
+	List<Ruta> findAllByOrderByFechaDesc();
+	List<Ruta> findByUsuarioOrderByFechaDesc(Usuario usuario);
     Optional<Ruta> findByUsuarioAndFecha(Usuario usuario, LocalDate fecha);
 }
