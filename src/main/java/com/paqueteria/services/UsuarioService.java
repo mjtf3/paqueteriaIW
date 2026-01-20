@@ -117,9 +117,85 @@ public class UsuarioService {
                         rep.getApodo(),
                         rep.getNombre(),
                         rep.getApellidos(),
-                        rep.getPesoMaximo()
+                        rep.getPesoMaximo(),
+                        rep.getFechaCreacion().toString(),
+                        rep.getEnvios(),
+                        rep.getActiva(),
+                        rep.getTelefono()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<RepartidorDTO> getAllRepartidores() {
+        List<Usuario> repartidores = usuarioRepository.findByTipoOrderByActivaDesc(TipoEnum.REPARTIDOR);
+        return repartidores.stream()
+                .map(rep -> new RepartidorDTO(
+                        rep.getId(),
+                        rep.getApodo(),
+                        rep.getNombre(),
+                        rep.getApellidos(),
+                        rep.getPesoMaximo(),
+                        rep.getFechaCreacion().toString(),
+                        rep.getEnvios(),
+                        rep.getActiva(),
+                        rep.getTelefono()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void crearRepartidor(RepartidorDTO dto) {
+        // Sanear apodo: reemplazar espacios por guiones bajos
+        String apodoSaneado = dto.getApodo().trim().replace(" ", "_");
+        
+        // Verificar duplicados por apodo (simulado comprobando correo generado)
+        String correoGenerado = apodoSaneado + ".driver@paqueteria.com";
+        if (usuarioRepository.findByCorreo(correoGenerado).isPresent()) {
+            throw new UsuarioServiceException("El usuario (apodo) ya existe");
+        }
+
+        Usuario nuevoRepartidor = new Usuario();
+        nuevoRepartidor.setNombre(dto.getNombre());
+        nuevoRepartidor.setApellidos(dto.getApellidos() != null ? dto.getApellidos() : "");
+        nuevoRepartidor.setApodo(apodoSaneado); // Usar apodo saneado
+        nuevoRepartidor.setCorreo(correoGenerado);
+        nuevoRepartidor.setContrasena(passwordEncoder.encode(dto.getContrasena()));
+        nuevoRepartidor.setTipo(TipoEnum.REPARTIDOR);
+        nuevoRepartidor.setActiva(true);
+        nuevoRepartidor.setFechaCreacion(LocalDate.now());
+        
+        // Asignar peso máximo y teléfono si vienen en el DTO
+        nuevoRepartidor.setPesoMaximo(dto.getPesoMaximo() != null ? dto.getPesoMaximo() : new BigDecimal("100.00"));
+        nuevoRepartidor.setTelefono(dto.getTelefono() != null ? dto.getTelefono() : ""); 
+        
+        usuarioRepository.save(nuevoRepartidor);
+    }
+    
+    @Transactional
+    public void editarRepartidor(RepartidorDTO dto) {
+        Usuario repartidor = usuarioRepository.findById(dto.getId())
+                .orElseThrow(() -> new UsuarioServiceException("Repartidor no encontrado"));
+                
+        repartidor.setNombre(dto.getNombre());
+        repartidor.setApellidos(dto.getApellidos());
+        repartidor.setTelefono(dto.getTelefono());
+        repartidor.setPesoMaximo(dto.getPesoMaximo());
+        
+        // Si viene contraseña, actualizarla
+        if (dto.getContrasena() != null && !dto.getContrasena().isEmpty()) {
+            repartidor.setContrasena(passwordEncoder.encode(dto.getContrasena()));
+        }
+        
+        usuarioRepository.save(repartidor);
+    }
+
+    @Transactional
+    public void desactivarRepartidor(Integer id) {
+        Usuario repartidor = usuarioRepository.findById(id)
+                .orElseThrow(() -> new UsuarioServiceException("Repartidor no encontrado"));
+        repartidor.setActiva(false);
+        usuarioRepository.save(repartidor);
     }
   
     @Transactional
