@@ -30,4 +30,6 @@ public interface EnvioRepository extends JpaRepository<Envio, Integer> {
     @Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END FROM Envio e WHERE e.fecha < :fechaLimite AND e.estado IN ('PENDIENTE', 'AUSENTE', 'RECHAZADO')")
     boolean existeEnviosUrgentes(@Param("fechaLimite") LocalDate fechaLimite);
     Optional<Envio> findByLocalizador(String localizador);
+
+    long countByUsuarioId(Integer usuarioId);
 }
