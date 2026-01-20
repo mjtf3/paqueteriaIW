@@ -28,15 +28,7 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception
-                        .accessDeniedPage("/access-denied")
-                        .authenticationEntryPoint((request, response, authException) -> {
-                            String referer = request.getHeader("Referer");
-                            if (referer != null && !referer.isEmpty()) {
-                                response.sendRedirect(referer);
-                            } else {
-                                response.sendRedirect("/auth/login");
-                            }
-                        }))
+                        .accessDeniedPage("/access-denied"))
                 .formLogin(login -> login
                         .loginPage("/auth/login")
                         .loginProcessingUrl("/auth/login")
