@@ -452,7 +452,6 @@
                     <button type="button" class="btn-save" id="btn-editar" onclick="activarEdicion()">Editar</button>
                     <button type="button" class="btn-save" id="btn-guardar" onclick="guardarCambios()" style="display: none;">Guardar</button>
                     <button type="button" class="btn-cancel-edit" id="btn-cancelar" onclick="cancelarEdicion()" style="display: none;">Cancelar</button>
-                    <button type="button" class="btn-cancel-edit" id="btn-cerrar" onclick="cerrarDetalles()">Cerrar</button>
                 </div>
             </form>
         </div>
@@ -516,7 +515,6 @@
             document.getElementById('btn-editar').style.display = 'inline-block';
             document.getElementById('btn-guardar').style.display = 'none';
             document.getElementById('btn-cancelar').style.display = 'none';
-            document.getElementById('btn-cerrar').style.display = 'inline-block';
         }
 
         function cerrarDetalles() {
@@ -586,7 +584,6 @@
             document.getElementById('btn-editar').style.display = 'none';
             document.getElementById('btn-guardar').style.display = 'inline-block';
             document.getElementById('btn-cancelar').style.display = 'inline-block';
-            document.getElementById('btn-cerrar').style.display = 'none';
         }
 
         // Función para cancelar la edición
