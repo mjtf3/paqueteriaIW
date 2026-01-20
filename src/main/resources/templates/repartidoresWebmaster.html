@@ -49,7 +49,7 @@
                             th:if="${repartidor.activa}"
                             th:data-id="${repartidor.id}" 
                             th:data-nombre="${repartidor.nombre}" 
-                            onclick="openDeleteModal(this)">Eliminar</button>
+                            onclick="openDeleteModal(this)">Desactivar</button>
                 </div>
                 <!-- Hidden data for details modal -->
                 <input type="hidden" th:id="'data-apodo-' + ${repartidor.id}" th:value="${repartidor.apodo}">
@@ -169,7 +169,7 @@
                 <input type="hidden" name="id" id="deleteId">
                 <div class="modal-actions">
                     <button type="button" style="background-color: white; border: 1px solid #ccc; padding: 10px 20px; cursor: pointer; border-radius: 4px;" onclick="closeModal('deleteModal')">Cancelar</button>
-                    <button type="button" class="btn-modal-cancel" onclick="confirmDelete()">Eliminar</button>
+                    <button type="button" class="btn-modal-cancel" onclick="confirmDelete()">Desactivar</button>
                 </div>
             </form>
         </div>
