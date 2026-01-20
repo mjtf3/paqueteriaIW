@@ -45,13 +45,27 @@ public class RutaController {
     private HistorialRutaService historialRutaService;
     @GetMapping({"/webmaster/historial", "/repartidor/historial"})
     public String mostrarHistorial(Model model,
-                                   @RequestParam(value = "mode", required = false) String mode) {
+                                @RequestParam(value = "mode", required = false) String mode,
+                                @RequestParam(value = "repartidorId", required = false) Long repartidorId) { // 1. Añadimos el parámetro
+        
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Usuario usuario = null;
         if (auth != null && auth.getName() != null) {
             usuario = usuarioRepository.findByCorreo(auth.getName()).orElse(null);
         }
-        boolean esWebmaster = usuario != null && usuario.getTipo() == TipoEnum.WEBMASTER;
+
+        if (usuario == null) {
+            return "redirect:/";
+        }
+
+        boolean esWebmaster = usuario.getTipo() == TipoEnum.WEBMASTER;
+
+        if (!esWebmaster && repartidorId != null) {
+            if (!repartidorId.equals(Long.valueOf(usuario.getId()))) {
+                return "redirect:/";
+            }
+        }
+
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
         if (esWebmaster) {
@@ -70,7 +84,7 @@ public class RutaController {
             model.addAttribute("rutaEnviosCount", rutaEnviosCount);
             model.addAttribute("rutaFechaMap", rutaFechaMap);
 
-            // 2. AGRUPAR POR REPARTIDOR (Convertir Map a List de GrupoHistorial)
+            // 2. AGRUPAR POR REPARTIDOR
             Map<String, List<Ruta>> mapRepartidor = rutas.stream()
                     .filter(r -> r.getUsuario() != null)
                     .collect(Collectors.groupingBy(r -> r.getUsuario().getNombre() + " " + r.getUsuario().getApellidos()));
@@ -79,21 +93,19 @@ public class RutaController {
             mapRepartidor.forEach((nombre, lista) -> gruposPorRepartidor.add(new GrupoHistorial(nombre, lista)));
             model.addAttribute("gruposPorRepartidor", gruposPorRepartidor);
 
-            // 3. AGRUPAR POR FECHA (Convertir Map a List de GrupoHistorial)
+            // 3. AGRUPAR POR FECHA
             var mapFecha = rutas.stream()
                     .filter(r -> r.getFecha() != null)
                     .collect(Collectors.groupingBy(Ruta::getFecha, TreeMap::new, Collectors.toList()));
             
             List<GrupoHistorial> gruposPorFecha = new ArrayList<>();
-            // Usamos descendingMap para que las fechas más recientes salgan primero
             ((TreeMap<LocalDate, List<Ruta>>) mapFecha).descendingMap().forEach((fecha, lista) -> {
                 gruposPorFecha.add(new GrupoHistorial(fecha.format(fmt), lista));
             });
             model.addAttribute("gruposPorFecha", gruposPorFecha);
-
             model.addAttribute("mode", (mode == null || mode.isBlank()) ? "fecha" : mode);
 
-        } else if (usuario != null) {
+        } else {
             // Lógica para Repartidor
             var rutas = historialRutaService.obtenerHistorialRepartidor(usuario);
             var rutaEnviosCount = new HashMap<Integer, Integer>();
@@ -117,18 +129,32 @@ public class RutaController {
     @GetMapping("/repartidor/ruta")
     public String mostrarRuta(@RequestParam(value = "repartidorId", required = false) Long repartidorId, Model model) {
         // Si no se pasa repartidorId intentar inferirlo del usuario autenticado
-        if (repartidorId == null) {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (auth != null && auth.getName() != null) {
-                var userOpt = usuarioRepository.findByCorreo(auth.getName());
-                if (userOpt.isPresent()) {
-                    repartidorId = Long.valueOf(userOpt.get().getId());
-                } else {
-                    return "redirect:/";
-                }
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Long idAutenticado = null;
+        if (auth != null && auth.getName() != null) {
+            var userOpt = usuarioRepository.findByCorreo(auth.getName());
+            if (userOpt.isPresent()) {
+                idAutenticado = Long.valueOf(userOpt.get().getId());
             } else {
                 return "redirect:/";
             }
+        } else {
+            return "redirect:/";
+        }
+
+        // Si no se pasa repartidorId, usar el del autenticado
+        if (repartidorId == null) {
+            repartidorId = idAutenticado;
+        }
+
+        // Si el usuario autenticado NO es webmaster y el id no coincide, redirigir
+        Usuario usuarioAutenticado = usuarioRepository.findById(idAutenticado.intValue()).orElse(null);
+        if (usuarioAutenticado == null) {
+            return "redirect:/";
+        }
+        boolean esWebmaster = usuarioAutenticado.getTipo() == TipoEnum.WEBMASTER;
+        if (!esWebmaster && !idAutenticado.equals(repartidorId)) {
+            return "redirect:/";
         }
 
         List<EnvioDTO> envios = envioService.obtenerEnviosPorRepartidor(repartidorId);
@@ -158,19 +184,34 @@ public class RutaController {
     @GetMapping("/repartidor/ruta/finalizar")
     public String mostrarResumenGet(@RequestParam(value = "repartidorId", required = false) Long repartidorId, Model model) {
         // Si no se pasa repartidorId intentar inferirlo del usuario autenticado
-        if (repartidorId == null) {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (auth != null && auth.getName() != null) {
-                var userOpt = usuarioRepository.findByCorreo(auth.getName());
-                if (userOpt.isPresent()) {
-                    repartidorId = Long.valueOf(userOpt.get().getId());
-                } else {
-                    return "redirect:/";
-                }
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Long idAutenticado = null;
+        if (auth != null && auth.getName() != null) {
+            var userOpt = usuarioRepository.findByCorreo(auth.getName());
+            if (userOpt.isPresent()) {
+                idAutenticado = Long.valueOf(userOpt.get().getId());
             } else {
                 return "redirect:/";
             }
+        } else {
+            return "redirect:/";
         }
+
+        // Si no se pasa repartidorId, usar el del autenticado
+        if (repartidorId == null) {
+            repartidorId = idAutenticado;
+        }
+
+        // Si el usuario autenticado NO es webmaster y el id no coincide, redirigir
+        Usuario usuarioAutenticado = usuarioRepository.findById(idAutenticado.intValue()).orElse(null);
+        if (usuarioAutenticado == null) {
+            return "redirect:/";
+        }
+        boolean esWebmaster = usuarioAutenticado.getTipo() == TipoEnum.WEBMASTER;
+        if (!esWebmaster && !idAutenticado.equals(repartidorId)) {
+            return "redirect:/";
+        }
+
         // Intentar obtener la ruta del día para este repartidor
         Usuario usuario = usuarioRepository.findById(repartidorId.intValue()).orElse(null);
         List<EnvioDTO> envios;
@@ -219,8 +260,6 @@ public class RutaController {
         model.addAttribute("totalPaquetes", totalPaquetes);
         model.addAttribute("enviosCount", envios == null ? 0 : envios.size());
         // Exponer si el usuario autenticado es webmaster para la plantilla
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        boolean esWebmaster = false;
         if (auth != null && auth.getName() != null) {
             var userOpt = usuarioRepository.findByCorreo(auth.getName());
             esWebmaster = userOpt.map(u -> u.getTipo() == TipoEnum.WEBMASTER).orElse(false);
