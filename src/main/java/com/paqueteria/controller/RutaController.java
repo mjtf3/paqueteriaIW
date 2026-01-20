@@ -57,7 +57,7 @@ public class RutaController {
         if (esWebmaster) {
             var rutas = historialRutaService.obtenerHistorialWebmaster();
 
-            // 1. Procesar Conteos y Fechas individuales (como ya hacías)
+            // 1. Procesar Conteos y Fechas individuales
             var rutaEnviosCount = new HashMap<Integer, Integer>();
             var rutaFechaMap = new HashMap<Integer, String>();
             for (Ruta r : rutas) {
@@ -94,7 +94,7 @@ public class RutaController {
             model.addAttribute("mode", (mode == null || mode.isBlank()) ? "fecha" : mode);
 
         } else if (usuario != null) {
-            // Lógica para Repartidor (ya estaba bien, pero usamos rutaFechaMap para seguridad)
+            // Lógica para Repartidor
             var rutas = historialRutaService.obtenerHistorialRepartidor(usuario);
             var rutaEnviosCount = new HashMap<Integer, Integer>();
             var rutaFechaMap = new HashMap<Integer, String>();
