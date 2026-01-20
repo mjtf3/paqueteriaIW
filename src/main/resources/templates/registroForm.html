@@ -1,268 +1,367 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro - Paquetería</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Registro - Paquetería</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background-color: #999;
-            min-height: 100vh;
-        }
+			body {
+				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+				background-color: #999;
+				min-height: 100vh;
+			}
 
-        header {
-            background-color: #666;
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+			header {
+				background-color: #666;
+				padding: 20px 40px;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
 
-        header nav {
-            display: flex;
-            gap: 40px;
-            align-items: center;
-        }
+			header nav {
+				display: flex;
+				gap: 40px;
+				align-items: center;
+			}
 
-        header a {
-            color: white;
-            text-decoration: none;
-            font-size: 32px;
-            font-weight: 300;
-            letter-spacing: 2px;
-        }
+			header a {
+				color: white;
+				text-decoration: none;
+				font-size: 32px;
+				font-weight: 300;
+				letter-spacing: 2px;
+			}
 
-        .profile-icon {
-            width: 50px;
-            height: 50px;
-            background-color: #1e3a8a;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
+			.profile-icon {
+				width: 50px;
+				height: 50px;
+				background-color: #1e3a8a;
+				border-radius: 50%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				cursor: pointer;
+			}
 
-        .profile-icon svg {
-            width: 30px;
-            height: 30px;
-            stroke: white;
-            fill: none;
-            stroke-width: 2;
-        }
+			.profile-icon svg {
+				width: 30px;
+				height: 30px;
+				stroke: white;
+				fill: none;
+				stroke-width: 2;
+			}
 
-        .container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: calc(100vh - 80px);
-            padding: 40px 20px;
-        }
+			.container {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				min-height: calc(100vh - 80px);
+				padding: 40px 20px;
+			}
 
-        .form-card {
-            background: white;
-            border-radius: 15px;
-            padding: 60px 80px;
-            max-width: 1200px;
-            width: 100%;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-        }
+			.form-card {
+				background: white;
+				border-radius: 15px;
+				padding: 60px 80px;
+				max-width: 1200px;
+				width: 100%;
+				box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+			}
 
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 40px 60px;
-            margin-bottom: 40px;
-        }
+			.form-grid {
+				display: grid;
+				grid-template-columns: 1fr 1fr 1fr;
+				gap: 40px 60px;
+				margin-bottom: 40px;
+			}
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
+			.form-group {
+				display: flex;
+				flex-direction: column;
+			}
 
-        .form-group label {
-            font-size: 24px;
-            font-weight: 400;
-            margin-bottom: 15px;
-            color: #333;
-            letter-spacing: 0.5px;
-        }
+			.form-group label {
+				font-size: 24px;
+				font-weight: 400;
+				margin-bottom: 15px;
+				color: #333;
+				letter-spacing: 0.5px;
+			}
 
-        .form-group input {
-            height: 45px;
-            background-color: #ddd;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 15px;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
+			.form-group input {
+				height: 45px;
+				background-color: #ddd;
+				border: none;
+				border-radius: 5px;
+				padding: 10px 15px;
+				font-size: 16px;
+				transition: background-color 0.3s;
+			}
 
-        .form-group input:focus {
-            outline: none;
-            background-color: #ccc;
-        }
+			.form-group input:focus {
+				outline: none;
+				background-color: #ccc;
+			}
 
-        .form-group-full {
-            grid-column: 1 / 2;
-        }
+			.form-group input.error {
+				border: 2px solid #c33;
+				background-color: #fee;
+			}
 
-        .button-group {
-            display: flex;
-            gap: 60px;
-            margin-top: 50px;
-            align-items: center;
-            justify-content: space-between;
-        }
+			.field-error {
+				color: #c33;
+				font-size: 12px;
+				margin-top: 5px;
+			}
 
-        button {
-            padding: 15px 60px;
-            font-size: 20px;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
+			.form-group-full {
+				grid-column: 1 / 2;
+			}
 
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-        }
+			.button-group {
+				display: flex;
+				gap: 60px;
+				margin-top: 50px;
+				align-items: center;
+				justify-content: space-between;
+			}
 
-        .btn-registrar {
-            background-color: #4a90e2;
-            color: white;
-        }
+			button {
+				padding: 15px 60px;
+				font-size: 20px;
+				border: none;
+				border-radius: 30px;
+				cursor: pointer;
+				font-weight: 500;
+				transition:
+					transform 0.2s,
+					box-shadow 0.2s;
+			}
 
-        .btn-registrar:active {
-            transform: translateY(0);
-        }
+			button:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+			}
 
-        .login-section {
-            text-align: right;
-        }
+			.btn-registrar {
+				background-color: #4a90e2;
+				color: white;
+			}
 
-        .login-section p {
-            font-size: 18px;
-            color: #333;
-            margin-bottom: 15px;
-        }
+			.btn-registrar:active {
+				transform: translateY(0);
+			}
 
-        .btn-login {
-            background-color: #2ecc71;
-            color: #333;
-            font-weight: 600;
-        }
+			.login-section {
+				text-align: right;
+			}
 
-        @media (max-width: 1024px) {
-            .form-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 20px 30px;
-            }
+			.login-section p {
+				font-size: 18px;
+				color: #333;
+				margin-bottom: 15px;
+			}
 
-            .form-group-full {
-                grid-column: 1 / -1;
-            }
+			.btn-login {
+				background-color: #2ecc71;
+				color: #333;
+				font-weight: 600;
+			}
 
-            .button-group {
-                flex-direction: column;
-                gap: 20px;
-            }
+			@media (max-width: 1024px) {
+				.form-grid {
+					grid-template-columns: 1fr 1fr;
+					gap: 20px 30px;
+				}
 
-            .login-section {
-                text-align: center;
-            }
-        }
+				.form-group-full {
+					grid-column: 1 / -1;
+				}
 
-        @media (max-width: 640px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
+				.button-group {
+					flex-direction: column;
+					gap: 20px;
+				}
 
-            header {
-                padding: 15px 20px;
-            }
+				.login-section {
+					text-align: center;
+				}
+			}
 
-            header a {
-                font-size: 24px;
-            }
+			@media (max-width: 640px) {
+				.form-grid {
+					grid-template-columns: 1fr;
+				}
 
-            .form-card {
-                padding: 30px 20px;
-            }
-        }
-    </style>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
-</head>
-<body>
-<div th:replace="~{fragments/header :: header('perfil')}"></div>
+				header {
+					padding: 15px 20px;
+				}
 
-<div class="container">
-    <div class="form-card">
-        <form th:action="@{/auth/registro}" method="post">
-            <!-- Mensaje de error general desde el controlador -->
-            <div th:if="${error}" style="background-color: #fee; border: 1px solid #c33; border-radius: 5px; padding: 15px; margin-bottom: 20px; color: #c33;">
-                <strong>Error:</strong>
-                <p th:text="${error}"></p>
-            </div>
+				header a {
+					font-size: 24px;
+				}
 
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="nombre">Nombre</label>
-                    <input type="text" id="nombre" name="nombre" th:value="${usuario?.nombre}" required>
-                </div>
+				.form-card {
+					padding: 30px 20px;
+				}
+			}
+		</style>
+		<link rel="stylesheet" th:href="@{/css/styles.css}" />
+	</head>
+	<body>
+		<div th:replace="~{fragments/header :: header('perfil')}"></div>
 
-                <div class="form-group">
-                    <label for="apellidos">Apellidos</label>
-                    <input type="text" id="apellidos" name="apellidos" th:value="${usuario?.apellidos}" required>
-                </div>
+		<div class="container">
+			<div class="form-card">
+				<form th:action="@{/auth/registro}" th:object="${usuario}" method="post">
+					<!-- Mensaje de error general desde el controlador -->
+					<div
+						th:if="${error}"
+						style="
+							background-color: #fee;
+							border: 1px solid #c33;
+							border-radius: 5px;
+							padding: 15px;
+							margin-bottom: 20px;
+							color: #c33;
+						"
+					>
+						<strong>Error:</strong>
+						<p th:text="${error}"></p>
+					</div>
 
-                <div class="form-group">
-                    <label for="telefono">Nº teléfono</label>
-                    <input type="tel" id="telefono" name="telefono" th:value="${usuario?.telefono}" required>
-                </div>
+					<div class="form-grid">
+						<div class="form-group">
+							<label for="nombre">Nombre</label>
+							<input
+								type="text"
+								id="nombre"
+								th:field="*{nombre}"
+								th:classappend="${#fields.hasErrors('nombre')} ? 'error' : ''"
+								required
+							/>
+							<span
+								class="field-error"
+								th:if="${#fields.hasErrors('nombre')}"
+								th:errors="*{nombre}"
+							></span>
+						</div>
 
-                <div class="form-group">
-                    <label for="apodo">Nombre de usuario</label>
-                    <input type="text" id="apodo" name="apodo" th:value="${usuario?.apodo}" required>
-                </div>
+						<div class="form-group">
+							<label for="apellidos">Apellidos</label>
+							<input
+								type="text"
+								id="apellidos"
+								th:field="*{apellidos}"
+								th:classappend="${#fields.hasErrors('apellidos')} ? 'error' : ''"
+								required
+							/>
+							<span
+								class="field-error"
+								th:if="${#fields.hasErrors('apellidos')}"
+								th:errors="*{apellidos}"
+							></span>
+						</div>
 
-                <div class="form-group">
-                    <label for="contrasena">Contraseña</label>
-                    <input type="password" id="contrasena" name="contrasena" required>
-                </div>
+						<div class="form-group">
+							<label for="telefono">Nº teléfono</label>
+							<input
+								type="tel"
+								id="telefono"
+								th:field="*{telefono}"
+								th:classappend="${#fields.hasErrors('telefono')} ? 'error' : ''"
+								required
+							/>
+							<span
+								class="field-error"
+								th:if="${#fields.hasErrors('telefono')}"
+								th:errors="*{telefono}"
+							></span>
+						</div>
 
-                <div class="form-group">
-                    <label for="correo">Correo electrónico</label>
-                    <input type="email" id="correo" name="correo" th:value="${usuario?.correo}" required>
-                </div>
+						<div class="form-group">
+							<label for="apodo">Nombre de usuario</label>
+							<input
+								type="text"
+								id="apodo"
+								th:field="*{apodo}"
+								th:classappend="${#fields.hasErrors('apodo')} ? 'error' : ''"
+								required
+							/>
+							<span class="field-error" th:if="${#fields.hasErrors('apodo')}" th:errors="*{apodo}"></span>
+						</div>
 
-                <div class="form-group form-group-full">
-                    <label for="nombreTienda">Nombre de tienda</label>
-                    <input type="text" id="nombreTienda" name="nombreTienda" th:value="${usuario?.nombreTienda}" required>
-                </div>
-            </div>
+						<div class="form-group">
+							<label for="contrasena">Contraseña</label>
+							<input
+								type="password"
+								id="contrasena"
+								th:field="*{contrasena}"
+								th:classappend="${#fields.hasErrors('contrasena')} ? 'error' : ''"
+								required
+							/>
+							<span
+								class="field-error"
+								th:if="${#fields.hasErrors('contrasena')}"
+								th:errors="*{contrasena}"
+							></span>
+							<small style="color: #666; font-size: 11px; margin-top: 3px"
+								>Min. 8 caracteres, una mayúscula, una minúscula y un número</small
+							>
+						</div>
 
-            <div class="button-group">
-                <button type="submit" class="btn-registrar">Registrarme</button>
+						<div class="form-group">
+							<label for="correo">Correo electrónico</label>
+							<input
+								type="email"
+								id="correo"
+								th:field="*{correo}"
+								th:classappend="${#fields.hasErrors('correo')} ? 'error' : ''"
+								required
+							/>
+							<span
+								class="field-error"
+								th:if="${#fields.hasErrors('correo')}"
+								th:errors="*{correo}"
+							></span>
+						</div>
 
-                <div class="login-section">
-                    <p>¿Ya tienes cuenta?</p>
-                    <a th:href="@{/auth/login}" style="text-decoration: none;">
-                        <button type="button" class="btn-login">Iniciar Sesión</button>
-                    </a>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-</body>
+						<div class="form-group form-group-full">
+							<label for="nombreTienda">Nombre de tienda</label>
+							<input
+								type="text"
+								id="nombreTienda"
+								th:field="*{nombreTienda}"
+								th:classappend="${#fields.hasErrors('nombreTienda')} ? 'error' : ''"
+								required
+							/>
+							<span
+								class="field-error"
+								th:if="${#fields.hasErrors('nombreTienda')}"
+								th:errors="*{nombreTienda}"
+							></span>
+						</div>
+					</div>
+
+					<div class="button-group">
+						<button type="submit" class="btn-registrar">Registrarme</button>
+
+						<div class="login-section">
+							<p>¿Ya tienes cuenta?</p>
+							<a th:href="@{/auth/login}" style="text-decoration: none">
+								<button type="button" class="btn-login">Iniciar Sesión</button>
+							</a>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</body>
 </html>
