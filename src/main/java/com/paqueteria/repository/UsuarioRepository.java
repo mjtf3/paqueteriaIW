@@ -16,4 +16,5 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     Optional<Usuario> findByCorreo(String s);
     List<Usuario> findByTipoAndActivaTrue(TipoEnum tipo);
     Page<Usuario> findByTipo(TipoEnum tipo, Pageable pageable);
+    List<Usuario> findByTipoOrderByActivaDesc(TipoEnum tipo);
 }
